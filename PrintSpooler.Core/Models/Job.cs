@@ -3,6 +3,7 @@ namespace PrintSpooler.Core.Models;
 public class Job
 {
     public Guid Id { get; set; }
+    public Printer? Printer { get; set; }
     public required string SubmittedBy { get; set; }
     public required string FileName { get; set; }
     public required byte[] RawData { get; set; }
