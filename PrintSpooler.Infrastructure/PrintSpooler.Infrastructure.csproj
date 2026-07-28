@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpIpp" Version="0.10.0" />
+    <PackageReference Include="SharpIppNext" Version="4.2.1" />
   </ItemGroup>
 
   <PropertyGroup>
