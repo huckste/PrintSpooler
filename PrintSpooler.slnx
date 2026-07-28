@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PrintSpooler.Api/PrintSpooler.Api.csproj" />
+  <Project Path="PrintSpooler.Core/PrintSpooler.Core.csproj" />
+  <Project Path="PrintSpooler.Infrastructure/PrintSpooler.Infrastructure.csproj" />
+  <Project Path="PrintSpooler.Web/PrintSpooler.Web.csproj" />
+</Solution>
