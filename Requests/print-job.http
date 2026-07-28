@@ -1,0 +1,23 @@
+### Create a job (invalid printer - should 400)
+POST http://localhost:5164/PrintJob
+Content-Type: application/json
+
+{
+  "submittedBy": "test",
+  "fileName": "test.pdf",
+  "rawData": "aGVsbG8=",
+  "contentType": "application/pdf",
+  "printerId": "00000000-0000-0000-0000-000000000000"
+}
+
+### Create a job (valid printer)
+POST http://localhost:5164/PrintJob
+Content-Type: application/json
+
+{
+  "submittedBy": "test",
+  "fileName": "test.pdf",
+  "rawData": "aGVsbG8=",
+  "contentType": "application/pdf",
+  "printerId": "719368c4-976c-47c2-abff-051d54ebc251"
+}
