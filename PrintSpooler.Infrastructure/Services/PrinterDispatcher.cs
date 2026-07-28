@@ -3,9 +3,9 @@ using PrintSpooler.Core.Services;
 using SharpIpp;
 using SharpIpp.Models.Requests;
 
-namespace PrintSpooler.Infrastructure.Dispatch;
+namespace PrintSpooler.Infrastructure.Services;
 
-public class IppPrinterDispatcher : IPrinterDispatcher
+public class PrinterDispatcher : IPrinterDispatcher
 {
     private readonly SharpIppClient _client = new();
 
