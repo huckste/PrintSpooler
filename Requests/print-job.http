@@ -21,3 +21,26 @@ Content-Type: application/json
   "contentType": "application/pdf",
   "printerId": "719368c4-976c-47c2-abff-051d54ebc251"
 }
+
+### Create a printer (duplicate)
+POST http://localhost:5164/Printer
+Content-Type: application/json
+
+{
+  "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+  "Name": "TEST DUP"
+}
+
+
+### Get a printer (valid)
+GET http://localhost:5164/Printer/719368c4-976c-47c2-abff-051d54ebc251
+
+### Get a printer (400)
+GET http://localhost:5164/Printer/00000000-0000-0000-0000-000000000000
+
+
+### Get a job (invalid job - should 400)
+GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+
+### Get a job (valid job)
+GET http://localhost:5164/PrintJob/e0ecda24-2a9f-40a9-a697-a59a549951fb
