@@ -33,4 +33,14 @@ public class JobService(AppDbContext dbContext) : IJobService
 
         return job;
     }
+
+    public async Task<ErrorOr<Job>> GetJob(Guid id)
+    {
+        var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
+
+        if (job is null)
+            return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
+
+        return job;
+    }
 }
