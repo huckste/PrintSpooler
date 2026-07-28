@@ -4,6 +4,10 @@
     <ProjectReference Include="..\PrintSpooler.Core\PrintSpooler.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SharpIpp" Version="0.10.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
