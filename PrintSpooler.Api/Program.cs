@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
+using PrintSpooler.Infrastructure.Dispatch;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:PrintSpoolerDb"])
 );
+
+builder.Services.AddSingleton<IPrinterDispatcher, IppPrinterDispatcher>();
 
 var app = builder.Build();
 
