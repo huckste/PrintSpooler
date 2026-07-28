@@ -29,4 +29,12 @@ public class PrintJobController(IJobService jobService) : ControllerBase
                 errors => Problem(detail: errors.First().Description, statusCode: 400)
             );
     }
+
+    [HttpGet("{id}", Name = "GetPrintJob")]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        return await jobService
+            .GetJob(id)
+            .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
+    }
 }

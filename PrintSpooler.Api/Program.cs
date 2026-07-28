@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSingleton<IPrinterDispatcher, PrinterDispatcher>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IPrinterService, PrinterService>();
 
 var app = builder.Build();
 
