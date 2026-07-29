@@ -38,10 +38,47 @@ public class PrintJobWorker(
 
             if (dbJob is not null)
             {
-                dbJob.Status = result.IsError ? JobStatus.Failed : JobStatus.Completed;
-
                 if (result.IsError)
-                    dbJob.FailureReason = result.Errors.First().Description;
+                {
+                    if (dbJob.RetryCount >= dbJob.MaxRetries)
+                    {
+                        dbJob.Status = JobStatus.Failed;
+                        dbJob.FailureReason = result.Errors.First().Description;
+
+                        resultDbContext.AuditLogs.Add(
+                            new AuditLog
+                            {
+                                Id = Guid.NewGuid(),
+                                JobId = job.Id,
+                                Action = JobAction.Failed,
+                                PerformedBy = ByWho.System,
+                                Details = dbJob.FailureReason,
+                            }
+                        );
+                    }
+                    else
+                    {
+                        dbJob.Status = JobStatus.Queued;
+                        dbJob.RetryCount++;
+                        await jobChannel.Writer.WriteAsync(job);
+                    }
+                }
+                else
+                {
+                    dbJob.Status = JobStatus.Completed;
+
+                    resultDbContext.AuditLogs.Add(
+                        new AuditLog
+                        {
+                            Id = Guid.NewGuid(),
+                            JobId = job.Id,
+                            Action = JobAction.Completed,
+                            PerformedBy = ByWho.System,
+                        }
+                    );
+
+                    dbJob.CompletedAt = DateTime.UtcNow;
+                }
 
                 await resultDbContext.SaveChangesAsync(ct);
             }

@@ -30,8 +30,18 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
         };
 
         dbContext.Jobs.Add(job);
-        await dbContext.SaveChangesAsync();
 
+        dbContext.AuditLogs.Add(
+            new AuditLog
+            {
+                Id = Guid.NewGuid(),
+                JobId = job.Id,
+                Action = JobAction.Created,
+                PerformedBy = ByWho.User,
+            }
+        );
+
+        await dbContext.SaveChangesAsync();
         await jobChannel.Writer.WriteAsync(job);
 
         return job;
@@ -63,6 +73,17 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
             );
 
         job.Status = JobStatus.Cancelled;
+
+        dbContext.AuditLogs.Add(
+            new AuditLog
+            {
+                Id = Guid.NewGuid(),
+                JobId = job.Id,
+                Action = JobAction.Cancelled,
+                PerformedBy = ByWho.User,
+            }
+        );
+
         await dbContext.SaveChangesAsync();
 
         return job;
