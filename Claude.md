@@ -191,19 +191,24 @@ Web (Blazor) → Core (planned; not wired yet)
 7. `POST /Printer`, `GET /Printer/{id}` — full CRUD for printer registration
 8. `PrintJobWorker` (`BackgroundService`) — on startup seeds from DB (any
    `Queued` jobs), then consumes `Channel<Job>` indefinitely; dispatches via
-   `IPrinterDispatcher`, updates `Status` (`Completed`/`Failed`) and `FailureReason`
-   in DB per job using a fresh `IServiceScopeFactory` scope per job
-9. Local testing workflow via kulala.nvim `.http` files (`Requests/print-job.http`,
-   `Requests/printer.http`)
+   `IPrinterDispatcher`, updates `Status` (`Completed`/`Failed`/retry), `FailureReason`,
+   `CompletedAt`, and `RetryCount` in DB per job using a fresh `IServiceScopeFactory`
+   scope per job. Retry logic: on failure, if `RetryCount < MaxRetries` increment and
+   re-enqueue; otherwise mark `Failed`. No backoff delay currently — future improvement.
+9. `DELETE /PrintJob/{id}` — cancel endpoint, enforces `JobCancellationPolicy`
+   (only `Queued` jobs can be cancelled; once dispatched, bytes are on the wire).
+   Future: IPP `Cancel-Job` operation could cancel `Processing` jobs — needs
+   printer-assigned IPP job ID stored on `Job` model.
+10. Local testing workflow via kulala.nvim `.http` files (`Requests/print-job.http`)
 
 ## What's NOT built yet (planned, in likely order)
 
-1. Wire `JobCancellationPolicy` into an actual `DELETE`/cancel endpoint
-   - Future: IPP `Cancel-Job` operation could cancel `Processing` jobs mid-stream.
-     Requires storing the printer-assigned IPP job ID on the `Job` model when
-     `SendAsync` succeeds, then using it to send a cancel request to the printer.
-     SharpIppNext likely supports this. Currently out of scope.
-2. `AuditLog` — model and table exist, nothing writes to it yet
+1. ~~Wire `JobCancellationPolicy` into `DELETE /PrintJob/{id}`~~ — DONE
+   - Future: IPP `Cancel-Job` for in-progress jobs (needs printer-assigned job ID stored on `Job`)
+2. ~~`AuditLog`~~ — DONE. Writes on: `JobCreated` (JobService), `JobCancelled`
+   (JobService), `JobCompleted`/`JobFailed` (PrintJobWorker). Enums `JobAction`
+   and `ByWho` stored as strings via `HasConversion<string>()` in AppDbContext.
+   Printer creation deliberately not audited — audit log scoped to job lifecycle only.
 3. Blazor dashboard — project scaffolded only: queue view, submit form,
    printer status board, audit log view — none built
 4. Auth (JWT + roles) — discussed early on, then explicitly descoped in favor
@@ -214,6 +219,12 @@ Web (Blazor) → Core (planned; not wired yet)
 6. Tests — no test project exists yet; this was a stated goal (wanting to
    learn "the proper industry way" to isolate and test things, motivated by
    PrintFlow_v2 having no test setup at all)
+
+## Claude.md maintenance
+
+Update this file whenever something is completed — move it from "NOT built yet"
+to "built and verified", update the architecture section if new files/patterns
+were added, and update the skill level section if new concepts were covered.
 
 ## Working style / how to help this person
 
