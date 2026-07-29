@@ -1,12 +1,13 @@
 namespace PrintSpooler.Infrastructure.Services;
 
+using System.Threading.Channels;
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
 using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
 
-public class JobService(AppDbContext dbContext) : IJobService
+public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobService
 {
     public async Task<ErrorOr<Job>> CreateJob(JobCreationData data)
     {
@@ -30,6 +31,8 @@ public class JobService(AppDbContext dbContext) : IJobService
 
         dbContext.Jobs.Add(job);
         await dbContext.SaveChangesAsync();
+
+        await jobChannel.Writer.WriteAsync(job);
 
         return job;
     }

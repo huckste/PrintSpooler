@@ -1,8 +1,9 @@
+using ErrorOr;
 using PrintSpooler.Core.Models;
 
 namespace PrintSpooler.Core.Services;
 
 public interface IPrinterDispatcher
 {
-    Task<bool> SendAsync(Job job, Printer printer, CancellationToken ct);
+    Task<ErrorOr<Success>> SendAsync(Job job, CancellationToken ct);
 }

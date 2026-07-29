@@ -1,4 +1,6 @@
+using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore;
+using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
 using PrintSpooler.Infrastructure.Services;
@@ -19,6 +21,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<IPrinterDispatcher, PrinterDispatcher>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IPrinterService, PrinterService>();
+builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Job>());
+builder.Services.AddHostedService<PrintJobWorker>();
 
 var app = builder.Build();
 
