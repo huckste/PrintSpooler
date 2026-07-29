@@ -209,8 +209,11 @@ Web (Blazor) → Core (planned; not wired yet)
    (JobService), `JobCompleted`/`JobFailed` (PrintJobWorker). Enums `JobAction`
    and `ByWho` stored as strings via `HasConversion<string>()` in AppDbContext.
    Printer creation deliberately not audited — audit log scoped to job lifecycle only.
-3. Blazor dashboard — project scaffolded only: queue view, submit form,
-   printer status board, audit log view — none built
+3. Blazor dashboard — Web project scaffolded and running. `HttpClient`
+   registered in `Program.cs` pointed at `http://localhost:5164`. Razor LSP
+   working in Neovim via roslyn.nvim cohosting (requires html-lsp installed
+   via Mason, `vim.treesitter.language.register("html", "razor")` in
+   roslyn.lua). No actual pages built yet — submit form is next.
 4. Auth (JWT + roles) — discussed early on, then explicitly descoped in favor
    of getting the core pipeline working first; revisit if time allows
 5. Deployment — Azure App Service, App Insights, Key Vault for secrets in
