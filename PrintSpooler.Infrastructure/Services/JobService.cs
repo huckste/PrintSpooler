@@ -46,4 +46,25 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
 
         return job;
     }
+
+    public async Task<ErrorOr<Job>> CancelJob(Guid id)
+    {
+        var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
+
+        if (job is null)
+            return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
+
+        bool canCancel = JobCancellationPolicy.CanCancel(job.Status);
+
+        if (!canCancel)
+            return Error.Conflict(
+                "Job.CannotCancel",
+                $"Job {id} cannot be cancelled - current status is {job.Status}"
+            );
+
+        job.Status = JobStatus.Cancelled;
+        await dbContext.SaveChangesAsync();
+
+        return job;
+    }
 }

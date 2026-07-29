@@ -7,4 +7,5 @@ public interface IJobService
 {
     Task<ErrorOr<Job>> CreateJob(JobCreationData data);
     Task<ErrorOr<Job>> GetJob(Guid id);
+    Task<ErrorOr<Job>> CancelJob(Guid id);
 }

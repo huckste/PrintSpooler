@@ -37,4 +37,12 @@ public class PrintJobController(IJobService jobService) : ControllerBase
             .GetJob(id)
             .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
     }
+
+    [HttpDelete("{id}", Name = "CancelPrintJob")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        return await jobService
+            .CancelJob(id)
+            .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
+    }
 }

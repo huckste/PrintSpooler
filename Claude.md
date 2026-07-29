@@ -43,9 +43,12 @@ Read this section before assuming background knowledge:
   consuming sides of ErrorOr, DTOs vs domain models and why they're separate,
   `.Match()` vs `.Switch()` in ErrorOr, basic SQL transactions
   (BEGIN TRAN/COMMIT/ROLLBACK) and isolation.
-- Still shaky / hasn't been tested on: writing a full new controller action
-  unassisted, background workers / hosted services, Blazor (not started),
-  auth (not started), any deployment step (App Service, CI/CD).
+- Still shaky / hasn't been tested on: Blazor (not started), auth (not
+  started), any deployment step (App Service, CI/CD).
+- Now understands: `BackgroundService`/`IHostedService`, `Channel<T>` as a
+  producer/consumer queue, `IServiceScopeFactory` for creating DB scopes inside
+  a Singleton, DI lifetime rules (Scoped can depend on Singleton, not vice versa),
+  `await foreach` with `ReadAllAsync` for blocking channel consumption.
 
 ## Architecture
 
@@ -174,36 +177,43 @@ Web (Blazor) → Core (planned; not wired yet)
 ## What's built and verified working end-to-end
 
 1. Full data layer: models, DbContext, migrations, real Azure SQL database
-2. `IPrinterDispatcher`/`PrinterDispatcher` — real IPP printing, tested
-   against a real printer
-3. `IJobService`/`JobService` — validates printer exists, creates job,
-   proper `ErrorOr` failure path
-4. `POST /PrintJob` — full round trip proven both ways (400 on bad printer,
-   201 with real persisted row on success)
-5. Local testing workflow via kulala.nvim `.http` files
+2. `IPrinterDispatcher`/`PrinterDispatcher` — real IPP printing via SharpIppNext,
+   `try/catch` around `PrintJobAsync` returns `ErrorOr<Success>` on both success
+   and failure (including `IppResponseException` with `StatusCode` in the message).
+   Content type must be printer-native (`image/jpeg` confirmed working on HP ENVY
+   Inspire 7200) — spooler does not transcode, caller is responsible for send-ready data.
+3. `IJobService`/`JobService` — validates printer exists, creates job, writes to
+   `Channel<Job>` after DB save to hand off to background worker
+4. `IPrinterService`/`PrinterService` — creates printers (duplicate check by IP and
+   name), fetches by ID
+5. `POST /PrintJob` — 400 on bad printer, 201 on success
+6. `GET /PrintJob/{id}` — returns job with `Printer` populated via `.Include()`
+7. `POST /Printer`, `GET /Printer/{id}` — full CRUD for printer registration
+8. `PrintJobWorker` (`BackgroundService`) — on startup seeds from DB (any
+   `Queued` jobs), then consumes `Channel<Job>` indefinitely; dispatches via
+   `IPrinterDispatcher`, updates `Status` (`Completed`/`Failed`) and `FailureReason`
+   in DB per job using a fresh `IServiceScopeFactory` scope per job
+9. Local testing workflow via kulala.nvim `.http` files (`Requests/print-job.http`,
+   `Requests/printer.http`)
 
 ## What's NOT built yet (planned, in likely order)
 
-1. `GET /PrintJob/{id}` — first real use case for `.Include(j => j.Printer)`
-2. `POST /Printer`, `GET /Printer` — currently the only way to create a
-   printer row is hand-inserting via SQL/dadbod; no controller for it yet
-3. Delete `WeatherForecast.cs` template leftover
-4. Wire `JobCancellationPolicy` into an actual `DELETE`/cancel endpoint
-5. A background worker (likely `IHostedService`/`BackgroundService`) that
-   actually dequeues `Queued` jobs and calls `IPrinterDispatcher.SendAsync`
-   — right now jobs get created and sit in the DB, nothing dispatches them
-   yet
-6. `AuditLog` — model and table exist, nothing writes to it yet
-7. Blazor dashboard — project scaffolded only: queue view, submit form,
+1. Wire `JobCancellationPolicy` into an actual `DELETE`/cancel endpoint
+   - Future: IPP `Cancel-Job` operation could cancel `Processing` jobs mid-stream.
+     Requires storing the printer-assigned IPP job ID on the `Job` model when
+     `SendAsync` succeeds, then using it to send a cancel request to the printer.
+     SharpIppNext likely supports this. Currently out of scope.
+2. `AuditLog` — model and table exist, nothing writes to it yet
+3. Blazor dashboard — project scaffolded only: queue view, submit form,
    printer status board, audit log view — none built
-8. Auth (JWT + roles) — discussed early on, then explicitly descoped in favor
+4. Auth (JWT + roles) — discussed early on, then explicitly descoped in favor
    of getting the core pipeline working first; revisit if time allows
-9. Deployment — Azure App Service, App Insights, Key Vault for secrets in
+5. Deployment — Azure App Service, App Insights, Key Vault for secrets in
    production (currently using User Secrets, which is dev-only) — not
    started
-10. Tests — no test project exists yet; this was a stated goal (wanting to
-    learn "the proper industry way" to isolate and test things, motivated by
-    PrintFlow_v2 having no test setup at all)
+6. Tests — no test project exists yet; this was a stated goal (wanting to
+   learn "the proper industry way" to isolate and test things, motivated by
+   PrintFlow_v2 having no test setup at all)
 
 ## Working style / how to help this person
 
