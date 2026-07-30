@@ -230,6 +230,10 @@ Web (Blazor) → Core (planned; not wired yet)
      - `FadeAndRemove` collapses open error before fading — shared by all removal paths
      - `submittedBy` is a `const`; `client` initialized as `default!` (safe: only
        called after `OnInitializedAsync`); `IsInFlight` property gates disabled state
+     - Printer dropdown has four load states via `PrinterLoadState` enum: `Loading`
+       (muted spinner on init), `Ready` (dropdown), `Empty` (no printers found +
+       retry), `Failed` (failed to load + retry), `Retry` (spinner during retry).
+       Retrying from `Empty` or `Failed` shows spinner then resolves to correct state.
      - Still needs: file type enforcement, real `SubmittedBy` identity
 
 ## Blazor Shared Components
@@ -266,7 +270,7 @@ All custom classes prefixed `sp-` to avoid Bootstrap collisions. Never use Boots
 - `sp-btn` + `sp-btn-primary/secondary/danger` — outlined buttons, no Bootstrap
 - `sp-btn:disabled` — muted/dimmed, `cursor: not-allowed`
 - `sp-btn-group` — flex row of buttons that each `flex: 1` (equal width, centered text)
-- `sp-alert` + `sp-alert-success/danger` — inline status messages
+- `sp-alert` + `sp-alert-success/danger/muted` — inline status messages
 - `sp-form-group` / `sp-label` / `sp-input` — form elements
 - `sp-dropdown*` — used internally by `SpSelect` component
 - `sp-file-row` — flex row for browse button area

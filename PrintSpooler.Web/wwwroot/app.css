@@ -446,8 +446,9 @@ main {
     background: transparent;
 }
 
-.sp-alert-success { color: var(--sp-green); border-color: var(--sp-border);  }
-.sp-alert-danger  { color: var(--sp-red);   border-color: var(--sp-red);     }
+.sp-alert-success { color: var(--sp-green); border-color: var(--sp-border);        }
+.sp-alert-danger  { color: var(--sp-red);   border-color: var(--sp-red);          }
+.sp-alert-muted   { color: var(--sp-muted); border-color: var(--sp-border-subtle); }
 
 /* ── 17. Submit Card ─────────────────────────────────────── */
 
@@ -524,6 +525,8 @@ main {
     animation: sp-spin 0.6s linear infinite;
     flex-shrink: 0;
 }
+
+.sp-spinner-danger { border-top-color: var(--sp-red); }
 
 @keyframes sp-entry-out {
     0%   { opacity: 1; max-height: 60px; margin-bottom: 2px; }
@@ -650,6 +653,29 @@ main {
 }
 
 .sp-btn-group .sp-btn { flex: 1; text-align: center; }
+
+.sp-alert-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sp-btn-inline {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sp-mono);
+    font-size: 0.78rem;
+    padding: 0;
+    flex-shrink: 0;
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    opacity: 0.8;
+    transition: opacity 0.1s;
+}
+
+.sp-btn-inline:hover { opacity: 1; }
 
 /* ── 20. Scrollbar ───────────────────────────────────────── */
 

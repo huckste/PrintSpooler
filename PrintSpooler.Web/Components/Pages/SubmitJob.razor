@@ -14,9 +14,26 @@
   <div class="submit-card-body">
     <div class="sp-form-group">
       <label class="sp-label">⎙ Destination Printer</label>
-      <div class="@(isSubmitting && !PrinterSelected ? "sp-invalid" : "")">
-        <SpSelect TValue="Guid" @bind-Value="selectedPrinter" Options="printerOptions"
-                  Placeholder="-- select printer --" />
+      <div class="@(isSubmitting && !PrinterSelected && printerState == PrinterLoadState.Ready ? "sp-invalid" : "")">
+        @if (printerState == PrinterLoadState.Ready)
+        {
+          <SpSelect TValue="Guid" @bind-Value="selectedPrinter" Options="printerOptions"
+                    Placeholder="-- select printer --" />
+        }
+        else if (printerState == PrinterLoadState.Empty || printerState == PrinterLoadState.Failed || printerState ==
+        PrinterLoadState.Retry)
+        {
+          <div class="sp-alert sp-alert-danger sp-alert-inline">@(printerState == PrinterLoadState.Empty ? "no printers found" : printerState == PrinterLoadState.Retry ? "retrying..." : "failed to load printers")
+            @if (printerState == PrinterLoadState.Retry)
+            {
+              <div class="sp-spinner sp-spinner-danger"></div>
+            }
+            else
+            {
+              <button class="sp-btn-inline" @onclick="LoadPrinters">retry</button>
+            }
+          </div>
+        }
       </div>
     </div>
 
@@ -36,7 +53,7 @@
               @if (entry.Status == FileStatus.Failed)
               {
                 <button class="sp-file-entry-err" @onclick="() => entry.ShowError = !entry.ShowError">@(!entry.ShowError ?
-                                                                                                                                                                                                                                                                                                                       $"view error ({(@entry.ErrorCode)})" : "close error")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $"view error ({(@entry.ErrorCode)})" : "close error")
                 </button>
               }
 
@@ -76,7 +93,8 @@
         }
         else
         {
-          <button class="sp-btn sp-btn-primary" disabled="@(IsInFlight || isSubmitting)" @onclick="HandleSubmitFile">
+          <button class="sp-btn sp-btn-primary"
+                  disabled="@(IsInFlight || isSubmitting || printerState != PrinterLoadState.Ready)" @onclick="HandleSubmitFile">
             @(!IsInFlight ? "▶ Send to Queue" : "Sending")
           </button>
         }
@@ -91,6 +109,7 @@
   private HttpClient client = default!;
   private List<FileEntry> selectedFiles = [];
   private bool isSubmitting;
+  private PrinterLoadState printerState = PrinterLoadState.Ready;
 
   private bool PrinterSelected => selectedPrinter != Guid.Empty;
 
@@ -113,7 +132,7 @@
     public string ErrorCode { get; set; } = string.Empty;
   }
 
-  public enum FileStatus
+  private enum FileStatus
   {
     Pending,
     Submitting,
@@ -121,13 +140,48 @@
     Failed,
   }
 
+  private enum PrinterLoadState
+  {
+    Ready,
+    Empty,
+    Failed,
+    Retry
+  }
+
   protected override async Task OnInitializedAsync()
   {
     client = httpClientFactory.CreateClient("PrintSpoolerApi");
-    printers = await client.GetFromJsonAsync<List<Printer>>("/Printer") ?? [];
-    printerOptions = printers
-        .Select(p => new SpSelectOption<Guid> { Value = p.Id, Label = p.Name })
-        .ToList();
+    await LoadPrinters();
+
+  }
+
+  private async Task LoadPrinters()
+  {
+
+    if (printerState == PrinterLoadState.Failed || printerState == PrinterLoadState.Empty)
+    {
+      printerState = PrinterLoadState.Retry;
+      await Task.Delay(500);
+    }
+
+    try
+    {
+      printers = await client.GetFromJsonAsync<List<Printer>>("/Printer") ?? [];
+
+      printerOptions = printers
+                    .Select(p => new SpSelectOption<Guid> { Value = p.Id, Label = p.Name })
+                    .ToList();
+
+    }
+    catch
+    {
+      printerState = PrinterLoadState.Failed;
+      return;
+    }
+
+    printerState = printerOptions.Count > 0 ? PrinterLoadState.Ready : PrinterLoadState.Empty;
+
+
   }
 
   private async Task RetryFailed()
@@ -192,8 +246,6 @@
     isSubmitting = false;
     await InvokeAsync(StateHasChanged);
   }
-
-  
 
   private async Task FadeAndRemove(FileEntry entry)
   {
