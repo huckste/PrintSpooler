@@ -37,4 +37,6 @@ public class PrinterService(AppDbContext dbContext) : IPrinterService
 
         return printer;
     }
+
+    public async Task<List<Printer>> GetPrinters() => await dbContext.Printers.ToListAsync();
 }

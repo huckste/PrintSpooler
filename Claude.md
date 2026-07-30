@@ -188,7 +188,7 @@ Web (Blazor) → Core (planned; not wired yet)
    name), fetches by ID
 5. `POST /PrintJob` — 400 on bad printer, 201 on success
 6. `GET /PrintJob/{id}` — returns job with `Printer` populated via `.Include()`
-7. `POST /Printer`, `GET /Printer/{id}` — full CRUD for printer registration
+7. `POST /Printer`, `GET /Printer/{id}`, `GET /Printer` (list all) — full CRUD for printer registration
 8. `PrintJobWorker` (`BackgroundService`) — on startup seeds from DB (any
    `Queued` jobs), then consumes `Channel<Job>` indefinitely; dispatches via
    `IPrinterDispatcher`, updates `Status` (`Completed`/`Failed`/retry), `FailureReason`,
@@ -209,19 +209,112 @@ Web (Blazor) → Core (planned; not wired yet)
    (JobService), `JobCompleted`/`JobFailed` (PrintJobWorker). Enums `JobAction`
    and `ByWho` stored as strings via `HasConversion<string>()` in AppDbContext.
    Printer creation deliberately not audited — audit log scoped to job lifecycle only.
-3. Blazor dashboard — Web project scaffolded and running. `HttpClient`
-   registered in `Program.cs` pointed at `http://localhost:5164`. Razor LSP
-   working in Neovim via roslyn.nvim cohosting (requires html-lsp installed
-   via Mason, `vim.treesitter.language.register("html", "razor")` in
-   roslyn.lua). No actual pages built yet — submit form is next.
-4. Auth (JWT + roles) — discussed early on, then explicitly descoped in favor
-   of getting the core pipeline working first; revisit if time allows
-5. Deployment — Azure App Service, App Insights, Key Vault for secrets in
-   production (currently using User Secrets, which is dev-only) — not
-   started
-6. Tests — no test project exists yet; this was a stated goal (wanting to
-   learn "the proper industry way" to isolate and test things, motivated by
-   PrintFlow_v2 having no test setup at all)
+3. Blazor dashboard — Web project running with `@rendermode InteractiveServer`
+   required on every interactive page (without it, `@onclick` is dead static HTML).
+   `HttpClient` registered in `Program.cs` as named client `"PrintSpoolerApi"`
+   pointed at `http://localhost:5164` — injected via `IHttpClientFactory`, not
+   `HttpClient` directly. Razor LSP working in Neovim via roslyn.nvim cohosting.
+   Use `dotnet watch --project PrintSpooler.Web` for hot reload during development.
+   - `SubmitJob.razor` (`/submit-job`) — working, feature-complete for multi-file
+     submission. Key behaviours:
+     - Multi-file selection via `<InputFile multiple>` — files appear in a stacked
+       list below Browse; each can be removed individually with fade animation
+     - Parallel submission via `Task.WhenAll` + `InvokeAsync(StateHasChanged)` per
+       entry for live UI updates across thread pool threads
+     - Per-entry status: spinner (Submitting) → ✓ fade-out (Success) → `view error
+       (400)`/`view error (refused)` toggle (Failed)
+     - Failed entries show expandable error message + full-width remove button;
+       footer switches from "Send to Queue" to `retry failed` / `clear failed` pair
+     - Validation: clicking Send while printer unselected or no files shakes the
+       invalid fields red; button only hard-disabled while jobs are in-flight
+     - `FadeAndRemove` collapses open error before fading — shared by all removal paths
+     - `submittedBy` is a `const`; `client` initialized as `default!` (safe: only
+       called after `OnInitializedAsync`); `IsInFlight` property gates disabled state
+     - Still needs: file type enforcement, real `SubmittedBy` identity
+
+## Blazor Shared Components
+
+- `Components/Shared/SpSelect.razor` — generic custom dropdown (`@typeparam TValue`).
+  Avoids native `<select>` OS styling. Takes `List<SpSelectOption<TValue>>` and
+  supports `@bind-Value`. Backdrop div handles click-outside-to-close. Usage:
+  ```razor
+  <SpSelect TValue="Guid" @bind-Value="selectedId" Options="options" Placeholder="-- select --" />
+  ```
+- `Components/Shared/SpSelectOption.cs` — `SpSelectOption<TValue>` with `Value` and `Label`.
+
+## CSS Design System (`wwwroot/app.css`)
+
+All custom classes prefixed `sp-` to avoid Bootstrap collisions. Never use Bootstrap's
+`.card`, `.alert`, `.form-group`, `.nav-link` etc. in new pages — use the `sp-` equivalents.
+
+**Variables** (`--sp-*`):
+- `--sp-bg` `#0e100f` / `--sp-panel` `#151816` / `--sp-panel-alt` `#19271f`
+- `--sp-border` `#1c693b` / `--sp-border-subtle` `#1e2b22`
+- `--sp-green` `#4afa8a` / `--sp-green-dim` `#42d477`
+- `--sp-text` `#e5eae6` / `--sp-muted` `#67736a`
+- `--sp-yellow` `#ffc857` / `--sp-red` `#ff5c5c`
+- `--sp-mono` Courier New / `--sp-radius` 3px
+
+**Building blocks for new pages:**
+- `sp-section-title` — green label + extending horizontal rule
+- `sp-card` — padded panel (background + subtle left accent border)
+- `sp-job` — 3-col grid panel for queue rows
+- `sp-log` — monospace event log panel
+- `sp-stat-grid` + `sp-stat-label` + `sp-stat-value` — 4-col stat cards
+- `sp-tag` + `sp-tag-processing/queued/completed/failed/cancelled` — status badges
+- `sp-progress` + `sp-progress-bar` — 2px progress line
+- `sp-btn` + `sp-btn-primary/secondary/danger` — outlined buttons, no Bootstrap
+- `sp-btn:disabled` — muted/dimmed, `cursor: not-allowed`
+- `sp-btn-group` — flex row of buttons that each `flex: 1` (equal width, centered text)
+- `sp-alert` + `sp-alert-success/danger` — inline status messages
+- `sp-form-group` / `sp-label` / `sp-input` — form elements
+- `sp-dropdown*` — used internally by `SpSelect` component
+- `sp-file-row` — flex row for browse button area
+- `sp-file-list` — stacked column of file entries
+- `sp-file-entry` — single file row (column flex: row + optional error block)
+- `sp-file-entry-row` — inner flex row: name left, status icon/button right
+- `sp-file-entry-name` — truncated filename
+- `sp-file-entry-icon` + `.pending`/`.success` — status text indicator
+- `sp-file-entry-remove` — subtle `×` button (middle-right of entry row)
+- `sp-file-entry-err` — underlined red text toggle for error details
+- `sp-file-entry-error` — expanded error block with red left-border accent
+- `sp-file-entry-error-actions` — wrapper above the remove button inside error block
+- `sp-file-entry-error-remove` — full-width outlined red remove button inside error
+- `sp-file-entry.fading` — triggers `sp-entry-out` collapse animation on removal
+- `sp-spinner` — CSS-only rotating border spinner (used for Submitting state)
+- `sp-invalid` — shake animation + red border on child `.sp-dropdown-trigger`/`.sp-btn`/`.sp-file-list`
+- `sp-nav-item` / `sp-nav-link` — sidebar nav (replaces Bootstrap nav classes)
+- `submit-card` / `submit-card-header/body/footer/title/id` — submit form card layout
+
+**Design reference:** matches solomonhuckstep.us aesthetic — monospace throughout,
+green section labels with extending rule, outlined cards with 2px left accent border,
+transparent outlined buttons/tags, no filled backgrounds on interactive elements.
+
+4. **Blazor dashboard pages (next up):**
+   - Queue page (`/queue`) — job list with status tags, printer name, cancel action
+   - Job detail page — full job info, audit log entries for that job
+   - Audit log page — all audit events
+   - Printer list / home page (`/`) — registered printers
+   
+5. **Printer status / job lifecycle (planned):**
+   - Store IPP job ID returned by printer on dispatch (needs `PrinterJobId`
+     field on `Job` + migration)
+   - Set `Processing` status when job is handed to printer (currently skipped)
+   - Poll `Get-Job-Attributes` via SharpIppNext using stored IPP job ID to
+     detect `completed`/`cancelled`/`aborted` from printer side
+   - IPP is request/response only — no push, polling is correct approach
+   
+6. **File transcoding pipeline (planned):**
+   - Currently only JPEG works end-to-end (printer-native)
+   - Plan: text/PDF/image → render to bitmap → PCL raster wrapper → printer
+   - SkiaSharp for bitmap rendering (already familiar from PrintFlow work)
+   - Need paper size: either hardcode Letter/A4 or query printer via
+     `Get-Printer-Attributes` IPP call for `media-default`
+   - Chunks of PCL raster code exist from prior PrintFlow work
+
+7. Auth (JWT + roles) — descoped, revisit if time allows
+8. Deployment — Azure App Service, App Insights, Key Vault for secrets
+9. Tests — no test project yet
 
 ## Claude.md maintenance
 

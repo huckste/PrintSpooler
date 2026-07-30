@@ -1,0 +1,254 @@
+@page "/submit-job"
+@rendermode InteractiveServer
+@using PrintSpooler.Core.Models
+@inject IHttpClientFactory httpClientFactory
+
+<PageTitle>Submit Job</PageTitle>
+
+<div class="submit-card">
+  <div class="submit-card-header">
+    <span class="submit-card-title">SUBMIT://PRINT_JOB</span>
+    <span class="submit-card-id">JOB_NEW</span>
+  </div>
+
+  <div class="submit-card-body">
+    <div class="sp-form-group">
+      <label class="sp-label">⎙ Destination Printer</label>
+      <div class="@(isSubmitting && !PrinterSelected ? "sp-invalid" : "")">
+        <SpSelect TValue="Guid" @bind-Value="selectedPrinter" Options="printerOptions"
+                  Placeholder="-- select printer --" />
+      </div>
+    </div>
+
+    <div class="sp-form-group">
+      <label class="sp-label">↑ File Payload</label>
+      <div class="sp-file-row">
+        <div class="@(isSubmitting && !HasFiles ? "sp-invalid" : "")">
+          <label class="sp-btn sp-btn-secondary" for="fileInput">Browse</label>
+        </div>
+      </div>
+      <div class="sp-file-list">
+        @foreach (var entry in selectedFiles)
+        {
+          <div @key="entry" class="sp-file-entry @(entry.Fading ? "fading" : "")">
+            <div class="sp-file-entry-row">
+              <span class="sp-file-entry-name">@entry.Name</span>
+              @if (entry.Status == FileStatus.Failed)
+              {
+                <button class="sp-file-entry-err" @onclick="() => entry.ShowError = !entry.ShowError">@(!entry.ShowError ?
+                                                                                                                                                                                                                                                                                                                       $"view error ({(@entry.ErrorCode)})" : "close error")
+                </button>
+              }
+
+              else if (entry.Status == FileStatus.Success)
+              {
+                <span class="sp-file-entry-icon success">✓</span>
+              }
+              else if (entry.Status == FileStatus.Submitting)
+              {
+                <div class="sp-spinner"></div>
+              }
+              else
+              {
+                <button class="sp-file-entry-remove" @onclick="() => FadeAndRemove(entry)">x</button>
+              }
+
+            </div>
+            @if (entry.ShowError && entry.ErrorMessage is not null)
+            {
+              <div class="sp-file-entry-error">@entry.ErrorMessage</div>
+              <div class="sp-file-entry-error-actions"><button class="sp-file-entry-error-remove"
+                                                                 @onclick="() => FadeAndRemove(entry)">remove</button> </div>
+              }
+            </div>
+          }
+        </div>
+
+        <InputFile id="fileInput" multiple OnChange="HandleFileSelected" style="display:none;" />
+      </div>
+    </div>
+    <div class="submit-card-footer">
+      @if (HasFailedEntries)
+      {
+        <div class="sp-btn-group"> <button class="sp-btn sp-btn-primary" @onclick="RetryFailed">retry
+          failed</button><button class="sp-btn sp-btn-danger" @onclick="ClearFailed">clear failed</button></div>
+
+        }
+        else
+        {
+          <button class="sp-btn sp-btn-primary" disabled="@(IsInFlight || isSubmitting)" @onclick="HandleSubmitFile">
+            @(!IsInFlight ? "▶ Send to Queue" : "Sending")
+          </button>
+        }
+      </div>
+    </div>
+
+@code {
+  private const string submittedBy = "dashboard-user";
+  private List<Printer> printers = [];
+  private List<SpSelectOption<Guid>> printerOptions = [];
+  private Guid selectedPrinter;
+  private HttpClient client = default!;
+  private List<FileEntry> selectedFiles = [];
+  private bool isSubmitting;
+
+  private bool PrinterSelected => selectedPrinter != Guid.Empty;
+
+  private bool HasFiles => selectedFiles.Count > 0;
+
+  private bool IsInFlight => selectedFiles.Any(f =>
+    f.Status == FileStatus.Submitting || f.Status == FileStatus.Success);
+
+  private bool HasFailedEntries => selectedFiles.Any(f => f.Status == FileStatus.Failed);
+
+  private class FileEntry
+  {
+    public string Name { get; set; } = string.Empty;
+    public string ContentType { get; set; } = string.Empty;
+    public byte[] Data { get; set; } = [];
+    public FileStatus Status { get; set; } = FileStatus.Pending;
+    public string? ErrorMessage { get; set; }
+    public bool ShowError { get; set; }
+    public bool Fading { get; set; }
+    public string ErrorCode { get; set; } = string.Empty;
+  }
+
+  public enum FileStatus
+  {
+    Pending,
+    Submitting,
+    Success,
+    Failed,
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    client = httpClientFactory.CreateClient("PrintSpoolerApi");
+    printers = await client.GetFromJsonAsync<List<Printer>>("/Printer") ?? [];
+    printerOptions = printers
+        .Select(p => new SpSelectOption<Guid> { Value = p.Id, Label = p.Name })
+        .ToList();
+  }
+
+  private async Task RetryFailed()
+  {
+    var failed = selectedFiles.Where(f => f.Status == FileStatus.Failed).ToList();
+
+    foreach (var entry in failed)
+    {
+      entry.Status = FileStatus.Pending;
+      entry.ErrorMessage = null;
+      entry.ErrorCode = string.Empty;
+      entry.ShowError = false;
+    }
+
+    var tasks = failed.Select(e => SubmitEntry(e)).ToList();
+    await Task.WhenAll(tasks);
+  }
+
+  private async Task ClearFailed()
+  {
+    var failed = selectedFiles.Where(f => f.Status == FileStatus.Failed).ToList();
+
+    foreach (var entry in failed)
+      await FadeAndRemove(entry);
+
+  }
+
+  private async Task HandleFileSelected(InputFileChangeEventArgs e)
+  {
+    foreach (var file in e.GetMultipleFiles(20))
+    {
+      using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+      using var ms = new MemoryStream();
+      await stream.CopyToAsync(ms);
+
+      selectedFiles.Add(new FileEntry
+      {
+        Name = file.Name,
+        ContentType = file.ContentType,
+        Data = ms.ToArray()
+      });
+    }
+  }
+
+  private async Task HandleSubmitFile()
+  {
+    isSubmitting = true;
+
+    if (!HasFiles || !PrinterSelected)
+    {
+      await InvokeAsync(StateHasChanged);
+      await Task.Delay(400);
+      isSubmitting = false;
+      await InvokeAsync(StateHasChanged);
+      return;
+    }
+
+    var tasks = selectedFiles.Where(f => f.Status == FileStatus.Pending).Select(entry => SubmitEntry(entry)).ToList();
+
+    await Task.WhenAll(tasks);
+
+    isSubmitting = false;
+    await InvokeAsync(StateHasChanged);
+  }
+
+  
+
+  private async Task FadeAndRemove(FileEntry entry)
+  {
+    if (entry.ShowError)
+    {
+      entry.ShowError = false;
+      await InvokeAsync(StateHasChanged);
+      await Task.Delay(150);
+    }
+
+    entry.Fading = true;
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(500);
+    selectedFiles.Remove(entry);
+  }
+
+  private async Task SubmitEntry(FileEntry entry)
+  {
+    entry.Status = FileStatus.Submitting;
+    await InvokeAsync(StateHasChanged);
+
+    try
+    {
+      var response = await client.PostAsJsonAsync("/PrintJob", new
+      {
+        FileName = entry.Name,
+        ContentType = entry.ContentType,
+        RawData = entry.Data,
+        SubmittedBy = submittedBy,
+        PrinterId = selectedPrinter
+      });
+
+      if (response.IsSuccessStatusCode)
+      {
+        entry.Status = FileStatus.Success;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(800);
+        await FadeAndRemove(entry);
+      }
+      else
+      {
+        var body = await response.Content.ReadAsStringAsync();
+
+        entry.Status = FileStatus.Failed;
+        entry.ErrorMessage = $"✗ Error {(int)response.StatusCode}: {body}";
+        entry.ErrorCode = $"{(int)response.StatusCode}";
+        await InvokeAsync(StateHasChanged);
+      }
+    }
+    catch (Exception ex)
+    {
+      entry.Status = FileStatus.Failed;
+      entry.ErrorMessage = $"✗ {ex.Message}";
+      entry.ErrorCode = "refused";
+      await InvokeAsync(StateHasChanged);
+    }
+  }
+}

@@ -30,4 +30,7 @@ public class PrinterController(IPrinterService printerService) : ControllerBase
             .GetPrinter(id)
             .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
     }
+
+    [HttpGet(Name = "GetPrinters")]
+    public async Task<IActionResult> Get() => Ok(await printerService.GetPrinters());
 }

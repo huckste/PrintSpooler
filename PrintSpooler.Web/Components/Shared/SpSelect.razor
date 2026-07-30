@@ -1,0 +1,45 @@
+@typeparam TValue
+
+<div class="sp-dropdown">
+    <div class="sp-dropdown-trigger" @onclick="Toggle">
+        <span>@(SelectedLabel ?? Placeholder)</span>
+        <span class="sp-dropdown-arrow @(isOpen ? "open" : "")">▾</span>
+    </div>
+
+    @if (isOpen)
+    {
+        <div class="sp-dropdown-backdrop" @onclick="Close"></div>
+        <div class="sp-dropdown-menu">
+            @foreach (var opt in Options)
+            {
+                var isCurrent = EqualityComparer<TValue>.Default.Equals(opt.Value, Value);
+                <div class="sp-dropdown-option @(isCurrent ? "selected" : "")"
+                     @onclick="() => Select(opt.Value)">
+                    @opt.Label
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public List<SpSelectOption<TValue>> Options { get; set; } = [];
+    [Parameter] public string Placeholder { get; set; } = "-- select --";
+
+    private bool isOpen = false;
+
+    private string? SelectedLabel =>
+        Options.FirstOrDefault(o => EqualityComparer<TValue>.Default.Equals(o.Value, Value))?.Label;
+
+    private void Toggle() => isOpen = !isOpen;
+    private void Close() => isOpen = false;
+
+    private async Task Select(TValue value)
+    {
+        Value = value;
+        await ValueChanged.InvokeAsync(value);
+        isOpen = false;
+    }
+}
