@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using ErrorOr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +12,8 @@ namespace PrintSpooler.Infrastructure.Services;
 public class PrintJobWorker(
     IServiceScopeFactory scopeFactory,
     Channel<Job> jobChannel,
-    IPrinterDispatcher printerDispatcher
+    IPrinterDispatcher printerDispatcher,
+    IJobNotifier jobNotifier
 ) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken ct)
@@ -34,54 +36,67 @@ public class PrintJobWorker(
             using var resultScope = scopeFactory.CreateScope();
             var resultDbContext = resultScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            var dbJob = await resultDbContext.Jobs.FirstOrDefaultAsync(j => j.Id == job.Id, ct);
+            var dbJob = await resultDbContext
+                .Jobs.Include(j => j.Printer)
+                .FirstOrDefaultAsync(j => j.Id == job.Id, ct);
 
             if (dbJob is not null)
             {
                 if (result.IsError)
-                {
-                    if (dbJob.RetryCount >= dbJob.MaxRetries)
-                    {
-                        dbJob.Status = JobStatus.Failed;
-                        dbJob.FailureReason = result.Errors.First().Description;
-
-                        resultDbContext.AuditLogs.Add(
-                            new AuditLog
-                            {
-                                Id = Guid.NewGuid(),
-                                JobId = job.Id,
-                                Action = JobAction.Failed,
-                                PerformedBy = ByWho.System,
-                                Details = dbJob.FailureReason,
-                            }
-                        );
-                    }
-                    else
-                    {
-                        dbJob.Status = JobStatus.Queued;
-                        dbJob.RetryCount++;
-                        await jobChannel.Writer.WriteAsync(job);
-                    }
-                }
+                    await HandleError(dbJob, result, resultDbContext, job);
                 else
-                {
-                    dbJob.Status = JobStatus.Completed;
-
-                    resultDbContext.AuditLogs.Add(
-                        new AuditLog
-                        {
-                            Id = Guid.NewGuid(),
-                            JobId = job.Id,
-                            Action = JobAction.Completed,
-                            PerformedBy = ByWho.System,
-                        }
-                    );
-
-                    dbJob.CompletedAt = DateTime.UtcNow;
-                }
+                    MarkCompleted(dbJob, resultDbContext);
 
                 await resultDbContext.SaveChangesAsync(ct);
+                await jobNotifier.JobUpdateAsync(dbJob, ct);
             }
         }
+    }
+
+    private void MarkCompleted(Job dbJob, AppDbContext resultDbContext)
+    {
+        dbJob.Status = JobStatus.Completed;
+        dbJob.CompletedAt = DateTime.UtcNow;
+
+        resultDbContext.AuditLogs.Add(
+            new AuditLog
+            {
+                Id = Guid.NewGuid(),
+                JobId = dbJob.Id,
+                Action = JobAction.Completed,
+                PerformedBy = ByWho.System,
+            }
+        );
+    }
+
+    private async Task HandleError(
+        Job dbJob,
+        ErrorOr<Success> result,
+        AppDbContext resultDbContext,
+        Job job
+    )
+    {
+        if (dbJob.RetryCount < dbJob.MaxRetries)
+        {
+            dbJob.Status = JobStatus.Queued;
+            dbJob.RetryCount++;
+            await jobChannel.Writer.WriteAsync(job);
+
+            return;
+        }
+
+        dbJob.Status = JobStatus.Failed;
+        dbJob.FailureReason = result.Errors.First().Description;
+
+        resultDbContext.AuditLogs.Add(
+            new AuditLog
+            {
+                Id = Guid.NewGuid(),
+                JobId = job.Id,
+                Action = JobAction.Failed,
+                PerformedBy = ByWho.System,
+                Details = dbJob.FailureReason,
+            }
+        );
     }
 }

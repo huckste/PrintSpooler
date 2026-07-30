@@ -299,6 +299,9 @@ transparent outlined buttons/tags, no filled backgrounds on interactive elements
    - Job detail page — full job info, audit log entries for that job
    - Audit log page — all audit events
    - Printer list / home page (`/`) — registered printers
+   - Follow-up (not tonight): manual "retry a Failed job" action — needs new
+     endpoint, `RetryCount` reset logic, and `JobCancellationPolicy` updated
+     (currently only `Queued` jobs can be cancelled, not `Failed`)
    
 5. **Printer status / job lifecycle (planned):**
    - Store IPP job ID returned by printer on dispatch (needs `PrinterJobId`
@@ -339,3 +342,10 @@ were added, and update the skill level section if new concepts were covered.
 - Wants to be able to defend every architectural decision in an interview —
   treat "can you explain why" as the real success criterion, not just "does
   it compile and run"
+- Always use caveman mode (compressed, low-filler text) for prose responses —
+  even during Socratic teaching, even when other skills/plugins are active —
+  to cut context bloat. Code, commits, PRs, and security warnings still get
+  written out normally (per caveman skill's own boundaries). Only drop caveman
+  where it'd genuinely conflict with clarity (e.g. multi-step sequences where
+  fragment order risks misread, or the user seems confused) — resume it
+  right after.
