@@ -4,5 +4,6 @@ namespace PrintSpooler.Core.Services;
 
 public static class JobCancellationPolicy
 {
-    public static bool CanCancel(JobStatus status) => status == JobStatus.Queued;
+    public static bool CanCancel(JobStatus status) =>
+        status == JobStatus.Queued || status == JobStatus.Failed;
 }

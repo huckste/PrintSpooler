@@ -1,0 +1,208 @@
+@page "/queue"
+@using Microsoft.AspNetCore.SignalR.Client
+@using PrintSpooler.Core.Models;
+@using PrintSpooler.Core.Services;
+@using PrintSpooler.Web.Services;
+@inject ApiClient api
+@inject IConfiguration config
+@implements IAsyncDisposable
+
+<PageTitle>Job Queue</PageTitle>
+
+<div class="sp-panel sp-table-wrapper">
+  <table class="sp-table">
+    <colgroup>
+      <col />
+      <col />
+      <col />
+      <col />
+      <col style="width: 70px" />
+      <col style="width: 110px" />
+      <col style="width: 40px" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Document</th>
+        <th>Owner</th>
+        <th>Printer</th>
+        <th class="sp-table-status">Status</th>
+        <th class="sp-table-num">Retries</th>
+        <th>Submitted</th>
+        <th class="sp-table-action"></th>
+      </tr>
+    </thead>
+    @if (jobs.Count < 1)
+    {
+      <tbody>
+        <tr class="sp-empty-row">
+          <td colspan="7">Queue is empty</td>
+        </tr>
+      </tbody>
+    }
+    else
+    {
+      <tbody>
+        @{
+          var i = 0;
+        }
+        @foreach (var job in jobs)
+        {
+          <tr @key="job.Id" style="--i: @(i++)"
+              class="sp-row-clickable @(recentlyUpdated.Contains(job.Id) ? "sp-row-updated" : "") @(fadingJobIds.Contains(job.Id) ? "sp-row-fading" : "")"
+              @onclick="() => ToggleExpanded(job.Id)">
+            <td class="sp-job-file">@(job.FileName)</td>
+            <td class="sp-job-meta">@(job.SubmittedBy)</td>
+            <td class="sp-job-printer">@(job.Printer?.Name ?? "Unknown")</td>
+            <td class="sp-table-status">
+              <span class="sp-tag @(GetStatusClass(job))">@(job.Status)</span>
+            </td>
+            <td class="sp-table-num">@(job.RetryCount)</td>
+            <td class="sp-job-meta">@(FormatTime.Short(job.SubmittedAt))</td>
+            <td class="sp-table-action">
+              @if (job.Status == JobStatus.Processing)
+              {
+                <div class="sp-spinner"></div>
+              }
+              else if (JobCancellationPolicy.CanCancel(job.Status))
+              {
+                <button class="sp-file-entry-remove" @onclick:stopPropagation @onclick="() => CancelJob(job.Id)">x</button>
+              }
+            </td>
+          </tr>
+          @if (expandedJobIds.Contains(job.Id))
+          {
+            <tr @key="@($"{job.Id}-detail")" class="sp-job-detail">
+              <td colspan="7">
+                <div class="sp-job-detail-grid">
+                  <div class="sp-job-detail-cards">
+                    <div class="sp-panel sp-job-detail-card">
+                      <div class="sp-job-detail-card-title">Job</div>
+                      <div><span class="sp-job-detail-label">ID</span>@(job.Id)</div>
+                      <div><span class="sp-job-detail-label">Content Type</span>@(job.ContentType)</div>
+                      <div><span class="sp-job-detail-label">Submitted</span>@(FormatTime.Full(job.SubmittedAt))
+                        (@(FormatTime.Ago(job.SubmittedAt)))
+                      </div>
+                    </div>
+                    @if (job.Printer is not null)
+                    {
+                      <div class="sp-panel sp-job-detail-card">
+                        <div class="sp-job-detail-card-title">Printer</div>
+                        <div><span class="sp-job-detail-label">Address</span>@(job.Printer.IpAddress)</div>
+                      </div>
+                    }
+                  </div>
+                  @if (!string.IsNullOrEmpty(job.FailureReason))
+                  {
+                    <div class="sp-alert sp-alert-danger">⚠ @(job.FailureReason)</div>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    }
+  </table>
+
+</div>
+
+@code
+{
+  private HubConnection connection = default!;
+  private List<Job> jobs = [];
+  private readonly HashSet<Guid> recentlyUpdated = [];
+  private readonly HashSet<Guid> expandedJobIds = [];
+  private readonly HashSet<Guid> fadingJobIds = [];
+
+  private void ToggleExpanded(Guid jobId)
+  {
+    if (!expandedJobIds.Add(jobId))
+      expandedJobIds.Remove(jobId);
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    var apiBaseAddress = config["ApiBaseAddress"]
+      ?? throw new InvalidOperationException("ApiBaseAddress is not configured.");
+
+    connection = new HubConnectionBuilder().WithUrl($"{apiBaseAddress}/hubs/jobs").Build();
+    connection.On<Job>("JobUpdated", HandleJobUpdate);
+
+    try
+    {
+      await connection.StartAsync();
+    }
+    catch { }
+
+    await LoadJobs();
+  }
+
+  private async Task LoadJobs()
+  {
+    jobs = (await api.Get<Job>("/PrintJob")).Match(
+      value => value.OrderByDescending(j => j.SubmittedAt).ToList(),
+      error => []
+    );
+  }
+
+  private string GetStatusClass(Job job) => job.Status switch
+  {
+    JobStatus.Failed => "sp-tag-failed",
+    JobStatus.Processing => "sp-tag-processing",
+    JobStatus.Queued => "sp-tag-queued",
+    _ => "",
+  };
+
+  private void HandleJobUpdate(Job job)
+  {
+    InvokeAsync(async () =>
+    {
+      int idx = jobs.FindIndex(j => j.Id == job.Id);
+
+      if (job.Status is JobStatus.Completed or JobStatus.Cancelled)
+      {
+        if (idx >= 0)
+          await FadeAndRemoveJob(job.Id);
+
+        return;
+      }
+
+      if (idx >= 0)
+      {
+        jobs[idx] = job;
+      }
+      else
+      {
+        int insertAt = jobs.FindIndex(j => j.SubmittedAt < job.SubmittedAt);
+        jobs.Insert(insertAt < 0 ? jobs.Count : insertAt, job);
+      }
+
+      recentlyUpdated.Add(job.Id);
+      _ = ClearRecentlyUpdated(job.Id);
+
+      StateHasChanged();
+    });
+  }
+
+  private async Task FadeAndRemoveJob(Guid jobId)
+  {
+    fadingJobIds.Add(jobId);
+    StateHasChanged();
+    await Task.Delay(500);
+    jobs.RemoveAll(j => j.Id == jobId);
+    fadingJobIds.Remove(jobId);
+    StateHasChanged();
+  }
+
+  private async Task CancelJob(Guid jobId) => await api.Delete($"/PrintJob/{jobId}");
+
+  private async Task ClearRecentlyUpdated(Guid jobId)
+  {
+    await Task.Delay(1100);
+    recentlyUpdated.Remove(jobId);
+    await InvokeAsync(StateHasChanged);
+  }
+
+  public async ValueTask DisposeAsync() => await connection.DisposeAsync();
+}
+
