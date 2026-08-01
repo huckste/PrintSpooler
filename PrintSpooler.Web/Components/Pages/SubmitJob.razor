@@ -1,11 +1,11 @@
 @page "/submit-job"
-@rendermode InteractiveServer
 @using PrintSpooler.Core.Models
-@inject IHttpClientFactory httpClientFactory
+@using PrintSpooler.Web.Services
+@inject ApiClient api
 
 <PageTitle>Submit Job</PageTitle>
 
-<div class="submit-card">
+<div class="sp-panel submit-card">
   <div class="submit-card-header">
     <span class="submit-card-title">SUBMIT://PRINT_JOB</span>
     <span class="submit-card-id">JOB_NEW</span>
@@ -14,17 +14,16 @@
   <div class="submit-card-body">
     <div class="sp-form-group">
       <label class="sp-label">⎙ Destination Printer</label>
-      <div class="@(isSubmitting && !PrinterSelected && printerState == PrinterLoadState.Ready ? "sp-invalid" : "")">
+      <div class="@(isSubmitting && !PrinterSelected && printerState is PrinterLoadState.Ready ? "sp-invalid" : "")">
         @if (printerState == PrinterLoadState.Ready)
         {
           <SpSelect TValue="Guid" @bind-Value="selectedPrinter" Options="printerOptions"
                     Placeholder="-- select printer --" />
         }
-        else if (printerState == PrinterLoadState.Empty || printerState == PrinterLoadState.Failed || printerState ==
-        PrinterLoadState.Retry)
+        else if (printerState is PrinterLoadState.Empty or PrinterLoadState.Failed or PrinterLoadState.Retry)
         {
-          <div class="sp-alert sp-alert-danger sp-alert-inline">@(printerState == PrinterLoadState.Empty ? "no printers found" : printerState == PrinterLoadState.Retry ? "retrying..." : "failed to load printers")
-            @if (printerState == PrinterLoadState.Retry)
+          <div class="sp-alert sp-alert-danger sp-alert-inline">@(printerState is PrinterLoadState.Empty ? "no printers found" : printerState == PrinterLoadState.Retry ? "retrying..." : "failed to load printers")
+            @if (printerState is PrinterLoadState.Retry)
             {
               <div class="sp-spinner sp-spinner-danger"></div>
             }
@@ -53,60 +52,58 @@
               @if (entry.Status == FileStatus.Failed)
               {
                 <button class="sp-file-entry-err" @onclick="() => entry.ShowError = !entry.ShowError">@(!entry.ShowError ?
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               $"view error ({(@entry.ErrorCode)})" : "close error")
-                </button>
-              }
+                                $"view error ({entry.ErrorCode})" : "close error")</button>
+                }
 
               else if (entry.Status == FileStatus.Success)
-              {
-                <span class="sp-file-entry-icon success">✓</span>
-              }
-              else if (entry.Status == FileStatus.Submitting)
-              {
-                <div class="sp-spinner"></div>
-              }
-              else
-              {
-                <button class="sp-file-entry-remove" @onclick="() => FadeAndRemove(entry)">x</button>
-              }
+                {
+                  <span class="sp-file-entry-icon success">✓</span>
+                }
+                else if (entry.Status == FileStatus.Submitting)
+                {
+                  <div class="sp-spinner"></div>
+                }
+                else
+                {
+                  <button class="sp-file-entry-remove" @onclick="() => FadeAndRemove(entry)">x</button>
+                }
 
-            </div>
-            @if (entry.ShowError && entry.ErrorMessage is not null)
-            {
-              <div class="sp-file-entry-error">@entry.ErrorMessage</div>
-              <div class="sp-file-entry-error-actions"><button class="sp-file-entry-error-remove"
-                                                                 @onclick="() => FadeAndRemove(entry)">remove</button> </div>
-              }
-            </div>
+              </div>
+              @if (entry.ShowError && entry.ErrorMessage is not null)
+              {
+                <div class="sp-file-entry-error">@entry.ErrorMessage</div>
+                <div class="sp-file-entry-error-actions"><button class="sp-file-entry-error-remove"
+                                                                   @onclick="() => FadeAndRemove(entry)">remove</button> </div>
+                }
+              </div>
+            }
+          </div>
+
+          <InputFile id="fileInput" multiple OnChange="HandleFileSelected" style="display:none;" />
+        </div>
+      </div>
+      <div class="submit-card-footer">
+        @if (HasFailedEntries)
+        {
+          <div class="sp-btn-group"> <button class="sp-btn sp-btn-primary" @onclick="RetryFailed">retry
+            failed</button><button class="sp-btn sp-btn-danger" @onclick="ClearFailed">clear failed</button></div>
+
+          }
+        else
+          {
+            <button class="sp-btn sp-btn-primary"
+                    disabled="@(IsInFlight || isSubmitting || printerState != PrinterLoadState.Ready)" @onclick="HandleSubmitFile">
+              @(!IsInFlight ? "▶ Send to Queue" : "Sending")
+            </button>
           }
         </div>
-
-        <InputFile id="fileInput" multiple OnChange="HandleFileSelected" style="display:none;" />
       </div>
-    </div>
-    <div class="submit-card-footer">
-      @if (HasFailedEntries)
-      {
-        <div class="sp-btn-group"> <button class="sp-btn sp-btn-primary" @onclick="RetryFailed">retry
-          failed</button><button class="sp-btn sp-btn-danger" @onclick="ClearFailed">clear failed</button></div>
-
-        }
-        else
-        {
-          <button class="sp-btn sp-btn-primary"
-                  disabled="@(IsInFlight || isSubmitting || printerState != PrinterLoadState.Ready)" @onclick="HandleSubmitFile">
-            @(!IsInFlight ? "▶ Send to Queue" : "Sending")
-          </button>
-        }
-      </div>
-    </div>
 
 @code {
   private const string submittedBy = "dashboard-user";
   private List<Printer> printers = [];
   private List<SpSelectOption<Guid>> printerOptions = [];
   private Guid selectedPrinter;
-  private HttpClient client = default!;
   private List<FileEntry> selectedFiles = [];
   private bool isSubmitting;
   private PrinterLoadState printerState = PrinterLoadState.Ready;
@@ -150,9 +147,7 @@
 
   protected override async Task OnInitializedAsync()
   {
-    client = httpClientFactory.CreateClient("PrintSpoolerApi");
     await LoadPrinters();
-
   }
 
   private async Task LoadPrinters()
@@ -164,24 +159,18 @@
       await Task.Delay(500);
     }
 
-    try
+    (await api.Get<Printer>("/Printer")).Switch(
+printers =>
     {
-      printers = await client.GetFromJsonAsync<List<Printer>>("/Printer") ?? [];
-
       printerOptions = printers
                     .Select(p => new SpSelectOption<Guid> { Value = p.Id, Label = p.Name })
                     .ToList();
 
-    }
-    catch
-    {
-      printerState = PrinterLoadState.Failed;
-      return;
-    }
-
-    printerState = printerOptions.Count > 0 ? PrinterLoadState.Ready : PrinterLoadState.Empty;
-
-
+      printerState = printerOptions.Count > 0 ? PrinterLoadState.Ready : PrinterLoadState.Empty;
+    },
+error =>
+      printerState = PrinterLoadState.Failed
+    );
   }
 
   private async Task RetryFailed()
@@ -267,40 +256,31 @@
     entry.Status = FileStatus.Submitting;
     await InvokeAsync(StateHasChanged);
 
-    try
+    var result = await api.Post<Job>("/PrintJob", new
     {
-      var response = await client.PostAsJsonAsync("/PrintJob", new
-      {
-        FileName = entry.Name,
-        ContentType = entry.ContentType,
-        RawData = entry.Data,
-        SubmittedBy = submittedBy,
-        PrinterId = selectedPrinter
-      });
+      FileName = entry.Name,
+      ContentType = entry.ContentType,
+      RawData = entry.Data,
+      SubmittedBy = submittedBy,
+      PrinterId = selectedPrinter
+    });
 
-      if (response.IsSuccessStatusCode)
-      {
-        entry.Status = FileStatus.Success;
-        await InvokeAsync(StateHasChanged);
-        await Task.Delay(800);
-        await FadeAndRemove(entry);
-      }
-      else
-      {
-        var body = await response.Content.ReadAsStringAsync();
-
-        entry.Status = FileStatus.Failed;
-        entry.ErrorMessage = $"✗ Error {(int)response.StatusCode}: {body}";
-        entry.ErrorCode = $"{(int)response.StatusCode}";
-        await InvokeAsync(StateHasChanged);
-      }
-    }
-    catch (Exception ex)
+    if (!result.IsError)
     {
-      entry.Status = FileStatus.Failed;
-      entry.ErrorMessage = $"✗ {ex.Message}";
-      entry.ErrorCode = "refused";
+      entry.Status = FileStatus.Success;
       await InvokeAsync(StateHasChanged);
+      await Task.Delay(800);
+      await FadeAndRemove(entry);
+      return;
     }
+
+    var error = result.FirstError;
+
+    entry.Status = FileStatus.Failed;
+    entry.ErrorMessage = error.Code == "refused"
+      ? $"✗ {error.Description}"
+      : $"✗ Error {error.Code}: {error.Description}";
+    entry.ErrorCode = error.Code;
+    await InvokeAsync(StateHasChanged);
   }
 }

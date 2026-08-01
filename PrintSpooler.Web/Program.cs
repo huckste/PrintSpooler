@@ -1,17 +1,23 @@
 using PrintSpooler.Web.Components;
+using PrintSpooler.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
+var apiBaseAddress = builder.Configuration["ApiBaseAddress"]
+    ?? throw new InvalidOperationException("ApiBaseAddress is not configured.");
+
 builder.Services.AddHttpClient(
     "PrintSpoolerApi",
     client =>
     {
-        client.BaseAddress = new Uri("http://localhost:5164");
+        client.BaseAddress = new Uri(apiBaseAddress);
     }
 );
+
+builder.Services.AddScoped<ApiClient>();
 
 var app = builder.Build();
 

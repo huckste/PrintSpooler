@@ -230,6 +230,18 @@ Web (Blazor) → Core (planned; not wired yet)
      - `FadeAndRemove` collapses open error before fading — shared by all removal paths
      - `submittedBy` is a `const`; `client` initialized as `default!` (safe: only
        called after `OnInitializedAsync`); `IsInFlight` property gates disabled state
+     - Follow-up (not tonight): `SubmittedBy` should eventually capture the
+       originating machine, not just a username (real print-ops need "which
+       computer sent this"). Real nuance: this is Blazor **Server**, not WASM —
+       the browser request lands on the Web project, which then makes a
+       *separate* server-to-server call to Api. Capturing identity on the Api
+       side (`HttpContext.Connection.RemoteIpAddress`) would only ever see the
+       Web server's own address, never the real submitter. Must capture on the
+       Web side (where the browser connection actually lands) and pass it
+       explicitly as a field on `CreateJobRequest`. An IP address is gettable
+       this way without much work; an actual computer *name* needs
+       domain-authenticated identity (Kerberos/NTLM) — same bucket as item 7,
+       Auth, below, not a quick add on its own.
      - Printer dropdown has four load states via `PrinterLoadState` enum: `Loading`
        (muted spinner on init), `Ready` (dropdown), `Empty` (no printers found +
        retry), `Failed` (failed to load + retry), `Retry` (spinner during retry).
@@ -246,10 +258,31 @@ Web (Blazor) → Core (planned; not wired yet)
   ```
 - `Components/Shared/SpSelectOption.cs` — `SpSelectOption<TValue>` with `Value` and `Label`.
 
-## CSS Design System (`wwwroot/app.css`)
+## CSS Design System
 
 All custom classes prefixed `sp-` to avoid Bootstrap collisions. Never use Bootstrap's
 `.card`, `.alert`, `.form-group`, `.nav-link` etc. in new pages — use the `sp-` equivalents.
+
+**File structure** (split from a single `app.css` once it grew past ~870 lines):
+- `wwwroot/css/base.css` — variables, reset, html/body, scrollbar, Blazor error UI
+- `wwwroot/css/layout.css` — app shell only (sidebar, nav, top bar, content area) — not page content
+- `wwwroot/css/components.css` — real shared design-system primitives (cards, tags, buttons,
+  alerts, forms, dropdown, spinner, stat-grid, section-title) — anything meant for reuse
+  across current or future pages goes here
+- `wwwroot/css/animations.css` — every `@keyframes` block, referenced by name from wherever
+  needed. Keyframe definitions aren't subject to Blazor CSS isolation scoping (only selectors
+  are), so isolated page files can reference these global keyframes with no leakage risk
+- `Components/Pages/Queue.razor.css` / `SubmitJob.razor.css` — page-specific styles via
+  **Blazor CSS isolation**: a `Component.razor.css` file next to its `.razor` file is
+  automatically scoped (Blazor adds a `[b-xxxxxxxx]` attribute to every selector at build
+  time) so it physically cannot leak to or be affected by any other page, and auto-bundles
+  into `PrintSpooler.Web.styles.css` (already referenced in `App.razor`, no extra `<link>`
+  needed per new page). Use this for any new page's one-off styles going forward, not more
+  loose files in `wwwroot`.
+- DONE: `.sp-table-wrapper`, `.sp-job-detail-card`, `.submit-card` now compose with `.sp-panel`
+  via multi-class markup (`class="sp-panel sp-table-wrapper"`, etc.) instead of hand-repeating
+  its four base declarations. `.sp-card`/`.sp-log` still redeclare them directly since they're
+  full standalone primitives, not layout wrappers around other content — acceptable as-is.
 
 **Variables** (`--sp-*`):
 - `--sp-bg` `#0e100f` / `--sp-panel` `#151816` / `--sp-panel-alt` `#19271f`
@@ -302,6 +335,23 @@ transparent outlined buttons/tags, no filled backgrounds on interactive elements
    - Follow-up (not tonight): manual "retry a Failed job" action — needs new
      endpoint, `RetryCount` reset logic, and `JobCancellationPolicy` updated
      (currently only `Queued` jobs can be cancelled, not `Failed`)
+   - Follow-up (not tonight): no unfiltered "get all jobs" endpoint —
+     `GetAllActiveJobs()` (excludes Completed/Cancelled) covers the Queue
+     page; terminal jobs stay reachable via Audit Log rows (`JobId`) →
+     existing `GetJob(id)`, so Job Detail page doesn't need a full-table dump
+   - Follow-up (not tonight): DB retention/purge policy for Completed/Cancelled
+     job rows — table grows unbounded otherwise, real concern for a
+     long-running spooler, deferred past the portfolio-piece timeline
+   - DONE: `GetAllActiveJobs()` projects straight to `JobDisplayData`
+     (`RawData` excluded at the SQL level via `JobDisplayData.Projection`,
+     a shared `Expression<Func<Job, JobDisplayData>>`). The SignalR push in
+     `JobNotifier.JobUpdateAsync` also converts through `JobDisplayData.FromJob`
+     (compiles the same expression) before broadcasting, so job-completion
+     events no longer ship the full print file over the wire either.
+   - Follow-up (not tonight): file size on Queue page — do NOT implement as
+     "fetch `RawData.Length` on read," that's the same bloat problem above.
+     Store a dedicated `long FileSizeBytes` column instead, computed once at
+     job creation time when the bytes are already in hand.
    
 5. **Printer status / job lifecycle (planned):**
    - Store IPP job ID returned by printer on dispatch (needs `PrinterJobId`
@@ -310,6 +360,16 @@ transparent outlined buttons/tags, no filled backgrounds on interactive elements
    - Poll `Get-Job-Attributes` via SharpIppNext using stored IPP job ID to
      detect `completed`/`cancelled`/`aborted` from printer side
    - IPP is request/response only — no push, polling is correct approach
+   - Follow-up (not tonight): printer heartbeat + live error state (idle, out
+     of paper, etc.) for the dashboard. `Printer.LastHeartbeat` column already
+     exists (migrated since day one) but nothing ever writes to it — not
+     missing data, just an empty slot. Real IPP has `printer-state` +
+     `printer-state-reasons` (media-empty, toner-low, door-open...), richer
+     than the current `PrinterStatus` enum (`Online`/`Offline`/`Unknown`).
+     Both would come from the same `Get-Printer-Attributes` IPP call
+     (SharpIppNext, already in the project) — one `PrinterPoller`
+     `BackgroundService` shaped like `PrintJobWorker`, pushed live via
+     SignalR the same way `JobNotifier`/`JobHub` work for jobs tonight.
    
 6. **File transcoding pipeline (planned):**
    - Currently only JPEG works end-to-end (printer-native)
@@ -319,9 +379,30 @@ transparent outlined buttons/tags, no filled backgrounds on interactive elements
      `Get-Printer-Attributes` IPP call for `media-default`
    - Chunks of PCL raster code exist from prior PrintFlow work
 
-7. Auth (JWT + roles) — descoped, revisit if time allows
-8. Deployment — Azure App Service, App Insights, Key Vault for secrets
-9. Tests — no test project yet
+7. **Multi-printer batch submission (planned, from PrintFlow precedent):**
+   - Not a backend problem — `Job` is already inherently one-file-to-one-printer,
+     so fanning out to multiple printers is just submitting N single-printer
+     jobs via the existing `CreateJob` path, no new domain logic needed
+   - Real challenge is UI: avoid an overwhelming files×printers matrix.
+     Direction: a printer multi-select as the batch's default "broadcast
+     target," each file row can optionally override which printer(s) it
+     specifically goes to (defaulting to the broadcast selection) — mail-merge
+     style, not a full grid
+8. **Print settings — copies/paper size/duplex (planned):**
+   - Not a "compete with print drivers" problem — IPP already standardizes
+     these as job attributes (`copies`, `media`, `sides` for duplex,
+     `orientation-requested`, `print-quality`), which is the whole reason
+     IPP/SharpIppNext was chosen over `System.Drawing.Printing` in the first
+     place. Moderate extension of existing dispatch code, not new territory.
+   - Genuinely hard part: whether a specific printer actually honors a given
+     attribute varies by hardware — would need to query `Get-Printer-Attributes`
+     to discover supported values before exposing options in the UI
+   - Vendor-specific finishing/binding features outside IPP's standard set
+     would need real per-vendor driver work — correctly out of scope
+
+9. Auth (JWT + roles) — descoped, revisit if time allows
+10. Deployment — Azure App Service, App Insights, Key Vault for secrets
+11. Tests — no test project yet
 
 ## Claude.md maintenance
 
