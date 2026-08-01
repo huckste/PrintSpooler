@@ -1,24 +1,56 @@
 @inherits LayoutComponentBase
+@using PrintSpooler.Web.Services
+@using ErrorOr
+@implements IDisposable
+@inject ApiClient api
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
+  <div class="sidebar">
+    <NavMenu />
+  </div>
+
+  <main>
+    <div class="top-row">
+      <h1 class="page-title">Print Spooler Console</h1>
+      <span class="system-status @(response ? "" : "system-status-offline")">
+        SYSTEM
+        @(response ? " ONLINE" : " OFFLINE")
+      </span>
     </div>
 
-    <main>
-        <div class="top-row">
-            <h1 class="page-title">Print Spooler Console</h1>
-            <span class="system-status">SYSTEM ONLINE</span>
-        </div>
-
-        <article class="content">
-            @Body
-        </article>
-    </main>
+    <article class="content">
+      @Body
+    </article>
+  </main>
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">✕</span>
+  An unhandled error has occurred.
+  <a href="." class="reload">Reload</a>
+  <span class="dismiss">✕</span>
 </div>
+
+
+@code
+{
+  private bool response;
+  private PeriodicTimer timer = default!;
+
+  protected override async Task OnInitializedAsync()
+  {
+    timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+
+    while (await timer.WaitForNextTickAsync())
+    {
+      response = await api.HealthCheck().Match(
+        value => value.IsSuccessStatusCode,
+        error => false
+      );
+
+      await InvokeAsync(StateHasChanged);
+    }
+  }
+
+  public void Dispose() => timer.Dispose();
+
+}
