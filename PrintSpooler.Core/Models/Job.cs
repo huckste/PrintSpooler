@@ -4,9 +4,9 @@ public class Job
 {
     public Guid Id { get; set; }
     public Printer? Printer { get; set; }
+    public JobData? Data { get; set; }
     public required string SubmittedBy { get; set; }
     public required string FileName { get; set; }
-    public required byte[] RawData { get; set; }
     public required string ContentType { get; set; }
     public Guid PrinterId { get; set; }
     public JobStatus Status { get; set; } = JobStatus.Queued;

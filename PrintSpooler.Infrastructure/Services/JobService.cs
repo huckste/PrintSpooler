@@ -7,7 +7,8 @@ using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
 
-public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobService
+public class JobService(AppDbContext dbContext, Channel<Guid> jobChannel, IJobNotifier jobNotifier)
+    : IJobService
 {
     public async Task<ErrorOr<Job>> CreateJob(JobCreationData data)
     {
@@ -23,13 +24,13 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
             Id = Guid.NewGuid(),
             SubmittedBy = data.SubmittedBy,
             FileName = data.FileName,
-            RawData = data.RawData,
             ContentType = data.ContentType,
             PrinterId = data.PrinterId,
             Printer = printer,
         };
 
         dbContext.Jobs.Add(job);
+        dbContext.JobData.Add(new JobData { Bytes = data.Bytes, JobId = job.Id });
 
         dbContext.AuditLogs.Add(
             new AuditLog
@@ -42,7 +43,7 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
         );
 
         await dbContext.SaveChangesAsync();
-        await jobChannel.Writer.WriteAsync(job);
+        await jobChannel.Writer.WriteAsync(job.Id);
 
         return job;
     }
@@ -56,6 +57,12 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
 
         return job;
     }
+
+    public async Task<List<Job>> GetAllActiveJobs() =>
+        await dbContext
+            .Jobs.Include(j => j.Printer)
+            .Where(j => j.Status != JobStatus.Cancelled && j.Status != JobStatus.Completed)
+            .ToListAsync();
 
     public async Task<ErrorOr<Job>> CancelJob(Guid id)
     {
@@ -85,6 +92,7 @@ public class JobService(AppDbContext dbContext, Channel<Job> jobChannel) : IJobS
         );
 
         await dbContext.SaveChangesAsync();
+        await jobNotifier.JobUpdateAsync(job, CancellationToken.None);
 
         return job;
     }

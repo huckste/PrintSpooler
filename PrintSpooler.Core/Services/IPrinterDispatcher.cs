@@ -5,5 +5,5 @@ namespace PrintSpooler.Core.Services;
 
 public interface IPrinterDispatcher
 {
-    Task<ErrorOr<Success>> SendAsync(Job job, CancellationToken ct);
+    Task<ErrorOr<Success>> SendAsync(Job job, byte[]? jobData, CancellationToken ct);
 }

@@ -19,7 +19,7 @@ public class PrintJobController(IJobService jobService) : ControllerBase
                 {
                     PrinterId = jobRequest.PrinterId,
                     SubmittedBy = jobRequest.SubmittedBy,
-                    RawData = jobRequest.RawData,
+                    Bytes = jobRequest.RawData,
                     ContentType = jobRequest.ContentType,
                     FileName = jobRequest.FileName,
                 }
@@ -37,6 +37,9 @@ public class PrintJobController(IJobService jobService) : ControllerBase
             .GetJob(id)
             .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
     }
+
+    [HttpGet(Name = "GetAllActivePrintJob")]
+    public async Task<IActionResult> Get() => Ok(await jobService.GetAllActiveJobs());
 
     [HttpDelete("{id}", Name = "CancelPrintJob")]
     public async Task<IActionResult> Delete(Guid id)

@@ -2,7 +2,6 @@ using System.Threading.Channels;
 using Microsoft.EntityFrameworkCore;
 using PrintSpooler.Api.Hubs;
 using PrintSpooler.Api.Services;
-using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
 using PrintSpooler.Infrastructure.Services;
@@ -19,10 +18,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:PrintSpoolerDb"])
 );
 
+builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
+
 builder.Services.AddSingleton<IPrinterDispatcher, PrinterDispatcher>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IPrinterService, PrinterService>();
-builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Job>());
+builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Guid>());
 builder.Services.AddHostedService<PrintJobWorker>();
 builder.Services.AddSingleton<IJobNotifier, JobNotifier>();
 builder.Services.AddSignalR();
@@ -41,5 +42,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();

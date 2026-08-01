@@ -10,12 +10,15 @@ public class PrinterDispatcher : IPrinterDispatcher
 {
     private readonly SharpIppClient _client = new();
 
-    public async Task<ErrorOr<Success>> SendAsync(Job job, CancellationToken ct)
+    public async Task<ErrorOr<Success>> SendAsync(Job job, byte[]? jobData, CancellationToken ct)
     {
         if (job.Printer is null)
             return Error.Unexpected("Job.Unexpected", $"Printer can not have a value of null");
 
-        using var stream = new MemoryStream(job.RawData);
+        if (jobData is null)
+            return Error.NotFound("Job.MissingBytes", $"Job data can not be null");
+
+        using var stream = new MemoryStream(jobData);
 
         var request = new PrintJobRequest
         {
