@@ -1,0 +1,64 @@
+/* ═══════════════════════════════════════════════════════════
+   PRINT SPOOLER — Base
+   Variables, reset, root element defaults. Everything else depends on this.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+    --sp-bg:            #0e100f;
+    --sp-panel:         #151816;
+    --sp-panel-alt:     #19271f;
+    --sp-border:        #1c693b;
+    --sp-border-subtle: #1e2b22;
+    --sp-green:         #4afa8a;
+    --sp-green-dim:     #42d477;
+    --sp-text:          #e5eae6;
+    --sp-muted:         #67736a;
+    --sp-yellow:        #ffc857;
+    --sp-red:           #ff5c5c;
+    --sp-mono:          'Cascadia Code', 'Courier New', Courier, monospace;
+    --sp-radius:        3px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+h1:focus { outline: none; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--sp-bg);
+    color: var(--sp-text);
+    font-family: var(--sp-mono);
+    font-size: 17px;
+    line-height: 1.6;
+    font-variant-ligatures: common-ligatures contextual;
+    font-feature-settings: "calt" 1, "liga" 1;
+}
+
+::-webkit-scrollbar              { width: 4px; }
+::-webkit-scrollbar-track        { background: transparent; }
+::-webkit-scrollbar-thumb        { background: var(--sp-border-subtle); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover  { background: var(--sp-border); }
+
+.blazor-error-boundary {
+    background: transparent;
+    border: 1px solid var(--sp-red);
+    color: var(--sp-red);
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8rem;
+    border-radius: var(--sp-radius);
+}
+
+.blazor-error-boundary::after { content: "An error has occurred." }
+
+#blazor-error-ui {
+    display: none;
+    background: var(--sp-panel);
+    color: var(--sp-red);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid var(--sp-red);
+}

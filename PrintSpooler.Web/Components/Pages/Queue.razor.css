@@ -1,0 +1,192 @@
+/* Scoped to Queue.razor via Blazor CSS isolation — these selectors
+   can't leak to or be affected by any other page. */
+
+/* ── Job queue table ─────────────────────────────────────── */
+
+.sp-table-wrapper {
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+.sp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-family: var(--sp-mono);
+    font-size: 0.78rem;
+}
+
+.sp-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    text-align: left;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sp-green);
+    font-weight: normal;
+    background: var(--sp-panel);
+    border-bottom: 1px solid var(--sp-border);
+    white-space: nowrap;
+}
+
+.sp-table thead th.sp-table-status,
+.sp-table thead th.sp-table-num,
+.sp-table thead th.sp-table-action {
+    text-align: center;
+}
+
+.sp-table tbody tr {
+    transition: background 0.4s ease;
+    animation: sp-row-in 0.3s ease backwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+.sp-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sp-table tbody tr:hover {
+    background: var(--sp-panel-alt);
+}
+
+.sp-table tbody tr.sp-row-updated {
+    animation: sp-row-in 0.3s ease backwards, sp-row-flash 1.1s ease;
+    animation-delay: calc(var(--i, 0) * 40ms), 0s;
+}
+
+.sp-table tbody tr.sp-row-fading {
+    animation: sp-entry-out 0.5s ease forwards;
+}
+
+.sp-table td {
+    padding: 0.3rem 0.9rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid var(--sp-border-subtle);
+}
+
+.sp-table td.sp-table-status,
+.sp-table td.sp-table-num,
+.sp-table td.sp-table-action {
+    text-align: center;
+}
+
+.sp-table td.sp-table-action .sp-spinner {
+    margin: 0 auto;
+}
+
+.sp-table .sp-tag {
+    display: inline;
+    border: none;
+    padding: 0;
+    background: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.sp-table tbody tr.sp-row-clickable {
+    cursor: pointer;
+}
+
+.sp-table tbody tr.sp-empty-row {
+    animation: none;
+}
+
+.sp-table tbody tr.sp-empty-row:hover {
+    background: none;
+}
+
+.sp-empty-row td {
+    text-align: center;
+    white-space: normal;
+    color: var(--sp-muted);
+    padding: 1.2rem 0.9rem;
+    animation: sp-fade-in 0.4s ease;
+}
+
+/* ── Job row content ─────────────────────────────────────── */
+
+.sp-job-file {
+    color: var(--sp-text);
+}
+
+.sp-job-meta {
+    color: var(--sp-muted);
+}
+
+.sp-job-printer {
+    color: var(--sp-muted);
+    font-size: 0.82rem;
+}
+
+/* ── Expanded detail panel ───────────────────────────────── */
+
+.sp-job-detail td {
+    background: var(--sp-bg);
+    padding: 0.9rem 1.25rem;
+    white-space: normal;
+    overflow: visible;
+    border-left: 2px solid var(--sp-border);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.sp-job-detail-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--sp-text);
+    animation: sp-detail-in 0.2s ease;
+}
+
+.sp-job-detail-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.sp-job-detail-card {
+    flex: 1 1 180px;
+    min-width: 0;
+    padding: 0.6rem 0.9rem;
+    overflow-wrap: break-word;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sp-job-detail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.sp-job-detail-card-title {
+    color: var(--sp-green);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.35rem;
+    border-bottom: 1px solid var(--sp-border-subtle);
+}
+
+.sp-job-detail-card div + div {
+    margin-top: 0.3rem;
+}
+
+.sp-job-detail-label {
+    color: var(--sp-green);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.sp-job-detail-label::after {
+    content: ' => ';
+    color: var(--sp-muted);
+    letter-spacing: normal;
+}

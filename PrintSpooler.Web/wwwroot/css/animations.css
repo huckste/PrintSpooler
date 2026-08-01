@@ -1,0 +1,50 @@
+/* ═══════════════════════════════════════════════════════════
+   PRINT SPOOLER — Animations
+   Every @keyframes block, in one place. Referenced by name from
+   global or page-isolated CSS alike — keyframe definitions aren't
+   subject to Blazor's CSS isolation scoping, only selectors are,
+   so this file being "global" doesn't leak any actual styling.
+   ═══════════════════════════════════════════════════════════ */
+
+@keyframes sp-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+}
+
+@keyframes sp-shake {
+    0%, 100% { transform: translateX(0);    }
+    20%       { transform: translateX(-5px); }
+    40%       { transform: translateX(5px);  }
+    60%       { transform: translateX(-5px); }
+    80%       { transform: translateX(5px);  }
+}
+
+@keyframes sp-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes sp-entry-out {
+    0%   { opacity: 1; max-height: 60px; margin-bottom: 2px; }
+    60%  { opacity: 0; max-height: 60px;                     }
+    100% { opacity: 0; max-height: 0;    margin-bottom: 0; padding: 0; }
+}
+
+@keyframes sp-row-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sp-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes sp-row-flash {
+    0%   { background: rgba(74, 250, 138, 0.22); }
+    100% { background: transparent; }
+}
+
+@keyframes sp-detail-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

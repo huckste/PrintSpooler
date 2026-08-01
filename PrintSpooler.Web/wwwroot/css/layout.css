@@ -1,0 +1,115 @@
+/* ═══════════════════════════════════════════════════════════
+   PRINT SPOOLER — Layout
+   App shell: sidebar, nav, top bar, content area. Not page content.
+   ═══════════════════════════════════════════════════════════ */
+
+.page {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 200px;
+    min-width: 200px;
+    background: var(--sp-bg);
+    border-right: 1px solid var(--sp-border-subtle);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--sp-border-subtle);
+}
+
+.top-row a { display: none; }
+
+.top-row .page-title {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--sp-muted);
+    letter-spacing: 0.1em;
+    font-weight: normal;
+}
+
+.system-status {
+    font-size: 0.72rem;
+    color: var(--sp-green);
+    letter-spacing: 0.12em;
+}
+
+.system-status-offline {
+    color: var(--sp-red);
+}
+
+.system-status::before {
+    content: '● ';
+}
+
+.system-status:not(.system-status-offline)::before {
+    animation: sp-pulse 2.4s ease-in-out infinite;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.nav-brand {
+    color: var(--sp-green);
+    font-size: 0.9rem;
+    padding: 0 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--sp-border-subtle);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.nav-scrollable { flex: 1; }
+
+.nav-scrollable nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.75rem;
+    gap: 2px;
+}
+
+/* sp-nav-* avoids Bootstrap .nav-item / .nav-link collision */
+.sp-nav-item { padding: 0; }
+
+.sp-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    color: var(--sp-muted);
+    font-size: 0.82rem;
+    text-decoration: none;
+    border-radius: var(--sp-radius);
+    letter-spacing: 0.05em;
+    transition: color 0.1s, background 0.1s;
+}
+
+.sp-nav-link:hover         { color: var(--sp-text);  background: var(--sp-panel); }
+.sp-nav-link.active        { color: var(--sp-green); background: var(--sp-panel); }
+
+.nav-icon {
+    color: var(--sp-green);
+    display: inline-block;
+    width: 1.4rem;
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1;
+    vertical-align: middle;
+}
