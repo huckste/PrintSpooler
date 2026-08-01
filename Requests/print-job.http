@@ -33,19 +33,7 @@ GET http://localhost:5164/PrintJob/
 GET http://localhost:5164/health
 
 ### logs
-GET http://localhost:5164/Logs
-Content-Type: application/json
-
-{
-  searchTerms =  null,
-  dateFrom = null,
-  DateTo = null,
-  ActionFilter = null,
-  PerformedBy = null,
-  Page = 1;
-  PageSize  = 50;
-}
-
+GET http://localhost:5164/Logs?actionFilter=Created&performedBy=User&page=2&pageSize=5
 
 ### Cancel a job (valid job)
 DELETE http://localhost:5164/PrintJob/9085a148-7ecf-4b73-8099-b8eaace95324
