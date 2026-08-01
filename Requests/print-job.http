@@ -32,6 +32,19 @@ GET http://localhost:5164/PrintJob/
 ### HealthChecks
 GET http://localhost:5164/health
 
+### logs
+GET http://localhost:5164/Logs
+Content-Type: application/json
+
+{
+  searchTerms =  null,
+  dateFrom = null,
+  DateTo = null,
+  ActionFilter = null,
+  PerformedBy = null,
+  Page = 1;
+  PageSize  = 50;
+}
 
 
 ### Cancel a job (valid job)

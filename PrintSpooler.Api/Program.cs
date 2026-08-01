@@ -23,9 +23,10 @@ builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 builder.Services.AddSingleton<IPrinterDispatcher, PrinterDispatcher>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IPrinterService, PrinterService>();
-builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Guid>());
-builder.Services.AddHostedService<PrintJobWorker>();
 builder.Services.AddSingleton<IJobNotifier, JobNotifier>();
+builder.Services.AddScoped<ILogsService, LogsService>();
+builder.Services.AddHostedService<PrintJobWorker>();
+builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Guid>());
 builder.Services.AddSignalR();
 
 var app = builder.Build();

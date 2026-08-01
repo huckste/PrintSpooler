@@ -200,6 +200,20 @@ Web (Blazor) → Core (planned; not wired yet)
    Future: IPP `Cancel-Job` operation could cancel `Processing` jobs — needs
    printer-assigned IPP job ID stored on `Job` model.
 10. Local testing workflow via kulala.nvim `.http` files (`Requests/print-job.http`)
+11. `ILogsService`/`LogsService` + `GET /Logs` — backend complete, verified end-to-end.
+    `LogQueryParams` (`SearchTerms`, `DateFrom`/`DateTo` as `DateOnly?`, `ActionFilter`,
+    `PerformedBy`, `Page`, `PageSize`) bound via `[FromQuery]` on the controller action —
+    GET has no body, so complex-type params need that attribute explicitly (`[ApiController]`
+    default inference is `[FromBody]`, wrong for GET). `LogsService.GetLogs` builds an
+    `IQueryable<AuditLog>` by reassigning through each optional filter (`Where` doesn't
+    mutate — each call returns a new queryable wrapping the expression tree, so the
+    reassignment is what accumulates filters), calls `CountAsync()` on the filtered-but-unpaged
+    query for `TotalCount` (must happen before `Skip`/`Take` narrows it to one page), then
+    `Skip((Page - 1) * PageSize).Take(PageSize)` for the actual page, wrapped in `PagedResult<T>`.
+    `DateFrom`/`DateTo` filter independently (not both-required), so "from X onward" with no
+    end date works. Whole DB block wrapped in try/catch → `Error.Unexpected` on failure
+    (EF's `ToListAsync()` never returns `null` — that's not a valid failure signal, an
+    exception is). Frontend (Audit Log dashboard page) not started — see item 4 below.
 
 ## What's NOT built yet (planned, in likely order)
 
@@ -330,7 +344,9 @@ transparent outlined buttons/tags, no filled backgrounds on interactive elements
 4. **Blazor dashboard pages (next up):**
    - Queue page (`/queue`) — job list with status tags, printer name, cancel action
    - Job detail page — full job info, audit log entries for that job
-   - Audit log page — all audit events
+   - Audit log page — all audit events. Backend (`GET /Logs`, see item 11 above) is
+     done; this is frontend-only work — search box, filter dropdowns (Action,
+     PerformedBy), date range pickers, pagination controls
    - Printer list / home page (`/`) — registered printers
    - Follow-up (not tonight): manual "retry a Failed job" action — needs new
      endpoint, `RetryCount` reset logic, and `JobCancellationPolicy` updated
