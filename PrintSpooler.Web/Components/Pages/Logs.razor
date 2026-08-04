@@ -1,0 +1,219 @@
+@page "/logs"
+@using PrintSpooler.Core.Models
+@using PrintSpooler.Web.Services;
+@inject ApiClient api
+@inject IConfiguration config
+@implements IDisposable
+
+<PageTitle>Logs</PageTitle>
+
+<div class="sp-logs-toolbar">
+  <div class="sp-search">
+    <span class="sp-search-icon"></span>
+    <input class="sp-search-input" type="text" placeholder="Search details..." value="@queryParams.SearchTerms"
+           @oninput="OnSearchChanged" />
+    <input type="date" @bind-value="@queryParams.DateFrom" @bind-value:after="OnDateChanged" />
+    <input type="date" @bind-value="@queryParams.DateTo" @bind-value:after="OnDateChanged" />
+
+  </div>
+  <div class="sp-logs-filters">
+    <SpSelect TValue="JobAction?" @bind-Value="queryParams.ActionFilter" @bind-Value:after="OnFilterChanged"
+              Options="actions" Placeholder="Any action" />
+    <SpSelect TValue="ByWho?" @bind-Value="queryParams.PerformedBy" @bind-Value:after="OnFilterChanged" Options="users"
+              Placeholder="Any user" />
+    <SpSelect TValue="SortDirection" @bind-Value="queryParams.SortDirection" @bind-Value:after="OnFilterChanged"
+              Options="sortDirection" Placeholder="Desc" />
+    <SpSelect TValue="OrderByField" @bind-Value="queryParams.OrderByField" @bind-Value:after="OnFilterChanged"
+              Options="orderBy" Placeholder="Timestamp" />
+
+  </div>
+</div>
+
+<div class="sp-panel sp-table-wrapper">
+  <table class="sp-table">
+    <colgroup>
+      <col style="width: 120px" />
+      <col style="width: 100px" />
+      <col style="width: 200px" />
+      <col />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>By</th>
+        <th>Timestamp</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    @if (logs.Items.Count < 1)
+    {
+      <tbody>
+        <tr class="sp-empty-row">
+          <td colspan="4">No Logs Found</td>
+        </tr>
+      </tbody>
+    }
+    else
+    {
+      <tbody>
+        @{
+          int i = 0;
+        }
+        @foreach (var log in logs.Items)
+        {
+
+          <tr @key="log.Id" style="--i: 
+            @(i++)" class="sp-row-clickable">
+            <td class="sp-job-file">@(log.Action)</td>
+            <td class="sp-job-file">@(log.PerformedBy)</td>
+            <td class="sp-job-file">@(log.Timestamp)</td>
+            <td class="sp-job-file">@(log.Details)</td>
+          </tr>
+        }
+      </tbody>
+    }
+  </table>
+</div>
+
+<div>
+  <p class="sp-label">Page @(logs.Page) of @(logs.TotalPages)</p>
+  <button class="sp-btn sp-btn-danger" disabled="@(!isPrevLoaded)"
+          @onclick="() => HandlePages(PageDirection.Prev)">prev</button>
+  <button class="sp-btn sp-btn-primary" disabled="@(!isNextLoaded)"
+          @onclick="() => HandlePages(PageDirection.Next)">next</button>
+</div>
+
+@code
+{
+  private CancellationTokenSource? searchCts;
+  private List<SpSelectOption<JobAction?>> actions = [];
+  private List<SpSelectOption<ByWho?>> users = [];
+  private List<SpSelectOption<OrderByField>> orderBy = [];
+  private List<SpSelectOption<SortDirection>> sortDirection = [];
+
+  private bool isNextLoaded = true;
+  private bool isPrevLoaded = false;
+  private LogQueryParams queryParams = new();
+  private PagedResult<AuditLog> logs = new()
+  {
+    Items = [],
+  };
+
+  protected override async Task OnInitializedAsync()
+  {
+    actions = GetEnumOptions<JobAction>().Select(o => new SpSelectOption<JobAction?>
+    {
+      Value = o.Value,
+      Label = o.Label
+    }).ToList();
+
+    users = GetEnumOptions<ByWho>().Select(o => new SpSelectOption<ByWho?> { Value = o.Value, Label = o.Label }).ToList();
+    orderBy = GetEnumOptions<OrderByField>();
+    sortDirection = GetEnumOptions<SortDirection>();
+    await LoadLogs();
+  }
+
+  private List<SpSelectOption<T>> GetEnumOptions<T>() where T : struct, Enum
+  {
+    return Enum.GetNames(typeof(T)).Select(s => new SpSelectOption<T>
+    {
+      Value = (T)Enum.Parse(typeof(T), s),
+      Label = s
+    }).ToList();
+
+  }
+
+  private async Task LoadLogs()
+  {
+
+    logs = (await api.Get<PagedResult<AuditLog>, LogQueryParams>("/Logs", queryParams)).Match(
+      value => value,
+      error => new() { Items = [], }
+    );
+
+  }
+
+  private async Task HandlePages(PageDirection? direction)
+  {
+    switch (direction)
+    {
+      case PageDirection.Prev:
+        isPrevLoaded = false;
+
+        if (queryParams.Page == 1)
+          return;
+
+        queryParams.Page--;
+
+        break;
+      case PageDirection.Next:
+        isNextLoaded = false;
+
+        if (queryParams.Page == logs.TotalPages)
+          return;
+
+        queryParams.Page++;
+        break;
+      default:
+        isPrevLoaded = queryParams.Page == 1 ? false : true;
+        isNextLoaded = logs.TotalPages <= 1 ? false : true;
+        return;
+    }
+
+    await LoadLogs();
+
+    isPrevLoaded = queryParams.Page != 1 ? true : false;
+    isNextLoaded = queryParams.Page != logs.TotalPages ? true : false;
+  }
+
+  private async Task OnDateChanged()
+  {
+    queryParams.Page = 1;
+    await LoadLogs();
+  }
+
+  private async Task OnFilterChanged()
+  {
+    queryParams.Page = 1;
+
+    await LoadLogs();
+    await HandlePages(null);
+  }
+
+  private void OnSearchChanged(ChangeEventArgs e)
+  {
+    queryParams.SearchTerms = e.Value?.ToString();
+
+    searchCts?.Cancel();
+    searchCts = new CancellationTokenSource();
+    var token = searchCts.Token;
+
+    // can throw an exception in rare cases but its ignored as the result is discarded
+    _ = Task.Run(async () =>
+    {
+      await Task.Delay(350, token);
+
+      if (token.IsCancellationRequested) return;
+
+      await InvokeAsync(async () =>
+      {
+
+        queryParams.Page = 1;
+        await LoadLogs();
+        StateHasChanged();
+      });
+
+    });
+  }
+
+  private enum PageDirection
+  {
+    Next,
+    Prev
+  }
+
+  public void Dispose()
+  {
+    searchCts?.Cancel();
+  }
+}

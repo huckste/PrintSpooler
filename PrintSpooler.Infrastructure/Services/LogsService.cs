@@ -29,6 +29,22 @@ public class LogsService(AppDbContext dbContext) : ILogsService
         if (queryParams.DateTo != null)
             query = query.Where(l => DateOnly.FromDateTime(l.Timestamp) <= queryParams.DateTo);
 
+        query = queryParams.OrderByField switch
+        {
+            OrderByField.JobAction => queryParams.SortDirection == SortDirection.Desc
+                ? query.OrderByDescending(l => l.Action)
+                : query.OrderBy(l => l.Action),
+            OrderByField.ByWho => queryParams.SortDirection == SortDirection.Desc
+                ? query.OrderByDescending(l => l.PerformedBy)
+                : query.OrderBy(l => l.PerformedBy),
+            OrderByField.Details => queryParams.SortDirection == SortDirection.Desc
+                ? query.OrderByDescending(l => l.Details)
+                : query.OrderBy(l => l.Details),
+            _ => queryParams.SortDirection == SortDirection.Desc
+                ? query.OrderByDescending(l => l.Timestamp)
+                : query.OrderBy(l => l.Timestamp),
+        };
+
         try
         {
             var rowCount = await query.CountAsync();
