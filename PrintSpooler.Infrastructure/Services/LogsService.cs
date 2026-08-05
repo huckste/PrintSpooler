@@ -17,6 +17,9 @@ public class LogsService(AppDbContext dbContext) : ILogsService
                 l.Details != null && l.Details.Contains(queryParams.SearchTerms)
             );
 
+        if (queryParams.JobId != null)
+            query = query.Where(l => l.JobId == queryParams.JobId);
+
         if (queryParams.PerformedBy != null)
             query = query.Where(l => l.PerformedBy == queryParams.PerformedBy);
 
