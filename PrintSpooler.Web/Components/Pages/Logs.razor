@@ -3,84 +3,163 @@
 @using PrintSpooler.Web.Services;
 @inject ApiClient api
 @inject IConfiguration config
+@inject IJSRuntime js
 @implements IDisposable
 
 <PageTitle>Logs</PageTitle>
 
 <div class="sp-logs-toolbar">
   <div class="sp-search">
-    <span class="sp-search-icon"></span>
-    <input class="sp-search-input" type="text" placeholder="Search details..." value="@queryParams.SearchTerms"
-           @oninput="OnSearchChanged" />
-    <input type="date" @bind-value="@queryParams.DateFrom" @bind-value:after="OnDateChanged" />
-    <input type="date" @bind-value="@queryParams.DateTo" @bind-value:after="OnDateChanged" />
-
+    <div class="sp-search-input-wrap">
+      <span class="sp-search-icon"></span>
+      <input class="sp-search-input" type="text" placeholder="Search details..." value="@queryParams.SearchTerms"
+             @oninput="OnSearchChanged" />
+    </div>
   </div>
+
+  @if (queryParams.JobId is Guid activeJobId)
+  {
+    <div class="sp-job-filter-chip" title="@activeJobId">
+      <span>Job: @activeJobId.ToString()[..8]</span>
+      <button type="button" class="sp-file-entry-remove" @onclick="ClearJobIdFilter">×</button>
+    </div>
+  }
+
   <div class="sp-logs-filters">
-    <SpSelect TValue="JobAction?" @bind-Value="queryParams.ActionFilter" @bind-Value:after="OnFilterChanged"
-              Options="actions" Placeholder="Any action" />
-    <SpSelect TValue="ByWho?" @bind-Value="queryParams.PerformedBy" @bind-Value:after="OnFilterChanged" Options="users"
-              Placeholder="Any user" />
-    <SpSelect TValue="SortDirection" @bind-Value="queryParams.SortDirection" @bind-Value:after="OnFilterChanged"
-              Options="sortDirection" Placeholder="Desc" />
-    <SpSelect TValue="OrderByField" @bind-Value="queryParams.OrderByField" @bind-Value:after="OnFilterChanged"
-              Options="orderBy" Placeholder="Timestamp" />
+    <div class="sp-dropdown">
+      <div class="sp-dropdown-trigger" @onclick="ToggleFilters">
+        <span>Filters</span>
+        <span class="sp-dropdown-arrow @(isFiltersOpen ? "open" : "")">▾</span>
+      </div>
 
+      @if (isFiltersOpen)
+      {
+        <div class="sp-dropdown-backdrop" @onclick="CloseFilters"></div>
+        <div class="sp-dropdown-menu sp-filters-panel">
+          <div class="sp-form-group">
+            <label class="sp-label">Action</label>
+            <SpSelect TValue="JobAction?" @bind-Value="queryParams.ActionFilter" @bind-Value:after="OnFilterChanged"
+                      Options="actions" Placeholder="Any" />
+          </div>
+          <div class="sp-form-group">
+            <label class="sp-label">Performed By</label>
+            <SpSelect TValue="ByWho?" @bind-Value="queryParams.PerformedBy" @bind-Value:after="OnFilterChanged"
+                      Options="users" Placeholder="Any" />
+          </div>
+          <div class="sp-form-group">
+            <label class="sp-label">Sort</label>
+            <SpSelect TValue="SortDirection" @bind-Value="queryParams.SortDirection" @bind-Value:after="OnFilterChanged"
+                      Options="sortDirection" Placeholder="Desc" />
+          </div>
+          <div class="sp-form-group">
+            <label class="sp-label">Order By</label>
+            <SpSelect TValue="OrderByField" @bind-Value="queryParams.OrderByField" @bind-Value:after="OnFilterChanged"
+                      Options="orderBy" Placeholder="Timestamp" />
+          </div>
+          <div class="sp-form-group">
+            <label class="sp-label">Date From</label>
+            <div class="sp-filter-date-wrap">
+              <button type="button" class="sp-filter-date" onclick="this.nextElementSibling.showPicker()">
+                @(queryParams.DateFrom?.ToString("yyyy-MM-dd") ?? "Any")
+              </button>
+              <input type="date" class="sp-filter-date-hidden" @bind-value="@queryParams.DateFrom"
+                     @bind-value:after="OnFilterChanged" />
+            </div>
+          </div>
+          <div class="sp-form-group">
+            <label class="sp-label">Date To</label>
+            <div class="sp-filter-date-wrap">
+              <button type="button" class="sp-filter-date" onclick="this.nextElementSibling.showPicker()">
+                @(queryParams.DateTo?.ToString("yyyy-MM-dd") ?? "Any")
+              </button>
+              <input type="date" class="sp-filter-date-hidden" @bind-value="@queryParams.DateTo"
+                     @bind-value:after="OnFilterChanged" />
+            </div>
+          </div>
+          <div class="sp-filters-reset">
+            <button type="button" class="sp-btn sp-btn-secondary" @onclick="ResetFilter">Reset all</button>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 </div>
 
-<div class="sp-panel sp-table-wrapper">
-  <table class="sp-table">
-    <colgroup>
-      <col style="width: 120px" />
-      <col style="width: 100px" />
-      <col style="width: 200px" />
-      <col />
-    </colgroup>
-    <thead>
-      <tr>
-        <th>Action</th>
-        <th>By</th>
-        <th>Timestamp</th>
-        <th>Details</th>
-      </tr>
-    </thead>
-    @if (logs.Items.Count < 1)
+<div class="sp-table-detail-layout">
+  <div class="sp-panel sp-table-wrapper" @ref="tableWrapperRef">
+
+    @if (showSpinner)
     {
-      <tbody>
-        <tr class="sp-empty-row">
-          <td colspan="4">No Logs Found</td>
+      <div class="sp-table-loading">
+        <div class="sp-spinner"></div>
+      </div>
+    }
+
+    <table class="sp-table @(showSpinner ? "sp-table-dimmed" : "")">
+      <colgroup>
+        <col style="width: 120px" />
+        <col style="width: 90px" />
+        <col style="width: 100px" />
+        <col style="width: 200px" />
+        <col />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Job</th>
+          <th>By</th>
+          <th>Timestamp</th>
+          <th>Details</th>
         </tr>
-      </tbody>
-    }
-    else
-    {
-      <tbody>
-        @{
-          int i = 0;
-        }
-        @foreach (var log in logs.Items)
-        {
+      </thead>
 
-          <tr @key="log.Id" style="--i: 
-            @(i++)" class="sp-row-clickable">
-            <td class="sp-job-file">@(log.Action)</td>
-            <td class="sp-job-file">@(log.PerformedBy)</td>
-            <td class="sp-job-file">@(log.Timestamp)</td>
-            <td class="sp-job-file">@(log.Details)</td>
+      @if (logs.Items.Count < 1)
+      {
+        <tbody>
+          <tr class="sp-empty-row">
+            <td colspan="5">No Logs Found</td>
           </tr>
-        }
-      </tbody>
-    }
-  </table>
-</div>
+        </tbody>
+      }
+      else
+      {
+        <tbody>
+          @{
+            int i = 0;
+          }
+          @foreach (var log in logs.Items)
+          {
+            <tr @key="log.Id" style="--i: @(i++)"
+                class="@(animateRows ? "sp-row-animate" : "") @(shownLogId == log.Id ? "sp-row-active" : "")"
+                @onmouseenter="() => OnRowHoverStart(log.Id)" @onmouseleave="OnRowHoverEnd">
+              <td class="sp-table-primary">@(log.Action)</td>
+              <td class="sp-table-muted-sm sp-table-jobid" title="@log.JobId" @onclick="() => FilterByJobId(log.JobId)"
+                  @onclick:stopPropagation="true">@(log.JobId.ToString()[..8])</td>
+              <td class="sp-table-primary">@(log.PerformedBy)</td>
+              <td class="sp-table-primary">@(log.Timestamp)</td>
+              <td class="@(log.Details is null ? "sp-table-muted" : "sp-table-primary")">@(log.Details ?? "null")</td>
+            </tr>
+          }
+        </tbody>
+      }
+    </table>
+  </div>
 
-<div>
-  <p class="sp-label">Page @(logs.Page) of @(logs.TotalPages)</p>
-  <button class="sp-btn sp-btn-danger" disabled="@(!isPrevLoaded)"
-          @onclick="() => HandlePages(PageDirection.Prev)">prev</button>
-  <button class="sp-btn sp-btn-primary" disabled="@(!isNextLoaded)"
-          @onclick="() => HandlePages(PageDirection.Next)">next</button>
+  <JobDetailCard Job="ShownJob" HasResolved="IsDetailResolved" Key="DisplayedJobId" />
+
+  <div class="sp-logs-pagination">
+    <span class="sp-table-muted">@(logs.Page) of @(logs.TotalPages)</span>
+    <div class="sp-btn-group">
+      <button class="sp-btn sp-btn-danger" disabled="@IsAtFirstPage"
+              @onclick="() => HandlePages(PageDirection.Prev)">prev</button>
+      <button class="sp-btn sp-btn-primary" disabled="@IsAtLastPage"
+              @onclick="() => HandlePages(PageDirection.Next)">next</button>
+    </div>
+    <div class="sp-logs-pagination-size">
+      <SpSelect TValue="int" @bind-Value="queryParams.PageSize" @bind-Value:after="OnFilterChanged"
+                Options="pageSizeOptions" Placeholder="50" />
+    </div>
+  </div>
 </div>
 
 @code
@@ -90,14 +169,40 @@
   private List<SpSelectOption<ByWho?>> users = [];
   private List<SpSelectOption<OrderByField>> orderBy = [];
   private List<SpSelectOption<SortDirection>> sortDirection = [];
+  private List<SpSelectOption<int>> pageSizeOptions = [];
+  private Dictionary<Guid, Job> jobCache = [];
 
-  private bool isNextLoaded = true;
-  private bool isPrevLoaded = false;
+  private Guid? shownLogId;
+  private bool hasResolvedHover;
+  private bool filterJobResolved;
+  private CancellationTokenSource? hoverCts;
+  private bool isFiltersOpen;
   private LogQueryParams queryParams = new();
   private PagedResult<AuditLog> logs = new()
   {
     Items = [],
   };
+
+  private ElementReference tableWrapperRef;
+  private bool isFirstLoadRendered;
+  private bool animateRows;
+  private bool showSpinner;
+  private CancellationTokenSource? spinnerCts;
+
+  private bool IsAtFirstPage => queryParams.Page <= 1;
+  private bool IsAtLastPage => queryParams.Page >= logs.TotalPages;
+
+  private AuditLog? ShownLog => shownLogId is Guid logId
+    ? logs.Items.FirstOrDefault(l => l.Id == logId)
+    : null;
+
+  private Guid? DisplayedJobId => queryParams.JobId ?? ShownLog?.JobId;
+
+  private bool IsDetailResolved => queryParams.JobId is not null ? filterJobResolved : hasResolvedHover;
+
+  private Job? ShownJob => DisplayedJobId is Guid jobId
+    ? jobCache.GetValueOrDefault(jobId)
+    : null;
 
   protected override async Task OnInitializedAsync()
   {
@@ -107,10 +212,71 @@
       Label = o.Label
     }).ToList();
 
-    users = GetEnumOptions<ByWho>().Select(o => new SpSelectOption<ByWho?> { Value = o.Value, Label = o.Label }).ToList();
+    users = GetEnumOptions<ByWho>().Select(o => new SpSelectOption<ByWho?>
+    {
+      Value = o.Value,
+      Label = o.Label
+    }).ToList();
+
     orderBy = GetEnumOptions<OrderByField>();
     sortDirection = GetEnumOptions<SortDirection>();
+
+    pageSizeOptions = new List<int> { 50, 100, 200 }
+      .Select(n => new SpSelectOption<int> { Value = n, Label = n.ToString() })
+      .ToList();
     await LoadLogs();
+  }
+
+  private void ToggleFilters() => isFiltersOpen = !isFiltersOpen;
+  private void CloseFilters() => isFiltersOpen = false;
+
+  private async Task ResetFilter()
+  {
+    queryParams = new LogQueryParams();
+    await LoadLogs();
+  }
+
+  private void OnRowHoverStart(Guid logId)
+  {
+    if (queryParams.JobId is not null) return;
+
+    hoverCts?.Cancel();
+    hoverCts = new CancellationTokenSource();
+    var token = hoverCts.Token;
+
+    _ = Task.Run(async () =>
+    {
+      await Task.Delay(600, token);
+      if (token.IsCancellationRequested) return;
+
+      await ResolveHoveredLog(logId, token);
+    });
+  }
+
+  private void OnRowHoverEnd() => hoverCts?.Cancel();
+
+  private async Task ResolveHoveredLog(Guid logId, CancellationToken token)
+  {
+
+    var log = logs.Items.FirstOrDefault(l => l.Id == logId);
+
+    if (log?.JobId is Guid jobId && !jobCache.ContainsKey(jobId))
+    {
+      (await api.Get<Job>("/PrintJob", jobId)).ThenDo(j =>
+      {
+        if (j is not null)
+          jobCache.TryAdd(j.Id, j);
+      });
+    }
+
+    if (token.IsCancellationRequested) return;
+
+    await InvokeAsync(() =>
+    {
+      shownLogId = logId;
+      hasResolvedHover = true;
+      StateHasChanged();
+    });
   }
 
   private List<SpSelectOption<T>> GetEnumOptions<T>() where T : struct, Enum
@@ -125,59 +291,110 @@
 
   private async Task LoadLogs()
   {
+    // The hovered row's data is scoped to this page's data — a filter/page
+    // change swaps in an entirely different set of rows, so there's nothing
+    // reliable left to point it at.
+    hoverCts?.Cancel();
+    shownLogId = null;
+    hasResolvedHover = false;
 
-    logs = (await api.Get<PagedResult<AuditLog>, LogQueryParams>("/Logs", queryParams)).Match(
-      value => value,
-      error => new() { Items = [], }
-    );
+    spinnerCts?.Cancel();
+    spinnerCts = new CancellationTokenSource();
+    var token = spinnerCts.Token;
 
+    var loadTask = api.Get<PagedResult<AuditLog>, LogQueryParams>("/Logs", queryParams);
+
+    // Only show the spinner if the request is still running after 250ms —
+    // fast (typical, local/dev) responses never show it at all, avoiding
+    // the classic "flash of loading state" on quick loads.
+    DateTime? spinnerShownAt = null;
+    if (await Task.WhenAny(loadTask, Task.Delay(250, token)) != loadTask)
+    {
+      spinnerShownAt = DateTime.UtcNow;
+      showSpinner = true;
+      StateHasChanged();
+    }
+
+    var result = await loadTask;
+
+    // Once shown, keep it up for a minimum stretch so a response landing
+    // right after doesn't cause a second, equally jarring flash-off.
+    if (spinnerShownAt is DateTime shownAt)
+    {
+      var remaining = TimeSpan.FromMilliseconds(300) - (DateTime.UtcNow - shownAt);
+      if (remaining > TimeSpan.Zero)
+        await Task.Delay(remaining);
+    }
+
+    logs = result.Match(value => value, error => new() { Items = [], });
+    showSpinner = false;
+
+    // The very first call happens inside OnInitializedAsync, before the
+    // first render — tableWrapperRef isn't bound to a real element yet,
+    // so there's nothing to scroll (and nothing to reset from anyway).
+    var isFirstLoad = !isFirstLoadRendered;
+    animateRows = isFirstLoad;
+    isFirstLoadRendered = true;
+
+    if (!isFirstLoad)
+      await js.InvokeVoidAsync("scrollElementToTop", tableWrapperRef);
   }
 
-  private async Task HandlePages(PageDirection? direction)
+  private async Task HandlePages(PageDirection direction)
   {
     switch (direction)
     {
       case PageDirection.Prev:
-        isPrevLoaded = false;
-
-        if (queryParams.Page == 1)
+        if (IsAtFirstPage)
           return;
 
         queryParams.Page--;
-
         break;
       case PageDirection.Next:
-        isNextLoaded = false;
-
-        if (queryParams.Page == logs.TotalPages)
+        if (IsAtLastPage)
           return;
 
         queryParams.Page++;
         break;
-      default:
-        isPrevLoaded = queryParams.Page == 1 ? false : true;
-        isNextLoaded = logs.TotalPages <= 1 ? false : true;
-        return;
     }
 
-    await LoadLogs();
-
-    isPrevLoaded = queryParams.Page != 1 ? true : false;
-    isNextLoaded = queryParams.Page != logs.TotalPages ? true : false;
-  }
-
-  private async Task OnDateChanged()
-  {
-    queryParams.Page = 1;
     await LoadLogs();
   }
 
   private async Task OnFilterChanged()
   {
     queryParams.Page = 1;
-
     await LoadLogs();
-    await HandlePages(null);
+  }
+
+  private async Task FilterByJobId(Guid jobId)
+  {
+    // Hover's dwell timer may already be mid-flight from the row that was
+    // just clicked — its own fetch would be redundant now that the filter
+    // pins the card directly, and a late resolve could stomp filterJobResolved.
+    hoverCts?.Cancel();
+
+    queryParams.JobId = jobId;
+    filterJobResolved = false;
+
+    if (!jobCache.ContainsKey(jobId))
+    {
+      (await api.Get<Job>("/PrintJob", jobId)).ThenDo(j =>
+      {
+        if (j is not null)
+          jobCache.TryAdd(j.Id, j);
+      });
+    }
+
+    filterJobResolved = true;
+    await OnFilterChanged();
+  }
+
+  private async Task ClearJobIdFilter()
+  {
+    queryParams.JobId = null;
+    filterJobResolved = false;
+    await OnFilterChanged();
   }
 
   private void OnSearchChanged(ChangeEventArgs e)
@@ -215,5 +432,7 @@
   public void Dispose()
   {
     searchCts?.Cancel();
+    spinnerCts?.Cancel();
+    hoverCts?.Cancel();
   }
 }

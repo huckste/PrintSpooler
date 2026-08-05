@@ -43,12 +43,22 @@ Read this section before assuming background knowledge:
   consuming sides of ErrorOr, DTOs vs domain models and why they're separate,
   `.Match()` vs `.Switch()` in ErrorOr, basic SQL transactions
   (BEGIN TRAN/COMMIT/ROLLBACK) and isolation.
-- Still shaky / hasn't been tested on: Blazor (not started), auth (not
-  started), any deployment step (App Service, CI/CD).
+- Still shaky / hasn't been tested on: auth (not started), any deployment step
+  (App Service, CI/CD).
 - Now understands: `BackgroundService`/`IHostedService`, `Channel<T>` as a
   producer/consumer queue, `IServiceScopeFactory` for creating DB scopes inside
   a Singleton, DI lifetime rules (Scoped can depend on Singleton, not vice versa),
-  `await foreach` with `ReadAllAsync` for blocking channel consumption.
+  `await foreach` with `ReadAllAsync` for blocking channel consumption. Blazor:
+  CSS isolation only scopes a component's own root element into a parent's
+  isolated stylesheet — elements nested *inside* a child component's own markup
+  need the `::deep` combinator to reach at all, and CSS custom properties are
+  the one thing that still inherits through a child component regardless of
+  scoping, since it's normal DOM-tree inheritance, not selector matching. JS
+  interop (`IJSRuntime.InvokeVoidAsync`) for the one thing Blazor Server has no
+  built-in API for — reading real element geometry — called from
+  `OnAfterRenderAsync`, not the event handler that triggered the state change,
+  since the element being measured doesn't exist in the DOM until after that
+  render actually happens.
 
 ## Architecture
 
@@ -281,18 +291,27 @@ All custom classes prefixed `sp-` to avoid Bootstrap collisions. Never use Boots
 - `wwwroot/css/base.css` — variables, reset, html/body, scrollbar, Blazor error UI
 - `wwwroot/css/layout.css` — app shell only (sidebar, nav, top bar, content area) — not page content
 - `wwwroot/css/components.css` — real shared design-system primitives (cards, tags, buttons,
-  alerts, forms, dropdown, spinner, stat-grid, section-title) — anything meant for reuse
-  across current or future pages goes here
+  alerts, forms, dropdown, spinner, stat-grid, section-title, data table) — anything meant
+  for reuse across current or future pages goes here. This includes the `.sp-table*` rules:
+  Queue and Logs both render a `<table class="sp-table">` directly in the page (columns/thead
+  differ too much per page to be worth a shared `<SpTable>` component yet), but the row/cell
+  styling itself is identical, so it lives here instead of being duplicated per page. Generic
+  cell text classes are `.sp-table-primary` (main text color) / `.sp-table-muted` (secondary,
+  e.g. timestamps) / `.sp-table-muted-sm` (secondary + smaller, e.g. printer name) — named for
+  what they style, not which page uses them, since Queue and Logs both do.
 - `wwwroot/css/animations.css` — every `@keyframes` block, referenced by name from wherever
   needed. Keyframe definitions aren't subject to Blazor CSS isolation scoping (only selectors
   are), so isolated page files can reference these global keyframes with no leakage risk
-- `Components/Pages/Queue.razor.css` / `SubmitJob.razor.css` — page-specific styles via
-  **Blazor CSS isolation**: a `Component.razor.css` file next to its `.razor` file is
-  automatically scoped (Blazor adds a `[b-xxxxxxxx]` attribute to every selector at build
-  time) so it physically cannot leak to or be affected by any other page, and auto-bundles
-  into `PrintSpooler.Web.styles.css` (already referenced in `App.razor`, no extra `<link>`
-  needed per new page). Use this for any new page's one-off styles going forward, not more
-  loose files in `wwwroot`.
+- `Component.razor.css` next to its `.razor` file — **Blazor CSS isolation**: Blazor adds a
+  `[b-xxxxxxxx]` attribute to every selector at build time, so it physically cannot leak to or
+  be affected by any other component, and auto-bundles into `PrintSpooler.Web.styles.css`
+  (already referenced in `App.razor`, no extra `<link>` needed per new page/component). Applies
+  to page-specific one-off styles (`SubmitJob.razor.css`) AND shared-component styles that
+  only that component renders (`Components/Shared/JobDetailCard.razor.css` — the floating job
+  detail popover, used by both Queue and Logs via the `JobDetailCard` component itself, not
+  duplicated markup, so its CSS only needs to exist once, isolated to that component).
+  Logs.razor.css holds the toolbar/filters/pagination styling that's genuinely one-off to that
+  page; Queue.razor has none of its own right now.
 - DONE: `.sp-table-wrapper`, `.sp-job-detail-card`, `.submit-card` now compose with `.sp-panel`
   via multi-class markup (`class="sp-panel sp-table-wrapper"`, etc.) instead of hand-repeating
   its four base declarations. `.sp-card`/`.sp-log` still redeclare them directly since they're
@@ -309,8 +328,27 @@ All custom classes prefixed `sp-` to avoid Bootstrap collisions. Never use Boots
 **Building blocks for new pages:**
 - `sp-section-title` — green label + extending horizontal rule
 - `sp-card` — padded panel (background + subtle left accent border)
-- `sp-job` — 3-col grid panel for queue rows
 - `sp-log` — monospace event log panel
+- `sp-table` + `sp-table-wrapper` (fixed `height`, not `max-height` — a short/partial page
+  shouldn't shrink the box and drag pagination controls with it) — shared data table (Queue,
+  Logs); `sp-table-status`/`sp-table-num`/`sp-table-action` for centered columns,
+  `sp-table-primary`/`sp-table-muted`/`sp-table-muted-sm` for cell text weight,
+  `sp-row-clickable`/`sp-row-updated`/`sp-row-fading`/`sp-row-active`/`sp-empty-row` for row
+  states
+- `JobDetailCard` (`Components/Shared/JobDetailCard.razor`) — a floating popover (not an inline
+  accordion row — that was the original design, replaced once it became clear an expanding row
+  needs the table to auto-scroll to reveal it, while a popover just overlays whatever's already
+  visible) shown when a Queue/Logs row is clicked. Takes `Job? Job` (renders "No data found"
+  when null — stale `AuditLog.JobId` rows from before a job existed to look up), `string CardId`,
+  and `EventCallback OnClose`. Only one open at a time per page (`Guid? expandedJobId` /
+  `expandedLogId`, not a `HashSet`). Positioned via `wwwroot/js/interop.js`'s
+  `positionDetailCard(cardId, rowId, wrapperId)` — first JS interop in the project — called from
+  `OnAfterRenderAsync` (via a `pendingPosition*Id` flag set in the click handler, consumed once
+  the card has actually rendered and has a real height to clamp against) since Blazor Server has
+  no built-in element-geometry API. Clamps its own top position inside the scrollable wrapper so
+  it never renders past the visible (already-scrolled) area, which is the reason it replaced the
+  accordion in the first place. `interop.js` also has `scrollElementToTop(el)`, used by Logs to
+  reset table scroll on every filter/search/page change (unrelated to the card).
 - `sp-stat-grid` + `sp-stat-label` + `sp-stat-value` — 4-col stat cards
 - `sp-tag` + `sp-tag-processing/queued/completed/failed/cancelled` — status badges
 - `sp-progress` + `sp-progress-bar` — 2px progress line
@@ -341,12 +379,19 @@ All custom classes prefixed `sp-` to avoid Bootstrap collisions. Never use Boots
 green section labels with extending rule, outlined cards with 2px left accent border,
 transparent outlined buttons/tags, no filled backgrounds on interactive elements.
 
-4. **Blazor dashboard pages (next up):**
-   - Queue page (`/queue`) — job list with status tags, printer name, cancel action
+4. **Blazor dashboard pages:**
+   - DONE: Queue page (`/queue`) — job list with status tags, printer name, cancel action,
+     live SignalR updates (row flash on update, fade-out on completion/cancellation), click a
+     row to open its `JobDetailCard`
+   - DONE: Logs page (`/logs`) — search box (debounced), a single "Filters" dropdown panel
+     holding Action/PerformedBy/Sort/OrderBy/DateFrom/DateTo (consolidated from separate
+     inline controls) + a Reset-all button, page-size selector (50/100/200), pagination with
+     `IsAtFirstPage`/`IsAtLastPage` computed properties (not manually-toggled bools — those
+     briefly flickered `disabled` mid-load, a real bug, not a style choice), a debounced loading
+     spinner (250ms delay before showing, 300ms minimum once shown — avoids both the "flash on
+     fast load" and "flash-off right after appearing" failure modes), and row-click opens the
+     shared `JobDetailCard` popover
    - Job detail page — full job info, audit log entries for that job
-   - Audit log page — all audit events. Backend (`GET /Logs`, see item 11 above) is
-     done; this is frontend-only work — search box, filter dropdowns (Action,
-     PerformedBy), date range pickers, pagination controls
    - Printer list / home page (`/`) — registered printers
    - Follow-up (not tonight): manual "retry a Failed job" action — needs new
      endpoint, `RetryCount` reset logic, and `JobCancellationPolicy` updated

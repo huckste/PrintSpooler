@@ -1,192 +1,283 @@
-/* Scoped to Queue.razor via Blazor CSS isolation — these selectors
-   can't leak to or be affected by any other page. */
+/* Scoped to Logs.razor via Blazor CSS isolation. */
 
-/* ── Job queue table ─────────────────────────────────────── */
-
-.sp-table-wrapper {
-    max-height: 70vh;
-    overflow-y: scroll;
+/* This page adds a "pagination" row to the shared .sp-table-detail-layout
+   grid (components.css only defines "table"/"detail") — the detail panel
+   sits between the table and pagination, not after it, so it's visible
+   without extra scrolling on a short viewport. */
+.sp-table-detail-layout {
+    grid-template-areas:
+        "table"
+        "detail"
+        "pagination";
 }
 
-.sp-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    table-layout: fixed;
-    font-family: var(--sp-mono);
-    font-size: 0.78rem;
+/* Grid instead of flex space-between: the left (page text) and right
+   (page-size select) items are different widths, so space-between would
+   push the button group off-center. 1fr auto 1fr keeps it truly centered
+   regardless of what the flanking items measure. */
+.sp-logs-pagination {
+    grid-area: pagination;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
 }
 
-.sp-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    text-align: left;
-    padding: 0.4rem 0.9rem;
-    font-size: 0.64rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+.sp-logs-pagination .sp-btn-group {
+    width: 150px;
+    justify-self: center;
+}
+
+.sp-logs-pagination-size {
+    justify-self: end;
+}
+
+/* Fixed width sized for the widest option ("200") so the trigger doesn't
+   resize as the selected value changes length. Setting it only on the
+   root .sp-dropdown and relying on it to pass down to .sp-dropdown-trigger
+   wasn't holding, so it's pinned directly on the trigger too (::deep,
+   since that element is nested inside SpSelect's own markup) with
+   overflow hidden as a hard backstop. */
+.sp-logs-pagination-size .sp-dropdown {
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.sp-logs-pagination-size ::deep .sp-dropdown-trigger {
+    width: 80px;
+    overflow: hidden;
+}
+
+.sp-logs-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ── Filters (right) ─────────────────────────────────────── */
+
+.sp-logs-filters {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* SpSelect's .sp-dropdown defaults to width: 100% for stacked form use;
+   the Filters trigger sits inline next to the search bar, so size it to
+   content instead. */
+.sp-logs-filters > .sp-dropdown {
+    width: auto;
+    min-width: 90px;
+}
+
+.sp-logs-filters .sp-dropdown-trigger:hover {
+    border-color: var(--sp-green);
+}
+
+/* The panel itself is wider than its trigger button and holds a vertical
+   stack of fields, unlike SpSelect's own option-list menu — override the
+   base .sp-dropdown-menu's left:0/right:0 (which stretches it to trigger
+   width) with a fixed panel width instead. Anchored from the right since
+   the trigger sits at the toolbar's right edge — opening from left:0 would
+   push the panel off-screen. */
+.sp-filters-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    width: 230px;
+    left: auto;
+    right: 0;
+    background: var(--sp-bg);
+}
+
+.sp-filters-panel .sp-form-group {
+    margin-bottom: 0;
+}
+
+.sp-filters-panel .sp-label {
     color: var(--sp-green);
-    font-weight: normal;
-    background: var(--sp-panel);
-    border-bottom: 1px solid var(--sp-border);
-    white-space: nowrap;
 }
 
-.sp-table thead th.sp-table-status,
-.sp-table thead th.sp-table-num,
-.sp-table thead th.sp-table-action {
+.sp-filters-panel .sp-dropdown {
+    width: 100%;
+}
+
+/* .sp-dropdown-trigger is rendered inside SpSelect's own markup, past the
+   child-component boundary Blazor's CSS isolation stops scoping at — a
+   plain descendant selector never matches there. ::deep is the actual
+   mechanism for reaching through it. */
+.sp-filters-panel ::deep .sp-dropdown-trigger {
+    color: var(--sp-muted);
+}
+
+.sp-filters-reset {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--sp-border-subtle);
+}
+
+.sp-filters-reset .sp-btn {
+    width: 100%;
     text-align: center;
 }
 
+/* ── Search (left, grows to fill the space up to Filters) ─── */
+
+.sp-search {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.sp-search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.sp-search-icon {
+    position: absolute;
+    left: 0.65rem;
+    color: var(--sp-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.sp-search-icon::before { content: '⌕'; }
+
+.sp-search-input {
+    background: var(--sp-bg);
+    border: 1px solid var(--sp-border-subtle);
+    color: var(--sp-text);
+    font-family: var(--sp-mono);
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem 0.5rem 1.9rem;
+    border-radius: var(--sp-radius);
+    outline: none;
+    width: 100%;
+}
+
+.sp-search-input:hover  { border-color: var(--sp-border); }
+.sp-search-input:focus  { border-color: var(--sp-border); }
+.sp-search-input::placeholder { color: var(--sp-muted); }
+
+/* Date fields are a <button> showing the formatted value, plus a real
+   (invisible) <input type="date"> the button triggers via showPicker() —
+   a plain input has no way to avoid the browser's own text-selection/
+   segment-highlight styling on click, a button does. */
+.sp-filter-date-wrap {
+    position: relative;
+}
+
+.sp-filter-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    text-align: left;
+    background: var(--sp-bg);
+    border: 1px solid var(--sp-border-subtle);
+    color: var(--sp-muted);
+    font-family: var(--sp-mono);
+    font-size: 0.8rem;
+    padding: 0.44rem 0.6rem;
+    border-radius: var(--sp-radius);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+.sp-filter-date::after {
+    content: '▦';
+    color: var(--sp-muted);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.sp-filter-date:hover  { border-color: var(--sp-border); }
+.sp-filter-date:focus  { border-color: var(--sp-border); }
+
+/* Not display:none — showPicker() requires the element to still be
+   rendered. 1x1px + opacity 0 keeps it invisible without taking part
+   in layout or being reachable by anything but the button's click. */
+.sp-filter-date-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+    color-scheme: dark;
+}
+
+/* ── Active job filter chip ──────────────────────────────── */
+
+/* Sits between search and Filters — only rendered while a jobId filter is
+   active (set by clicking a row's Job cell below), since there's no room
+   for it in the Filters dropdown's own field list. */
+.sp-job-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius);
+    color: var(--sp-green);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* ── Job cell (click-to-filter) ──────────────────────────── */
+
+.sp-table-jobid {
+    cursor: pointer;
+}
+
+.sp-table-jobid:hover {
+    color: var(--sp-green);
+}
+
+/* ── Row entrance animation (opt-in) ─────────────────────── */
+
+/* components.css plays sp-row-in on every .sp-table row unconditionally —
+   fine for Queue (rows only animate in when a genuinely new job arrives
+   via SignalR), but every filter/search/page change here swaps in an
+   entirely new set of AuditLog rows, replaying the animation on the whole
+   table each time. Disable the default here and only opt back in for the
+   render right after the very first load (see animateRows in the C#). */
 .sp-table tbody tr {
-    transition: background 0.4s ease;
+    animation: none;
+}
+
+.sp-table tbody tr.sp-row-animate {
     animation: sp-row-in 0.3s ease backwards;
     animation-delay: calc(var(--i, 0) * 40ms);
 }
 
-.sp-table tbody tr:last-child td {
-    border-bottom: none;
-}
+/* ── Loading overlay ──────────────────────────────────────── */
 
-.sp-table tbody tr:hover {
-    background: var(--sp-panel-alt);
-}
-
-.sp-table tbody tr.sp-row-updated {
-    animation: sp-row-in 0.3s ease backwards, sp-row-flash 1.1s ease;
-    animation-delay: calc(var(--i, 0) * 40ms), 0s;
-}
-
-.sp-table tbody tr.sp-row-fading {
-    animation: sp-entry-out 0.5s ease forwards;
-}
-
-.sp-table td {
-    padding: 0.3rem 0.9rem;
-    vertical-align: middle;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-bottom: 1px solid var(--sp-border-subtle);
-}
-
-.sp-table td.sp-table-status,
-.sp-table td.sp-table-num,
-.sp-table td.sp-table-action {
-    text-align: center;
-}
-
-.sp-table td.sp-table-action .sp-spinner {
-    margin: 0 auto;
-}
-
-.sp-table .sp-tag {
-    display: inline;
-    border: none;
-    padding: 0;
-    background: none;
-    font-size: 0.72rem;
-    font-weight: 700;
-}
-
-.sp-table tbody tr.sp-row-clickable {
-    cursor: pointer;
-}
-
-.sp-table tbody tr.sp-empty-row {
-    animation: none;
-}
-
-.sp-table tbody tr.sp-empty-row:hover {
-    background: none;
-}
-
-.sp-empty-row td {
-    text-align: center;
-    white-space: normal;
-    color: var(--sp-muted);
-    padding: 1.2rem 0.9rem;
-    animation: sp-fade-in 0.4s ease;
-}
-
-/* ── Job row content ─────────────────────────────────────── */
-
-.sp-job-file {
-    color: var(--sp-text);
-}
-
-.sp-job-meta {
-    color: var(--sp-muted);
-}
-
-.sp-job-printer {
-    color: var(--sp-muted);
-    font-size: 0.82rem;
-}
-
-/* ── Expanded detail panel ───────────────────────────────── */
-
-.sp-job-detail td {
-    background: var(--sp-bg);
-    padding: 0.9rem 1.25rem;
-    white-space: normal;
-    overflow: visible;
-    border-left: 2px solid var(--sp-border);
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
-}
-
-.sp-job-detail-grid {
+.sp-table-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--sp-text);
-    animation: sp-detail-in 0.2s ease;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 16, 15, 0.5);
 }
 
-.sp-job-detail-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+.sp-table-loading .sp-spinner {
+    width: 22px;
+    height: 22px;
 }
 
-.sp-job-detail-card {
-    flex: 1 1 180px;
-    min-width: 0;
-    padding: 0.6rem 0.9rem;
-    overflow-wrap: break-word;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.sp-job-detail-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.sp-job-detail-card-title {
-    color: var(--sp-green);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding-bottom: 0.35rem;
-    margin-bottom: 0.35rem;
-    border-bottom: 1px solid var(--sp-border-subtle);
-}
-
-.sp-job-detail-card div + div {
-    margin-top: 0.3rem;
-}
-
-.sp-job-detail-label {
-    color: var(--sp-green);
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.sp-job-detail-label::after {
-    content: ' => ';
-    color: var(--sp-muted);
-    letter-spacing: normal;
+.sp-table.sp-table-dimmed {
+    opacity: 0.5;
+    pointer-events: none;
 }

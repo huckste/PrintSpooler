@@ -1,0 +1,60 @@
+@using PrintSpooler.Core.Models
+@using PrintSpooler.Web.Services
+
+<div class="sp-panel sp-detail-panel">
+  <div class="sp-detail-panel-head">
+    <span class="sp-detail-panel-eyebrow">Additional Details</span>
+  </div>
+  <div class="sp-detail-terminal">
+    @if (!HasResolved)
+    {
+      <div class="sp-detail-terminal-idle">hover a row to view details</div>
+    }
+    else
+    {
+      <div class="sp-detail-terminal-content" @key="Key">
+        @if (Job is null)
+        {
+          <div class="sp-detail-terminal-idle">no data found</div>
+        }
+        else
+        {
+          <div class="sp-detail-terminal-line">
+            <span class="sp-detail-terminal-prompt">&gt;</span>
+            <span class="sp-detail-terminal-key">id</span>@(Job.Id)
+          </div>
+          <div class="sp-detail-terminal-line">
+            <span class="sp-detail-terminal-prompt">&gt;</span>
+            <span class="sp-detail-terminal-key">content type</span>@(Job.ContentType)
+          </div>
+          <div class="sp-detail-terminal-line">
+            <span class="sp-detail-terminal-prompt">&gt;</span>
+            <span class="sp-detail-terminal-key">submitted</span>@(FormatTime.Full(Job.SubmittedAt))
+            (@(FormatTime.Ago(Job.SubmittedAt)))
+          </div>
+          @if (Job.Printer is not null)
+          {
+            <div class="sp-detail-terminal-line">
+              <span class="sp-detail-terminal-prompt">&gt;</span>
+              <span class="sp-detail-terminal-key">printer</span>@(Job.Printer.IpAddress)
+            </div>
+          }
+          @if (!string.IsNullOrEmpty(Job.FailureReason))
+          {
+            <div class="sp-detail-terminal-line sp-detail-terminal-error">
+              <span class="sp-detail-terminal-prompt">&gt;</span>
+              <span class="sp-detail-terminal-key">failure</span>@(Job.FailureReason)
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+</div>
+
+@code
+{
+  [Parameter] public Job? Job { get; set; }
+  [Parameter] public bool HasResolved { get; set; }
+  [Parameter] public object? Key { get; set; }
+}

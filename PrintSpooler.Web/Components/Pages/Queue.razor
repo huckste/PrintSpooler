@@ -9,101 +9,74 @@
 
 <PageTitle>Job Queue</PageTitle>
 
-<div class="sp-panel sp-table-wrapper">
-  <table class="sp-table">
-    <colgroup>
-      <col />
-      <col />
-      <col />
-      <col />
-      <col style="width: 70px" />
-      <col style="width: 110px" />
-      <col style="width: 40px" />
-    </colgroup>
-    <thead>
-      <tr>
-        <th>Document</th>
-        <th>Owner</th>
-        <th>Printer</th>
-        <th class="sp-table-status">Status</th>
-        <th class="sp-table-num">Retries</th>
-        <th>Submitted</th>
-        <th class="sp-table-action"></th>
-      </tr>
-    </thead>
-    @if (jobs.Count < 1)
-    {
-      <tbody>
-        <tr class="sp-empty-row">
-          <td colspan="7">Queue is empty</td>
+<div class="sp-table-detail-layout">
+  <div class="sp-panel sp-table-wrapper">
+    <table class="sp-table">
+      <colgroup>
+        <col />
+        <col />
+        <col />
+        <col />
+        <col style="width: 70px" />
+        <col style="width: 110px" />
+        <col style="width: 40px" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Document</th>
+          <th>Owner</th>
+          <th>Printer</th>
+          <th class="sp-table-status">Status</th>
+          <th class="sp-table-num">Retries</th>
+          <th>Submitted</th>
+          <th class="sp-table-action"></th>
         </tr>
-      </tbody>
-    }
-    else
-    {
-      <tbody>
-        @{
-          var i = 0;
-        }
-        @foreach (var job in jobs)
-        {
-          <tr @key="job.Id" style="--i: @(i++)"
-              class="sp-row-clickable @(recentlyUpdated.Contains(job.Id) ? "sp-row-updated" : "") @(fadingJobIds.Contains(job.Id) ? "sp-row-fading" : "")"
-              @onclick="() => ToggleExpanded(job.Id)">
-            <td class="sp-job-file">@(job.FileName)</td>
-            <td class="sp-job-meta">@(job.SubmittedBy)</td>
-            <td class="sp-job-printer">@(job.Printer?.Name ?? "Unknown")</td>
-            <td class="sp-table-status">
-              <span class="sp-tag @(GetStatusClass(job))">@(job.Status)</span>
-            </td>
-            <td class="sp-table-num">@(job.RetryCount)</td>
-            <td class="sp-job-meta">@(FormatTime.Short(job.SubmittedAt))</td>
-            <td class="sp-table-action">
-              @if (job.Status == JobStatus.Processing)
-              {
-                <div class="sp-spinner"></div>
-              }
-              else if (JobCancellationPolicy.CanCancel(job.Status))
-              {
-                <button class="sp-file-entry-remove" @onclick:stopPropagation @onclick="() => CancelJob(job.Id)">x</button>
-              }
-            </td>
+      </thead>
+      @if (jobs.Count < 1)
+      {
+        <tbody>
+          <tr class="sp-empty-row">
+            <td colspan="7">Queue is empty</td>
           </tr>
-          @if (expandedJobIds.Contains(job.Id))
+        </tbody>
+      }
+      else
+      {
+        <tbody>
+          @{
+            var i = 0;
+          }
+          @foreach (var job in jobs)
           {
-            <tr @key="@($"{job.Id}-detail")" class="sp-job-detail">
-              <td colspan="7">
-                <div class="sp-job-detail-grid">
-                  <div class="sp-job-detail-cards">
-                    <div class="sp-panel sp-job-detail-card">
-                      <div class="sp-job-detail-card-title">Job</div>
-                      <div><span class="sp-job-detail-label">ID</span>@(job.Id)</div>
-                      <div><span class="sp-job-detail-label">Content Type</span>@(job.ContentType)</div>
-                      <div><span class="sp-job-detail-label">Submitted</span>@(FormatTime.Full(job.SubmittedAt))
-                        (@(FormatTime.Ago(job.SubmittedAt)))
-                      </div>
-                    </div>
-                    @if (job.Printer is not null)
-                    {
-                      <div class="sp-panel sp-job-detail-card">
-                        <div class="sp-job-detail-card-title">Printer</div>
-                        <div><span class="sp-job-detail-label">Address</span>@(job.Printer.IpAddress)</div>
-                      </div>
-                    }
-                  </div>
-                  @if (!string.IsNullOrEmpty(job.FailureReason))
-                  {
-                    <div class="sp-alert sp-alert-danger">⚠ @(job.FailureReason)</div>
-                  }
-                </div>
+            <tr @key="job.Id" style="--i: @(i++)"
+                class="@(recentlyUpdated.Contains(job.Id) ? "sp-row-updated" : "") @(fadingJobIds.Contains(job.Id) ? "sp-row-fading" : "") @(shownJobId == job.Id ? "sp-row-active" : "")"
+                @onmouseenter="() => OnRowHoverStart(job.Id)" @onmouseleave="OnRowHoverEnd">
+              <td class="sp-table-primary">@(job.FileName)</td>
+              <td class="sp-table-muted">@(job.SubmittedBy)</td>
+              <td class="sp-table-muted-sm">@(job.Printer?.Name ?? "Unknown")</td>
+              <td class="sp-table-status">
+                <span class="sp-tag @(GetStatusClass(job))">@(job.Status)</span>
+              </td>
+              <td class="sp-table-num">@(job.RetryCount)</td>
+              <td class="sp-table-muted">@(FormatTime.Short(job.SubmittedAt))</td>
+              <td class="sp-table-action">
+                @if (job.Status == JobStatus.Processing)
+                {
+                  <div class="sp-spinner"></div>
+                }
+                else if (JobCancellationPolicy.CanCancel(job.Status))
+                {
+                  <button class="sp-file-entry-remove" @onclick="() => CancelJob(job.Id)">x</button>
+                }
               </td>
             </tr>
           }
-        }
-      </tbody>
-    }
-  </table>
+        </tbody>
+      }
+    </table>
+  </div>
 
+  <JobDetailCard Job="ShownJob" HasResolved="shownJobId.HasValue" Key="shownJobId" />
 </div>
 
 @code
@@ -111,14 +84,37 @@
   private HubConnection connection = default!;
   private List<Job> jobs = [];
   private readonly HashSet<Guid> recentlyUpdated = [];
-  private readonly HashSet<Guid> expandedJobIds = [];
   private readonly HashSet<Guid> fadingJobIds = [];
+  private Guid? shownJobId;
+  private CancellationTokenSource? hoverCts;
 
-  private void ToggleExpanded(Guid jobId)
+  private Job? ShownJob => jobs.FirstOrDefault(j => j.Id == shownJobId);
+
+  // 600ms dwell before committing to a row — a mouse just passing over
+  // rows on its way somewhere else shouldn't repaint the detail panel.
+  private void OnRowHoverStart(Guid jobId)
   {
-    if (!expandedJobIds.Add(jobId))
-      expandedJobIds.Remove(jobId);
+    hoverCts?.Cancel();
+    hoverCts = new CancellationTokenSource();
+    var token = hoverCts.Token;
+
+    _ = Task.Run(async () =>
+    {
+      await Task.Delay(600, token);
+      if (token.IsCancellationRequested) return;
+
+      await InvokeAsync(() =>
+      {
+        shownJobId = jobId;
+        StateHasChanged();
+      });
+    });
   }
+
+  // Only cancels a still-pending dwell — an already-resolved panel holds
+  // its last value until a different row's hover resolves, so it stays
+  // readable after the mouse moves away instead of vanishing.
+  private void OnRowHoverEnd() => hoverCts?.Cancel();
 
   protected override async Task OnInitializedAsync()
   {
@@ -191,6 +187,11 @@
     await Task.Delay(500);
     jobs.RemoveAll(j => j.Id == jobId);
     fadingJobIds.Remove(jobId);
+
+    // The row backing the shown detail panel is about to disappear.
+    if (shownJobId == jobId)
+      shownJobId = null;
+
     StateHasChanged();
   }
 
@@ -203,6 +204,9 @@
     await InvokeAsync(StateHasChanged);
   }
 
-  public async ValueTask DisposeAsync() => await connection.DisposeAsync();
+  public async ValueTask DisposeAsync()
+  {
+    hoverCts?.Cancel();
+    await connection.DisposeAsync();
+  }
 }
-

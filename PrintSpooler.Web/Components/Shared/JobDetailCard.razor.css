@@ -1,0 +1,71 @@
+/* Scoped to JobDetailCard.razor via Blazor CSS isolation.
+   Sizing/positioning as a grid item lives in components.css
+   (.sp-detail-panel) — this file only holds content styling. */
+
+.sp-detail-panel {
+    padding: 0.75rem 1rem;
+    min-width: 0;
+}
+
+.sp-detail-panel-head {
+    margin-bottom: 0.5rem;
+}
+
+.sp-detail-panel-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sp-green);
+}
+
+.sp-detail-terminal {
+    font-family: var(--sp-mono);
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--sp-text);
+    min-height: 60px;
+}
+
+.sp-detail-terminal-idle {
+    color: var(--sp-muted);
+    opacity: 0.6;
+    padding-left: 0.6rem;
+}
+
+/* Border-color-only pulse — no transform/scale on the text itself, so
+   glyphs never distort mid-animation like the scaleY roll-in did. */
+.sp-detail-terminal-content {
+    border-left: 2px solid transparent;
+    padding-left: calc(0.6rem - 2px);
+    animation: sp-accent-pulse 1s ease;
+}
+
+.sp-detail-terminal-line {
+    overflow-wrap: break-word;
+}
+
+.sp-detail-terminal-prompt {
+    color: var(--sp-border);
+    margin-right: 0.4em;
+}
+
+.sp-detail-terminal-key {
+    color: var(--sp-green);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sp-detail-terminal-key::after {
+    content: ' => ';
+    color: var(--sp-muted);
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.sp-detail-terminal-error {
+    color: var(--sp-red);
+}
+
+.sp-detail-terminal-error .sp-detail-terminal-key {
+    color: var(--sp-red);
+}

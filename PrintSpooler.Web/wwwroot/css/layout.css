@@ -68,6 +68,14 @@ main {
     padding: 2rem;
 }
 
+/* Caps how wide page content grows on an ultrawide monitor — without this
+   the stacked table/detail layout (always stacked, no side-by-side variant)
+   would stretch to the full window width and look sparse. */
+.content > * {
+    max-width: 1600px;
+    margin-inline: auto;
+}
+
 .nav-brand {
     color: var(--sp-green);
     font-size: 0.9rem;
