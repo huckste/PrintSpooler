@@ -20,6 +20,19 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
         }
     }
 
+    public async Task<ErrorOr<T?>> Get<T>(string url, Guid id)
+    {
+        try
+        {
+            return await client.GetFromJsonAsync<T>($"{url}/{id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return Error.Failure("Api.RequestFailed", ex.Message);
+        }
+    }
+
     public async Task<ErrorOr<TResponse>> Get<TResponse, TQuery>(string url, TQuery queryParams)
     {
         try
