@@ -10,90 +10,125 @@ using PrintSpooler.Infrastructure.Data;
 public class JobService(AppDbContext dbContext, Channel<Guid> jobChannel, IJobNotifier jobNotifier)
     : IJobService
 {
-    public async Task<ErrorOr<Job>> CreateJob(JobCreationData data)
+  public async Task<ErrorOr<Job>> CreateJob(JobCreationData data)
+  {
+    Printer? printer = await dbContext.Printers.FirstOrDefaultAsync(p =>
+        p.Id == data.PrinterId
+    );
+
+    if (printer is null)
+      return Error.NotFound("Printer.NotFound", $"No printer found with ID {data.PrinterId}");
+
+    var job = new Job
     {
-        Printer? printer = await dbContext.Printers.FirstOrDefaultAsync(p =>
-            p.Id == data.PrinterId
-        );
+      Id = Guid.NewGuid(),
+      SubmittedBy = data.SubmittedBy,
+      FileName = data.FileName,
+      ContentType = data.ContentType,
+      FileSizeBytes = data.Bytes.Length,
+      PrinterId = data.PrinterId,
+      Printer = printer,
+    };
 
-        if (printer is null)
-            return Error.NotFound("Printer.NotFound", $"No printer found with ID {data.PrinterId}");
+    dbContext.Jobs.Add(job);
+    dbContext.JobData.Add(new JobData { Bytes = data.Bytes, JobId = job.Id });
 
-        var job = new Job
+    dbContext.AuditLogs.Add(
+        new AuditLog
         {
-            Id = Guid.NewGuid(),
-            SubmittedBy = data.SubmittedBy,
-            FileName = data.FileName,
-            ContentType = data.ContentType,
-            PrinterId = data.PrinterId,
-            Printer = printer,
-        };
+          Id = Guid.NewGuid(),
+          JobId = job.Id,
+          Action = JobAction.Created,
+          PerformedBy = ByWho.User,
+        }
+    );
 
-        dbContext.Jobs.Add(job);
-        dbContext.JobData.Add(new JobData { Bytes = data.Bytes, JobId = job.Id });
+    await dbContext.SaveChangesAsync();
+    await jobChannel.Writer.WriteAsync(job.Id);
 
-        dbContext.AuditLogs.Add(
-            new AuditLog
-            {
-                Id = Guid.NewGuid(),
-                JobId = job.Id,
-                Action = JobAction.Created,
-                PerformedBy = ByWho.User,
-            }
-        );
+    return job;
+  }
 
-        await dbContext.SaveChangesAsync();
-        await jobChannel.Writer.WriteAsync(job.Id);
+  public async Task<ErrorOr<Job>> GetJob(Guid id)
+  {
+    var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
 
-        return job;
-    }
+    if (job is null)
+      return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
 
-    public async Task<ErrorOr<Job>> GetJob(Guid id)
-    {
-        var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
+    return job;
+  }
 
-        if (job is null)
-            return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
+  public async Task<List<Job>> GetAllActiveJobs() =>
+      await dbContext
+          .Jobs.Include(j => j.Printer)
+          .Where(j => j.Status != OperationState.Cancelled && j.Status != OperationState.Completed)
+          .ToListAsync();
 
-        return job;
-    }
+  public async Task<ErrorOr<Job>> CancelJob(Guid id)
+  {
+    var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
 
-    public async Task<List<Job>> GetAllActiveJobs() =>
-        await dbContext
-            .Jobs.Include(j => j.Printer)
-            .Where(j => j.Status != JobStatus.Cancelled && j.Status != JobStatus.Completed)
-            .ToListAsync();
+    if (job is null)
+      return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
 
-    public async Task<ErrorOr<Job>> CancelJob(Guid id)
-    {
-        var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
+    bool canCancel = JobCancellationPolicy.CanCancel(job.Status);
 
-        if (job is null)
-            return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
+    if (!canCancel)
+      return Error.Conflict(
+          "Job.CannotCancel",
+          $"Job {id} cannot be cancelled - current status is {job.Status}"
+      );
 
-        bool canCancel = JobCancellationPolicy.CanCancel(job.Status);
+    job.Status = OperationState.Cancelled;
 
-        if (!canCancel)
-            return Error.Conflict(
-                "Job.CannotCancel",
-                $"Job {id} cannot be cancelled - current status is {job.Status}"
-            );
+    dbContext.AuditLogs.Add(
+        new AuditLog
+        {
+          Id = Guid.NewGuid(),
+          JobId = job.Id,
+          Action = JobAction.Cancelled,
+          PerformedBy = ByWho.User,
+        }
+    );
 
-        job.Status = JobStatus.Cancelled;
+    await dbContext.SaveChangesAsync();
+    await jobNotifier.JobUpdateAsync(job, CancellationToken.None);
 
-        dbContext.AuditLogs.Add(
-            new AuditLog
-            {
-                Id = Guid.NewGuid(),
-                JobId = job.Id,
-                Action = JobAction.Cancelled,
-                PerformedBy = ByWho.User,
-            }
-        );
+    return job;
+  }
 
-        await dbContext.SaveChangesAsync();
-        await jobNotifier.JobUpdateAsync(job, CancellationToken.None);
+  public async Task<ErrorOr<Job>> RetryJob(Guid id)
+  {
+    var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
 
-        return job;
-    }
+    if (job is null)
+      return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
+
+    if (job.Status != OperationState.Failed)
+      return Error.Conflict(
+          "Job.CannotRetry",
+          $"Job {id} cannot be retried - current status is {job.Status}"
+      );
+
+    job.Status = OperationState.Queued;
+    job.RetryCount = 0;
+    job.FailureReason = null;
+
+    dbContext.AuditLogs.Add(
+        new AuditLog
+        {
+          Id = Guid.NewGuid(),
+          JobId = job.Id,
+          Action = JobAction.Retried,
+          PerformedBy = ByWho.User,
+        }
+    );
+
+    await dbContext.SaveChangesAsync();
+    await jobNotifier.JobUpdateAsync(job, CancellationToken.None);
+    await jobChannel.Writer.WriteAsync(job.Id);
+
+    return job;
+  }
 }

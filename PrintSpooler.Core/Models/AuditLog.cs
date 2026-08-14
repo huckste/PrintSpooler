@@ -16,6 +16,7 @@ public enum JobAction
     Cancelled,
     Completed,
     Failed,
+    Retried,
 }
 
 public enum ByWho

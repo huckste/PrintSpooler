@@ -16,98 +16,97 @@ public class PrintJobWorker(
     IJobNotifier jobNotifier
 ) : BackgroundService
 {
-    protected override async Task ExecuteAsync(CancellationToken ct)
+  protected override async Task ExecuteAsync(CancellationToken ct)
+  {
+    await RequeuePendingJobs();
+
+    await foreach (var jobId in jobChannel.Reader.ReadAllAsync(ct))
     {
-        await RequeuePendingJobs();
+      using var dataScope = scopeFactory.CreateScope();
+      var dbContext = dataScope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        await foreach (var jobId in jobChannel.Reader.ReadAllAsync(ct))
-        {
-            using var dataScope = scopeFactory.CreateScope();
-            var dbContext = dataScope.ServiceProvider.GetRequiredService<AppDbContext>();
+      var job = await dbContext
+          .Jobs.Include(j => j.Printer)
+          .FirstOrDefaultAsync(j => j.Id == jobId, ct);
 
-            var job = await dbContext
-                .Jobs.Include(j => j.Printer)
-                .FirstOrDefaultAsync(j => j.Id == jobId, ct);
+      if (job is null)
+        continue;
 
-            if (job is null)
-                continue;
+      if (job.Status == OperationState.Cancelled)
+        Audit(dbContext, job.Id, JobAction.Cancelled, ByWho.User);
+      else
+        await HandleProcessing(dbContext, job, ct);
 
-            if (job.Status == JobStatus.Cancelled)
-                Audit(dbContext, job.Id, JobAction.Cancelled, ByWho.User);
-            else
-                await HandleProcessing(dbContext, job, ct);
-
-            await SaveAndUpdate(dbContext, job, ct);
-        }
+      await SaveAndUpdate(dbContext, job, ct);
     }
+  }
 
-    private async Task RequeuePendingJobs()
-    {
-        using var scope = scopeFactory.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+  private async Task RequeuePendingJobs()
+  {
+    using var scope = scopeFactory.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var pendingJobs = await dbContext
-            .Jobs.Include(j => j.Printer)
-            .Where(j => j.Status == JobStatus.Queued)
-            .ToListAsync();
+    var pendingJobs = await dbContext
+        .Jobs.Include(j => j.Printer)
+        .Where(j => j.Status == OperationState.Queued)
+        .ToListAsync();
 
-        foreach (var job in pendingJobs)
-            await jobChannel.Writer.WriteAsync(job.Id);
-    }
+    foreach (var job in pendingJobs)
+      await jobChannel.Writer.WriteAsync(job.Id);
+  }
 
-    private async Task HandleProcessing(AppDbContext dbContext, Job job, CancellationToken ct)
-    {
-        job.Status = JobStatus.Processing;
+  private async Task HandleProcessing(AppDbContext dbContext, Job job, CancellationToken ct)
+  {
+    job.Status = OperationState.Submitting;
 
-        var jobData = await dbContext.JobData.FirstOrDefaultAsync(d => d.JobId == job.Id, ct);
+    var jobData = await dbContext.JobData.FirstOrDefaultAsync(d => d.JobId == job.Id, ct);
 
-        await SaveAndUpdate(dbContext, job, ct);
+    await SaveAndUpdate(dbContext, job, ct);
 
-        await printerDispatcher
-            .SendAsync(job, jobData?.Bytes, ct)
-            .Switch(
-                value => MarkCompleted(dbContext, job),
-                error => HandleError(dbContext, job, error)
-            );
-    }
-
-    private void MarkCompleted(AppDbContext dbContext, Job job)
-    {
-        job.Status = JobStatus.Completed;
-        job.CompletedAt = DateTime.UtcNow;
-
-        Audit(dbContext, job.Id, JobAction.Completed, ByWho.System);
-    }
-
-    private void HandleError(AppDbContext dbContext, Job job, ErrorOr<Success> result)
-    {
-        job.Status = JobStatus.Failed;
-        job.FailureReason = result.Errors.First().Description;
-
-        Audit(dbContext, job.Id, JobAction.Failed, ByWho.System, job.FailureReason);
-    }
-
-    private void Audit(
-        AppDbContext dbContext,
-        Guid jobId,
-        JobAction action,
-        ByWho by,
-        string? details = null
-    ) =>
-        dbContext.AuditLogs.Add(
-            new AuditLog
-            {
-                Id = Guid.NewGuid(),
-                JobId = jobId,
-                Action = action,
-                PerformedBy = by,
-                Details = details,
-            }
+    await printerDispatcher
+        .SendAsync(job, jobData?.Bytes, ct)
+        .Switch(
+            value => MarkCompleted(dbContext, job),
+            error => HandleError(dbContext, job, error)
         );
+  }
 
-    private async Task SaveAndUpdate(AppDbContext dbContext, Job job, CancellationToken ct)
-    {
-        await dbContext.SaveChangesAsync(ct);
-        await jobNotifier.JobUpdateAsync(job, ct);
-    }
+  private void MarkCompleted(AppDbContext dbContext, Job job)
+  {
+    job.Status = OperationState.Completed;
+    job.CompletedAt = DateTime.UtcNow;
+
+    Audit(dbContext, job.Id, JobAction.Completed, ByWho.System);
+  }
+
+  private void HandleError(AppDbContext dbContext, Job job, ErrorOr<Success> result)
+  {
+    job.FailureReason = result.Errors.First().Description;
+    job.Status = OperationState.Failed;
+    Audit(dbContext, job.Id, JobAction.Failed, ByWho.System, job.FailureReason);
+  }
+
+  private void Audit(
+      AppDbContext dbContext,
+      Guid jobId,
+      JobAction action,
+      ByWho by,
+      string? details = null
+  ) =>
+      dbContext.AuditLogs.Add(
+          new AuditLog
+          {
+            Id = Guid.NewGuid(),
+            JobId = jobId,
+            Action = action,
+            PerformedBy = by,
+            Details = details,
+          }
+      );
+
+  private async Task SaveAndUpdate(AppDbContext dbContext, Job job, CancellationToken ct)
+  {
+    await dbContext.SaveChangesAsync(ct);
+    await jobNotifier.JobUpdateAsync(job, ct);
+  }
 }

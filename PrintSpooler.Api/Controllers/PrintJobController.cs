@@ -48,4 +48,12 @@ public class PrintJobController(IJobService jobService) : ControllerBase
             .CancelJob(id)
             .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
     }
+
+    [HttpPost("{id}/retry", Name = "RetryPrintJob")]
+    public async Task<IActionResult> Retry(Guid id)
+    {
+        return await jobService
+            .RetryJob(id)
+            .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
+    }
 }

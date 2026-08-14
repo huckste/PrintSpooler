@@ -9,4 +9,5 @@ public interface IJobService
     Task<ErrorOr<Job>> GetJob(Guid id);
     Task<List<Job>> GetAllActiveJobs();
     Task<ErrorOr<Job>> CancelJob(Guid id);
+    Task<ErrorOr<Job>> RetryJob(Guid id);
 }
