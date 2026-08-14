@@ -3,6 +3,7 @@
 @using ErrorOr
 @implements IDisposable
 @inject ApiClient api
+@inject NavigationManager Nav
 
 <div class="page">
   <div class="sidebar">
@@ -11,7 +12,7 @@
 
   <main>
     <div class="top-row">
-      <h1 class="page-title">Print Spooler Console</h1>
+      <h1 class="page-title"><span class="page-title-prompt">spooler:~$</span> @currentPageLabel</h1>
       <span class="system-status @(response ? "" : "system-status-offline")">
         SYSTEM
         @(response ? " ONLINE" : " OFFLINE")
@@ -35,9 +36,13 @@
 {
   private bool response;
   private PeriodicTimer timer = default!;
+  private string currentPageLabel = "dashboard";
 
   protected override async Task OnInitializedAsync()
   {
+    UpdatePageLabel(Nav.Uri);
+    Nav.LocationChanged += OnLocationChanged;
+
     timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 
     while (await timer.WaitForNextTickAsync())
@@ -51,6 +56,29 @@
     }
   }
 
-  public void Dispose() => timer.Dispose();
+  private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+  {
+    UpdatePageLabel(e.Location);
+    InvokeAsync(StateHasChanged);
+  }
 
+  // Route path -> short prompt label. Falls back to the raw path segment
+  // for anything not explicitly named here, instead of a generic default,
+  // so a new page is still labeled with *something* meaningful.
+  private void UpdatePageLabel(string uri)
+  {
+    var path = Nav.ToBaseRelativePath(uri).Trim('/');
+
+    currentPageLabel = path switch
+    {
+      "" => "dashboard",
+      _ => path,
+    };
+  }
+
+  public void Dispose()
+  {
+    Nav.LocationChanged -= OnLocationChanged;
+    timer.Dispose();
+  }
 }

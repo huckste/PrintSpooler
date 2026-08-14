@@ -39,6 +39,11 @@
     to   { opacity: 1; }
 }
 
+@keyframes sp-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
 @keyframes sp-row-flash {
     0%   { background: rgba(74, 250, 138, 0.22); }
     100% { background: transparent; }
@@ -52,4 +57,15 @@
 @keyframes sp-accent-pulse {
     0%   { border-left-color: var(--sp-green); }
     100% { border-left-color: transparent; }
+}
+
+@keyframes sp-card-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hard on/off, not a fade — a real terminal cursor cuts instantly. */
+@keyframes sp-caret-blink {
+    0%, 50%   { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
 }

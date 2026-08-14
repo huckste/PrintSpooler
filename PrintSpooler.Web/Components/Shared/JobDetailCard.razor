@@ -25,13 +25,15 @@
           </div>
           <div class="sp-detail-terminal-line">
             <span class="sp-detail-terminal-prompt">&gt;</span>
-            <span class="sp-detail-terminal-key">content type</span>@(Job.ContentType)
+            <span class="sp-detail-terminal-key">content type</span>
+            @(Job.ContentType)
           </div>
           <div class="sp-detail-terminal-line">
             <span class="sp-detail-terminal-prompt">&gt;</span>
-            <span class="sp-detail-terminal-key">submitted</span>@(FormatTime.Full(Job.SubmittedAt))
-            (@(FormatTime.Ago(Job.SubmittedAt)))
+            <span class="sp-detail-terminal-key">submitted</span>
+            @(FormatTime.Full(Job.SubmittedAt)) (@(FormatTime.Ago(Job.SubmittedAt)))
           </div>
+
           @if (Job.Printer is not null)
           {
             <div class="sp-detail-terminal-line">
@@ -39,6 +41,7 @@
               <span class="sp-detail-terminal-key">printer</span>@(Job.Printer.IpAddress)
             </div>
           }
+
           @if (!string.IsNullOrEmpty(Job.FailureReason))
           {
             <div class="sp-detail-terminal-line sp-detail-terminal-error">

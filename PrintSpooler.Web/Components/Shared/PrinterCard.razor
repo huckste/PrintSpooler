@@ -1,0 +1,229 @@
+@using PrintSpooler.Core.Models
+@using PrintSpooler.Web.Models
+@using PrintSpooler.Web.Services
+
+<div @key="Key" class="sp-panel sp-printer-card @(cardExpanded ? "sp-printer-card-expanded" : "")">
+  <div class="sp-printer-row" @onclick="ToggleCard" @onmouseleave="HandleRowMouseLeave">
+    <span class="sp-printer-status-dot sp-printer-status-dot-online"></span>
+    <span class="sp-printer-name">@(Printer.Name)
+      <span class="sp-printer-model">@(Printer.IpAddress)</span>
+    </span>
+    <div class="sp-printer-stats">
+      @if (selectedRows.Count > 0)
+      {
+        <span class="sp-printer-stat">
+          <span class="sp-printer-stat-value">@(selectedRows.Count) selected</span>
+        </span>
+      }
+      else
+      {
+        <span class="sp-printer-stat">
+          <span class="sp-printer-stat-label">Queued</span>
+          <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == OperationState.Queued))</span>
+        </span>
+        <span class="sp-printer-stat">
+          <span class="sp-printer-stat-label">Processing</span>
+          <span class="sp-printer-stat-value">@(Rows.Count(r => r.IsSending || r.Status ==
+                      OperationState.Submitting))</span>
+          </span>
+          <span class="sp-printer-stat">
+            <span class="sp-printer-stat-label">Failed</span>
+            <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == OperationState.Failed))</span>
+          </span>
+        }
+      </div>
+      <div class="sp-printer-row-actions" @onclick:stopPropagation>
+        <div class="sp-printer-actions-tray @(ShowActions ? "sp-printer-actions-tray-open" : "")">
+          @if (selectedRows.Count == 0)
+          {
+            <label class="sp-btn">Add
+              <InputFile multiple OnChange="(e) => HandleFileSelected(e, Printer.Id)" style="display:none;" />
+            </label>
+          }
+          else
+          {
+            <button class="sp-btn" @onclick="() => { selectedRows.Clear(); actionsOpen = false; }">Cancel</button>
+          }
+
+          @{
+            var presentStates = PresentStates();
+          }
+
+          @if (AnyAffected(RowActions.Delete, presentStates))
+          {
+            <button class="sp-btn" @onclick="() => HandleActions(RowActions.Delete)"
+                    @onmouseenter="() => SetHoveredAction(RowActions.Delete)" @onmouseleave="ClearHoveredAction">Delete</button>
+          }
+          @if (AnyAffected(RowActions.Send, presentStates))
+          {
+            <button class="sp-btn" @onclick="() => HandleActions(RowActions.Send)"
+                    @onmouseenter="() => SetHoveredAction(RowActions.Send)" @onmouseleave="ClearHoveredAction">Send</button>
+          }
+          @if (AnyAffected(RowActions.Retry, presentStates))
+          {
+            <button class="sp-btn" @onclick="() => HandleActions(RowActions.Retry)"
+                    @onmouseenter="() => SetHoveredAction(RowActions.Retry)" @onmouseleave="ClearHoveredAction">Retry</button>
+          }
+        </div>
+        <button class="sp-printer-actions-hint @(ShowActions ? "sp-printer-actions-hint-open" : "")"
+                @onclick="ToggleActionsHint">⋮</button>
+        <button class="sp-printer-chevron" @onclick="ToggleCard">▾</button>
+      </div>
+    </div>
+    @if (cardExpanded)
+    {
+      <div class="sp-printer-detail">
+        <div class="sp-printer-detail-pad">
+          <div class="sp-panel sp-table-wrapper sp-printer-table-wrapper">
+            <table class="sp-table">
+              <colgroup>
+                <col />
+                <col style="width: 100px" />
+                <col style="width: 100px" />
+                <col style="width: 100px" />
+                <col style="width: 120px" />
+                <col style="width: 40px" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th class="sp-table-num">Size</th>
+                  <th class="sp-table-num">Retries</th>
+                  <th>Submitted</th>
+                  <th class="sp-table-status">Status</th>
+                  <th class="sp-table-action"></th>
+                </tr>
+              </thead>
+              <tbody>
+
+                @foreach (var row in Rows)
+                {
+                  <tr @key="row.Id"
+                      class="@(selectedRows.Contains(row.Id) ? "sp-row-active" : "") @(FadingRowIds.Contains(row.Id) ? "sp-row-fading" : "") @(IsPreviewTarget(row) ? "sp-row-preview" : "")"
+                      @onclick="() => HandleRowClicked(row.Id)">
+
+                    <td class="sp-table-primary">@(row.FileName)</td>
+                    <td class="sp-table-num sp-table-muted">@(FormatBytes.Short(row.SizeBytes))</td>
+                    <td class="sp-table-num sp-table-muted">@(row.RetryCount)</td>
+                    <td class="sp-table-muted">@(row.SubmittedAt is DateTime submittedAt ? FormatTime.Short(submittedAt) :
+                               "—")</td>
+                      <td class="sp-table-status">
+                        <span class="sp-tag sp-tag-@(row.Status.ToString().ToLower())"
+                              title="@(row.Status == OperationState.Failed ? row.ErrorText : null)">@(row.Status)</span>
+                      </td>
+                      <td class="sp-table-action">
+
+                        @if (row.IsSending || row.Status == OperationState.Submitting)
+                        {
+                          <div class="sp-spinner"></div>
+                        }
+                      </td>
+
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+@code
+{
+  [Parameter] public List<QueueRow> Rows { get; set; } = [];
+  [Parameter] public required Printer Printer { get; set; }
+  [Parameter] public object? Key { get; set; }
+  [Parameter] public EventCallback<List<QueueRow>> OnFilesAdded { get; set; }
+  [Parameter] public EventCallback<ActionArgs> OnRowAction { get; set; }
+  [Parameter] public HashSet<Guid> FadingRowIds { get; set; } = [];
+
+  private HashSet<Guid> selectedRows = [];
+  private bool actionsOpen;
+  private bool cardExpanded;
+
+  private RowActions? hoveredAction;
+
+  private void SetHoveredAction(RowActions action)
+  {
+    if (selectedRows.Count == 0)
+      hoveredAction = action;
+  }
+
+  private void ClearHoveredAction() => hoveredAction = null;
+
+  private static bool ActionAffectsState(OperationState state, RowActions action) => action switch
+  {
+    RowActions.Delete => state is OperationState.Failed or OperationState.Staged,
+    RowActions.Send => state == OperationState.Staged,
+    RowActions.Retry => state == OperationState.Failed,
+    _ => false
+  };
+
+  private bool IsPreviewTarget(QueueRow row) =>
+    hoveredAction is RowActions action && ActionAffectsState(row.Status, action);
+
+  private HashSet<OperationState> PresentStates() =>
+    (selectedRows.Count > 0 ? Rows.Where(r => selectedRows.Contains(r.Id)) : Rows)
+      .Select(r => r.Status).ToHashSet();
+
+  private static bool AnyAffected(RowActions action, HashSet<OperationState> presentStates) =>
+    presentStates.Any(s => ActionAffectsState(s, action));
+
+  private bool ShowActions => actionsOpen || selectedRows.Count > 0;
+
+  private void ToggleCard() => cardExpanded = !cardExpanded;
+
+  private void ToggleActionsHint() => actionsOpen = !actionsOpen;
+
+  private void HandleRowMouseLeave()
+  {
+    if (selectedRows.Count == 0)
+      actionsOpen = false;
+  }
+
+  private async Task HandleFileSelected(InputFileChangeEventArgs e, Guid printerId)
+  {
+    List<QueueRow> stagedRows = [];
+
+    foreach (var file in e.GetMultipleFiles(20))
+    {
+      using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+      using var ms = new MemoryStream();
+      await stream.CopyToAsync(ms);
+
+      stagedRows.Add(new QueueRow
+      {
+        PrinterId = printerId,
+        FileName = file.Name,
+        ContentType = file.ContentType,
+        SizeBytes = ms.Length,
+        Status = OperationState.Staged,
+        PendingData = ms.ToArray()
+      });
+    }
+
+    await OnFilesAdded.InvokeAsync(stagedRows);
+  }
+
+  private async Task HandleRowClicked(Guid id)
+  {
+    if (selectedRows.Contains(id))
+      selectedRows.Remove(id);
+    else
+      selectedRows.Add(id);
+
+  }
+
+  private async Task HandleActions(RowActions action)
+  {
+    await OnRowAction.InvokeAsync(new ActionArgs
+    {
+      Ids = selectedRows.Count > 0 ? selectedRows : null,
+      Action = action,
+      PrinterId = Printer.Id
+    });
+
+    selectedRows.Clear();
+    actionsOpen = false;
+  }
+}

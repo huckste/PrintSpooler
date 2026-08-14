@@ -25,6 +25,16 @@
     background: var(--sp-border-subtle);
 }
 
+/* Standalone meta caption above a table (Queue/Logs) — a live count, not a
+   page title (the top bar already names the page as a "spooler:~$ x"
+   prompt, so a second big green label here would just repeat it). */
+.sp-meta-caption {
+    color: var(--sp-muted);
+    font-size: 0.74rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
 /* ── Panel / Card ────────────────────────────────────────── */
 
 /* Reusable base — compose with layout classes below */
@@ -79,6 +89,10 @@
     margin-bottom: 0;
 }
 
+.sp-stat-grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+}
+
 .sp-stat-label {
     font-size: 0.68rem;
     color: var(--sp-muted);
@@ -107,11 +121,15 @@
     background: transparent;
 }
 
-.sp-tag-processing { color: var(--sp-green);     border-color: var(--sp-green);     }
+.sp-tag-submitting { color: var(--sp-green);     border-color: var(--sp-green);     }
 .sp-tag-queued     { color: var(--sp-yellow);    border-color: var(--sp-yellow);    }
 .sp-tag-completed  { color: var(--sp-green-dim); border-color: var(--sp-green-dim); }
 .sp-tag-failed     { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-cancelled  { color: var(--sp-muted);     border-color: var(--sp-muted);     }
+.sp-tag-staged     { color: var(--sp-muted);     border-color: var(--sp-muted);     }
+.sp-tag-online     { color: var(--sp-green);     border-color: var(--sp-green);     }
+.sp-tag-offline    { color: var(--sp-red);       border-color: var(--sp-red);       }
+.sp-tag-unknown    { color: var(--sp-muted);     border-color: var(--sp-muted);     }
 
 /* ── Progress Bar ────────────────────────────────────────── */
 
@@ -411,6 +429,10 @@
 
 .sp-table tbody tr.sp-row-active {
     background: var(--sp-panel-alt);
+}
+
+.sp-table tbody tr.sp-row-preview {
+    background: rgba(74, 250, 138, 0.12);
 }
 
 .sp-table tbody tr.sp-row-updated {

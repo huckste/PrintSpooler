@@ -1,0 +1,124 @@
+@page "/printers"
+
+<PageTitle>Printers</PageTitle>
+
+<div class="sp-section-title">Overview</div>
+
+<div class="sp-stat-grid">
+  <div class="sp-card">
+    <p class="sp-stat-label">Total Printers</p>
+    <p class="sp-stat-value">4</p>
+  </div>
+  <div class="sp-card">
+    <p class="sp-stat-label">Online</p>
+    <p class="sp-stat-value">2</p>
+  </div>
+  <div class="sp-card">
+    <p class="sp-stat-label">Offline</p>
+    <p class="sp-stat-value">1</p>
+  </div>
+  <div class="sp-card">
+    <p class="sp-stat-label">Unknown</p>
+    <p class="sp-stat-value">1</p>
+  </div>
+</div>
+
+<div class="sp-section-title">Register Printer</div>
+
+<div class="sp-panel sp-card sp-printers-add-card">
+
+  <div class="sp-scan-head">
+    <span class="sp-label sp-scan-label">Discover on Network<span class="sp-scan-found">— 2 found</span></span>
+    <button class="sp-btn sp-btn-secondary">Scan Network</button>
+  </div>
+
+  <div class="sp-scan-list">
+    <div class="sp-scan-item">
+      <span class="sp-scan-item-dot"></span>
+      <span class="sp-scan-item-name"><span class="sp-printer-glyph">⎙</span> Front Desk — Canon TR8620</span>
+      <span class="sp-scan-item-ip">ipp://10.0.14.63:631/ipp/print</span>
+      <button class="sp-btn sp-btn-primary sp-scan-item-add">+ Add</button>
+    </div>
+    <div class="sp-scan-item">
+      <span class="sp-scan-item-dot"></span>
+      <span class="sp-scan-item-name"><span class="sp-printer-glyph">⎙</span> Shipping — Epson WF-C5390</span>
+      <span class="sp-scan-item-ip">ipp://10.0.14.71:631/ipp/print</span>
+      <button class="sp-btn sp-btn-primary sp-scan-item-add">+ Add</button>
+    </div>
+  </div>
+
+  <div class="sp-scan-divider"><span>or enter manually</span></div>
+
+  <div class="sp-printers-add-fields">
+    <div class="sp-form-group sp-printers-field-name">
+      <label class="sp-label">Name</label>
+      <input class="sp-input" placeholder="e.g. Warehouse Floor — Zebra ZT411" />
+    </div>
+    <div class="sp-form-group sp-printers-field-ip">
+      <label class="sp-label">IP Address</label>
+      <input class="sp-input" placeholder="e.g. 10.0.14.22" />
+    </div>
+    <button class="sp-btn sp-btn-primary sp-printers-manual-submit">Register Printer</button>
+  </div>
+</div>
+
+<div class="sp-section-title">Registered Printers</div>
+
+<div class="sp-panel sp-table-wrapper">
+  <table class="sp-table">
+    <colgroup>
+      <col />
+      <col style="width: 160px" />
+      <col style="width: 100px" />
+      <col style="width: 140px" />
+      <col style="width: 60px" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>IP Address</th>
+        <th class="sp-table-status">Status</th>
+        <th>Last Heartbeat</th>
+        <th class="sp-table-action"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> HP ENVY Inspire 7200</td>
+        <td class="sp-table-muted-sm">HPD0AD08C445FE.local</td>
+        <td class="sp-table-status"><span class="sp-tag sp-tag-online">Online</span></td>
+        <td class="sp-table-muted">12s ago</td>
+        <td class="sp-table-action">
+          <button class="sp-file-entry-remove" title="Remove">x</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> Brother QL-800</td>
+        <td class="sp-table-muted-sm">brother-ql800.local</td>
+        <td class="sp-table-status"><span class="sp-tag sp-tag-online">Online</span></td>
+        <td class="sp-table-muted">41s ago</td>
+        <td class="sp-table-action">
+          <button class="sp-file-entry-remove" title="Remove">x</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> Zebra ZT411 — Warehouse</td>
+        <td class="sp-table-muted-sm">10.0.14.22</td>
+        <td class="sp-table-status"><span class="sp-tag sp-tag-offline">Offline</span></td>
+        <td class="sp-table-muted">14m ago</td>
+        <td class="sp-table-action">
+          <button class="sp-file-entry-remove" title="Remove">x</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> Front Office — Canon TS8320</td>
+        <td class="sp-table-muted-sm">10.0.14.51</td>
+        <td class="sp-table-status"><span class="sp-tag sp-tag-unknown">Unknown</span></td>
+        <td class="sp-table-muted">never</td>
+        <td class="sp-table-action">
+          <button class="sp-file-entry-remove" title="Remove">x</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

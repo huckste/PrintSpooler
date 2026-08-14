@@ -1,0 +1,398 @@
+.sp-stat-value-of {
+    font-size: 1rem;
+    color: var(--sp-muted);
+}
+
+.sp-printer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.sp-printer-header .sp-section-title {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.sp-printer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.sp-printer-card {
+    animation: sp-card-in 0.3s ease backwards;
+    overflow: hidden;
+}
+
+.sp-printer-card-expanded {
+    animation: sp-card-in 0.3s ease backwards, sp-accent-pulse 0.6s ease;
+}
+
+/* Grid, not flex — the 4 children (dot, name, stats, actions) get fixed
+   column slots so stats/actions line up in the same horizontal position
+   across every printer row regardless of how long any one name is. With
+   flex + margin-left:auto on the stats block, each row's columns floated
+   independently and never actually lined up between rows. */
+.sp-printer-row {
+    display: grid;
+    grid-template-columns: 8px 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s;
+}
+
+.sp-printer-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sp-printer-card-expanded .sp-printer-row {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sp-printer-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sp-printer-status-dot-online {
+    background: var(--sp-green);
+    box-shadow: 0 0 4px 1px rgba(74, 250, 138, 0.35);
+    animation: sp-pulse 2.4s ease-in-out infinite;
+}
+
+.sp-printer-status-dot-offline {
+    background: var(--sp-red);
+}
+
+.sp-printer-name {
+    color: var(--sp-text);
+    font-size: 0.92rem;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sp-printer-model {
+    color: var(--sp-muted);
+    font-size: 0.76rem;
+    margin-left: 0.6rem;
+}
+
+.sp-printer-offline-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sp-red);
+    margin-left: 0.6rem;
+}
+
+.sp-printer-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-shrink: 0;
+}
+
+.sp-printer-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.sp-printer-stat-label {
+    font-size: 0.64rem;
+    color: var(--sp-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.sp-printer-stat-value {
+    font-size: 0.88rem;
+    color: var(--sp-text);
+    font-variant-numeric: tabular-nums;
+    min-width: 1ch;
+}
+
+.sp-printer-stat-value-zero {
+    color: var(--sp-muted);
+}
+
+.sp-printer-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Opens only via click now (hint button or row selection) — no hover
+   reveal — so this only ever needs its "open" state, driven by the
+   sp-printer-actions-tray-open class from ShowActions. No border/fill of
+   its own — each button already carries its own outline, a wrapping border
+   here just doubled up against the row's own highlight state. */
+.sp-printer-actions-tray {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0;
+    transform: translateX(12px);
+    white-space: nowrap;
+    transition: max-width 0.25s ease, opacity 0.2s ease, transform 0.25s ease, padding 0.25s ease;
+}
+
+.sp-printer-actions-tray-open {
+    max-width: 440px;
+    opacity: 1;
+    padding: 0.3rem;
+    transform: translateX(0);
+}
+
+/* One button treatment for the whole tray — same fixed width regardless of
+   label length, same resting/hover mechanic. Grey at rest, green on hover,
+   all five identical — per-action colors (tried earlier) read as more
+   inconsistent than helpful next to each other. A fixed width (not flex:1)
+   because flex:1 inside the tray's capped max-width let flex-shrink bottom
+   out at each button's own text width once the row got tight, so
+   "Delete"/"Retry" stayed wider than "Add"/"Send". Deliberately not reusing
+   sp-btn-primary/secondary/danger either: those three don't agree with each
+   other on hover behavior (background vs. border-only vs. color-only). */
+.sp-printer-actions-tray .sp-btn {
+    width: 92px;
+    flex-shrink: 0;
+    text-align: center;
+    color: var(--sp-muted);
+    border-color: var(--sp-border-subtle);
+    background: transparent;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.sp-printer-actions-tray .sp-btn:hover,
+.sp-printer-actions-tray .sp-btn:focus-visible {
+    color: var(--sp-green);
+    border-color: var(--sp-green);
+    background: rgba(74, 250, 138, 0.1);
+    outline: none;
+    box-shadow: none;
+}
+
+/* Toggles the tray open/closed — stays visible in both states (rather than
+   disappearing once open) so there's always a way to close it back down,
+   not just the mouseleave auto-close on the row. */
+.sp-printer-actions-hint {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sp-muted);
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    padding: 0.2rem;
+    transition: color 0.15s ease;
+}
+
+.sp-printer-actions-hint:hover,
+.sp-printer-actions-hint-open {
+    color: var(--sp-green);
+}
+
+.sp-printer-chevron {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sp-muted);
+    font-size: 0.75rem;
+    padding: 0.2rem;
+    transition: transform 0.15s;
+}
+
+.sp-printer-card-expanded .sp-printer-chevron {
+    transform: rotate(180deg);
+    color: var(--sp-green);
+}
+
+.sp-printer-detail {
+    border-top: 1px solid var(--sp-border-subtle);
+}
+
+.sp-printer-detail-pad {
+    padding: 1rem 1.1rem 1.1rem;
+}
+
+.sp-printer-table-wrapper {
+    height: 190px;
+    width: 100%;
+}
+
+.sp-table-status .sp-tag[title] {
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+    cursor: help;
+}
+
+.sp-staged-tray-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+}
+
+.sp-staged-label {
+    font-size: 0.68rem;
+    color: var(--sp-yellow);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.sp-staged-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.sp-staged-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--sp-border-subtle);
+    animation: sp-row-in 0.25s ease backwards;
+}
+
+.sp-staged-item:last-child {
+    border-bottom: none;
+}
+
+.sp-staged-item-name {
+    color: var(--sp-text);
+    font-size: 0.82rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sp-staged-item-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--sp-muted);
+    flex-shrink: 0;
+}
+
+.sp-staged-item-status-submitting {
+    color: var(--sp-green);
+}
+
+.sp-staged-empty {
+    font-size: 0.78rem;
+    color: var(--sp-muted);
+    padding: 0.5rem 0;
+}
+
+.sp-queue-label {
+    font-size: 0.68rem;
+    color: var(--sp-green);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* ── Add-job modal — rendered in its resting (closed) shape here;
+   a real "open" toggle is a code-behind concern, not layout. ── */
+
+.sp-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sp-modal-panel {
+    width: 360px;
+    max-width: calc(100vw - 2rem);
+    background: var(--sp-panel);
+    border: 1px solid var(--sp-border-subtle);
+    border-left: 2px solid var(--sp-border);
+    border-radius: var(--sp-radius);
+    padding: 1.25rem;
+}
+
+.sp-modal-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.sp-modal-title {
+    font-size: 0.85rem;
+    color: var(--sp-text);
+}
+
+.sp-modal-close {
+    background: none;
+    border: none;
+    color: var(--sp-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.sp-modal-sub {
+    font-size: 0.76rem;
+    color: var(--sp-muted);
+    margin-bottom: 1rem;
+}
+
+.sp-modal-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.sp-modal-file-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid var(--sp-border-subtle);
+    border-radius: var(--sp-radius);
+    font-size: 0.82rem;
+    color: var(--sp-text);
+    cursor: pointer;
+}
+
+.sp-modal-file-option:hover {
+    border-color: var(--sp-border);
+}
+
+.sp-modal-file-option input {
+    accent-color: var(--sp-green);
+}
+
+.sp-modal-footer {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.sp-modal-footer .sp-btn {
+    flex: 1;
+    text-align: center;
+}
