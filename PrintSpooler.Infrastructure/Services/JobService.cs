@@ -82,18 +82,9 @@ public class JobService(AppDbContext dbContext, Channel<Guid> jobChannel, IJobNo
 
     job.Status = OperationState.Cancelled;
 
-    dbContext.AuditLogs.Add(
-        new AuditLog
-        {
-          Id = Guid.NewGuid(),
-          JobId = job.Id,
-          Action = JobAction.Cancelled,
-          PerformedBy = ByWho.User,
-        }
-    );
-
     await dbContext.SaveChangesAsync();
     await jobNotifier.JobUpdateAsync(job, CancellationToken.None);
+    await jobChannel.Writer.WriteAsync(job.Id);
 
     return job;
   }
@@ -112,7 +103,7 @@ public class JobService(AppDbContext dbContext, Channel<Guid> jobChannel, IJobNo
       );
 
     job.Status = OperationState.Queued;
-    job.RetryCount = 0;
+    job.RetryCount++;
     job.FailureReason = null;
 
     dbContext.AuditLogs.Add(

@@ -33,7 +33,10 @@ public class PrintJobWorker(
         continue;
 
       if (job.Status == OperationState.Cancelled)
+      {
         Audit(dbContext, job.Id, JobAction.Cancelled, ByWho.User);
+        await RemoveJobData(dbContext, job.Id, ct);
+      }
       else
         await HandleProcessing(dbContext, job, ct);
 
@@ -63,20 +66,24 @@ public class PrintJobWorker(
 
     await SaveAndUpdate(dbContext, job, ct);
 
-    await printerDispatcher
-        .SendAsync(job, jobData?.Bytes, ct)
-        .Switch(
-            value => MarkCompleted(dbContext, job),
-            error => HandleError(dbContext, job, error)
-        );
+    var result = await printerDispatcher.SendAsync(job, jobData?.Bytes, ct);
+
+    if (result.IsError)
+      HandleError(dbContext, job, result);
+    else
+      await MarkCompleted(dbContext, job, ct);
   }
 
-  private void MarkCompleted(AppDbContext dbContext, Job job)
+  private static Task RemoveJobData(AppDbContext dbContext, Guid jobId, CancellationToken ct) =>
+      dbContext.JobData.Where(d => d.JobId == jobId).ExecuteDeleteAsync(ct);
+
+  private async Task MarkCompleted(AppDbContext dbContext, Job job, CancellationToken ct)
   {
     job.Status = OperationState.Completed;
     job.CompletedAt = DateTime.UtcNow;
 
     Audit(dbContext, job.Id, JobAction.Completed, ByWho.System);
+    await RemoveJobData(dbContext, job.Id, ct);
   }
 
   private void HandleError(AppDbContext dbContext, Job job, ErrorOr<Success> result)
