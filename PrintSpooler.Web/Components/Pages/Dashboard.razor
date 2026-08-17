@@ -28,7 +28,7 @@
   <div class="sp-card">
     <p class="sp-stat-label">Processing</p>
     <p class="sp-stat-value">@(cache.Values.SelectMany(c => c).Count(r => r.IsSending || r.Status ==
-            OperationState.Submitting))</p>
+                        OperationState.Submitting))</p>
     </div>
     <div class="sp-card">
       <p class="sp-stat-label">Staged</p>

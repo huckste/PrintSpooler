@@ -9,8 +9,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
-    <PackageReference Include="SharpIpp" Version="0.10.0" />
     <PackageReference Include="SharpIppNext" Version="4.2.1" />
+    <PackageReference Include="Zeroconf" Version="3.7.16" />
   </ItemGroup>
 
   <PropertyGroup>

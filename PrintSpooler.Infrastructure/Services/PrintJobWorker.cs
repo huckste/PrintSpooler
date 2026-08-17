@@ -51,7 +51,7 @@ public class PrintJobWorker(
 
     var pendingJobs = await dbContext
         .Jobs.Include(j => j.Printer)
-        .Where(j => j.Status == OperationState.Queued)
+        .Where(j => j.Status == OperationState.Queued || j.Status == OperationState.Submitting)
         .ToListAsync();
 
     foreach (var job in pendingJobs)
