@@ -17,6 +17,8 @@
 }
 
 .sp-scan-found {
+    display: inline-flex;
+    align-items: center;
     color: var(--sp-green-dim);
     text-transform: none;
     letter-spacing: normal;

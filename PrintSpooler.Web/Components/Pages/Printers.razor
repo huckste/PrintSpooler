@@ -1,4 +1,8 @@
 @page "/printers"
+@using PrintSpooler.Core.Models
+@using PrintSpooler.Web.Services;
+@inject ApiClient api
+@inject IConfiguration config
 
 <PageTitle>Printers</PageTitle>
 
@@ -7,19 +11,19 @@
 <div class="sp-stat-grid">
   <div class="sp-card">
     <p class="sp-stat-label">Total Printers</p>
-    <p class="sp-stat-value">4</p>
+    <p class="sp-stat-value">@(printers.Count)</p>
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Online</p>
-    <p class="sp-stat-value">2</p>
+    <p class="sp-stat-value">@(printers.Count(p => p.Status == PrinterStatus.Online))</p>
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Offline</p>
-    <p class="sp-stat-value">1</p>
+    <p class="sp-stat-value">@(printers.Count(p => p.Status == PrinterStatus.Offline))</p>
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Unknown</p>
-    <p class="sp-stat-value">1</p>
+    <p class="sp-stat-value">@(printers.Count(p => p.Status == PrinterStatus.Unknown))</p>
   </div>
 </div>
 
@@ -28,97 +32,136 @@
 <div class="sp-panel sp-card sp-printers-add-card">
 
   <div class="sp-scan-head">
-    <span class="sp-label sp-scan-label">Discover on Network<span class="sp-scan-found">— 2 found</span></span>
-    <button class="sp-btn sp-btn-secondary">Scan Network</button>
+    <span class="sp-label sp-scan-label">
+      Discover on Network
+
+      <span class="sp-scan-found">
+        @if (scanning)
+        {
+          <div class="sp-spinner" />
+        }
+        else
+        {
+          @($"{scannedPrinters.Count} found")
+        }
+      </span>
+
+    </span>
+    <button class="sp-btn sp-btn-secondary" @onclick="HandleNetworkScan" disabled="@(scanning)">@(!scanning ? "Scan Network" :
+                                                                                                                                                                                                                                                      "Scanning")</button>
+    </div>
+
+    @if (scannedPrinters.Count > 0 && !scanning)
+    {
+      <div class="sp-scan-list">
+
+        @foreach (var printer in scannedPrinters)
+        {
+          <div class="sp-scan-item">
+            <span class="sp-scan-item-dot"></span>
+            <span class="sp-scan-item-name">
+              <span class="sp-printer-glyph">⎙</span>
+              @(printer.Name)
+            </span>
+            <span class="sp-scan-item-ip">@(printer.IpAddress)</span>
+            <button class="sp-btn sp-btn-primary sp-scan-item-add" @onclick="() => HandleAddPrinter(printer)">+ Add</button>
+          </div>
+        }
+
+      </div>
+    }
+
+    <div class="sp-scan-divider">
+      <span>or enter manually</span>
+    </div>
+
+    <div class="sp-printers-add-fields">
+      <div class="sp-form-group sp-printers-field-name">
+        <label class="sp-label">Name</label>
+        <input class="sp-input" placeholder="e.g. Warehouse Floor — Zebra ZT411" />
+      </div>
+      <div class="sp-form-group sp-printers-field-ip">
+        <label class="sp-label">IP Address</label>
+        <input class="sp-input" placeholder="e.g. 10.0.14.22" />
+      </div>
+      <button class="sp-btn sp-btn-primary sp-printers-manual-submit">Register Printer</button>
+    </div>
   </div>
 
-  <div class="sp-scan-list">
-    <div class="sp-scan-item">
-      <span class="sp-scan-item-dot"></span>
-      <span class="sp-scan-item-name"><span class="sp-printer-glyph">⎙</span> Front Desk — Canon TR8620</span>
-      <span class="sp-scan-item-ip">ipp://10.0.14.63:631/ipp/print</span>
-      <button class="sp-btn sp-btn-primary sp-scan-item-add">+ Add</button>
-    </div>
-    <div class="sp-scan-item">
-      <span class="sp-scan-item-dot"></span>
-      <span class="sp-scan-item-name"><span class="sp-printer-glyph">⎙</span> Shipping — Epson WF-C5390</span>
-      <span class="sp-scan-item-ip">ipp://10.0.14.71:631/ipp/print</span>
-      <button class="sp-btn sp-btn-primary sp-scan-item-add">+ Add</button>
-    </div>
+  <div class="sp-section-title">Registered Printers</div>
+
+  <div class="sp-panel sp-table-wrapper">
+    <table class="sp-table">
+      <colgroup>
+        <col />
+        <col style="width: 200px" />
+        <col style="width: 150px" />
+        <col style="width: 100px" />
+        <col style="width: 140px" />
+        <col style="width: 60px" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Host</th>
+          <th>IP Address</th>
+          <th class="sp-table-status">Status</th>
+          <th>Last Heartbeat</th>
+          <th class="sp-table-action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var printer in printers)
+        {
+          <tr>
+            <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> @(printer.Name)</td>
+            <td class="sp-table-muted-sm">@(printer.Host)</td>
+            <td class="sp-table-muted-sm">@(printer.IpAddress)</td>
+            <td class="sp-table-status"><span class="sp-tag sp-tag-online">@(printer.Status)</span></td>
+            <td class="sp-table-muted">12s ago</td>
+            <td class="sp-table-action">
+              <button class="sp-file-entry-remove" title="Remove" @onclick="() => HandleDeletePrinter(printer)">x</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
 
-  <div class="sp-scan-divider"><span>or enter manually</span></div>
+@code {
+  private List<Printer> printers = [];
+  private List<Printer> scannedPrinters = [];
+  private bool scanning;
 
-  <div class="sp-printers-add-fields">
-    <div class="sp-form-group sp-printers-field-name">
-      <label class="sp-label">Name</label>
-      <input class="sp-input" placeholder="e.g. Warehouse Floor — Zebra ZT411" />
-    </div>
-    <div class="sp-form-group sp-printers-field-ip">
-      <label class="sp-label">IP Address</label>
-      <input class="sp-input" placeholder="e.g. 10.0.14.22" />
-    </div>
-    <button class="sp-btn sp-btn-primary sp-printers-manual-submit">Register Printer</button>
-  </div>
-</div>
+  protected override async Task OnInitializedAsync() => await LoadPrinters();
 
-<div class="sp-section-title">Registered Printers</div>
+  private async Task LoadPrinters()
+  {
+    printers = (await api.Get<Printer>("/Printer")).Match(
+          value => value,
+          error => []
+        );
+  }
 
-<div class="sp-panel sp-table-wrapper">
-  <table class="sp-table">
-    <colgroup>
-      <col />
-      <col style="width: 160px" />
-      <col style="width: 100px" />
-      <col style="width: 140px" />
-      <col style="width: 60px" />
-    </colgroup>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>IP Address</th>
-        <th class="sp-table-status">Status</th>
-        <th>Last Heartbeat</th>
-        <th class="sp-table-action"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> HP ENVY Inspire 7200</td>
-        <td class="sp-table-muted-sm">HPD0AD08C445FE.local</td>
-        <td class="sp-table-status"><span class="sp-tag sp-tag-online">Online</span></td>
-        <td class="sp-table-muted">12s ago</td>
-        <td class="sp-table-action">
-          <button class="sp-file-entry-remove" title="Remove">x</button>
-        </td>
-      </tr>
-      <tr>
-        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> Brother QL-800</td>
-        <td class="sp-table-muted-sm">brother-ql800.local</td>
-        <td class="sp-table-status"><span class="sp-tag sp-tag-online">Online</span></td>
-        <td class="sp-table-muted">41s ago</td>
-        <td class="sp-table-action">
-          <button class="sp-file-entry-remove" title="Remove">x</button>
-        </td>
-      </tr>
-      <tr>
-        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> Zebra ZT411 — Warehouse</td>
-        <td class="sp-table-muted-sm">10.0.14.22</td>
-        <td class="sp-table-status"><span class="sp-tag sp-tag-offline">Offline</span></td>
-        <td class="sp-table-muted">14m ago</td>
-        <td class="sp-table-action">
-          <button class="sp-file-entry-remove" title="Remove">x</button>
-        </td>
-      </tr>
-      <tr>
-        <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> Front Office — Canon TS8320</td>
-        <td class="sp-table-muted-sm">10.0.14.51</td>
-        <td class="sp-table-status"><span class="sp-tag sp-tag-unknown">Unknown</span></td>
-        <td class="sp-table-muted">never</td>
-        <td class="sp-table-action">
-          <button class="sp-file-entry-remove" title="Remove">x</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+  private async Task HandleNetworkScan()
+  {
+    scanning = true;
+
+    scannedPrinters = (await api.Get<Printer>("/PrinterDiscovery")).Match(
+    value => value,
+    error => []
+    );
+
+    scanning = false;
+  }
+
+  private async Task HandleAddPrinter(Printer printer)
+  {
+    (await api.Post<Printer>("/Printer", printer)).ThenDo(v => printers.Add(v));
+  }
+
+  private async Task HandleDeletePrinter(Printer printer)
+  {
+    (await api.Delete($"/Printer/{printer.Id}")).ThenDo(_ => printers.Remove(printer));
+  }
+}

@@ -5,7 +5,8 @@ using PrintSpooler.Core.Models;
 
 public interface IPrinterService
 {
-    Task<ErrorOr<Printer>> GetPrinter(Guid id);
-    Task<ErrorOr<Printer>> CreatePrinter(Printer printer);
-    Task<List<Printer>> GetPrinters();
+  Task<ErrorOr<Printer>> GetPrinter(Guid id);
+  Task<ErrorOr<Printer>> CreatePrinter(Printer printer);
+  Task<List<Printer>> GetPrinters();
+  Task<ErrorOr<Success>> DeletePrinter(Guid id);
 }
