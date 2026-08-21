@@ -40,7 +40,7 @@ public class PrinterWatch(Printer printer, IServiceScopeFactory scopeFactory, IP
     if (_jobs.IsEmpty)
       _timer.Period = Idle;
 
-    await printerDispatcher.GetPrinterJobsAsync(printer, [.. _jobs.Keys]).Switch(
+    await printerDispatcher.GetPrinterJobsAsync(printer, [.. _jobs.Keys], ct).Switch(
         async value => await HandleStateUpdate(value, ct),
          HandleErrors
        );

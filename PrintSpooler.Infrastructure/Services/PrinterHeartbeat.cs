@@ -27,7 +27,7 @@ public class PrinterHeartbeat(Printer printer, IServiceScopeFactory scopeFactory
 
   private async Task Poll(CancellationToken ct)
   {
-    await printerDispatcher.GetPrinterStatusAsync(printer).Switch(
+    await printerDispatcher.GetPrinterStatusAsync(printer, ct).Switch(
         async status => await HandleStatusUpdate(status, ct),
         HandleErrors
        );
