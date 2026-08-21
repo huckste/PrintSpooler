@@ -5,7 +5,7 @@ using PrintSpooler.Core.Services;
 
 namespace PrintSpooler.Api.Services;
 
-public class JobNotifier(IHubContext<JobHub> hubContext) : IJobNotifier
+public class JobNotifier(IHubContext<UpdatesHub> hubContext) : IJobNotifier
 {
     public async Task JobUpdateAsync(Job job, CancellationToken ct)
     {
