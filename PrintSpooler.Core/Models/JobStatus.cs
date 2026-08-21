@@ -1,11 +1,13 @@
 namespace PrintSpooler.Core.Models;
 
-public enum OperationState
+public enum JobStatus
 {
   Staged,
   Queued,
   Submitting,
+  Processing,
   Cancelled,
   Completed,
   Failed,
+  Unknown
 }

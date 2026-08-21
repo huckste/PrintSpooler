@@ -9,7 +9,7 @@ public class QueueRow
   public string FileName { get; init; } = string.Empty;
   public string ContentType { get; init; } = string.Empty;
 
-  public OperationState Status { get; set; }
+  public JobStatus Status { get; set; }
   public long SizeBytes { get; set; }
   public int RetryCount { get; set; }
   public DateTime? SubmittedAt { get; set; }
