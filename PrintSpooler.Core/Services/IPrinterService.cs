@@ -9,4 +9,5 @@ public interface IPrinterService
   Task<ErrorOr<Printer>> CreatePrinter(Printer printer);
   Task<List<Printer>> GetPrinters();
   Task<ErrorOr<Success>> DeletePrinter(Guid id);
+  Task UpdatePrinter(Printer printer, CancellationToken ct = default);
 }

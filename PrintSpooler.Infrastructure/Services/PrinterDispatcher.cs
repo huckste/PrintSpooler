@@ -115,7 +115,7 @@ public class PrinterDispatcher : IPrinterDispatcher
       OperationAttributes = new()
       {
         PrinterUri = new Uri($"ipp://{printer.Host}:631/ipp/print"),
-        RequestedAttributes = ["printer-state", "printer-state-reasons", "printer-is-accepting-jobs"],
+        RequestedAttributes = ["printer-state", "printer-state-reasons"],
       }
     };
 
@@ -130,6 +130,7 @@ public class PrinterDispatcher : IPrinterDispatcher
         PrinterState.Stopped => PrinterStatus.Offline,
         _ => PrinterStatus.Unknown,
       };
+
     }
     catch (SharpIpp.Exceptions.IppResponseException ex)
     {

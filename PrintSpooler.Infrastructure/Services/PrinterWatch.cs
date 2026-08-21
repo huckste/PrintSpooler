@@ -16,7 +16,7 @@ public class PrinterWatch(Printer printer, IServiceScopeFactory scopeFactory, IP
 
   public void AddJob(int ippId, Guid jobId)
   {
-    _jobs.TryAdd(ippId, new WatchedJob(jobId, JobStatus.Submitting));
+    _jobs.TryAdd(ippId, new WatchedJob(jobId, JobStatus.Unknown));
     _timer.Period = Active;
   }
 
@@ -72,17 +72,12 @@ public class PrinterWatch(Printer printer, IServiceScopeFactory scopeFactory, IP
         continue;
 
       await jobService.GetJob(watched.JobId)
-        .ThenDo(j =>
+        .ThenDoAsync(async j =>
         {
           if (ippJob.State is JobStatus.Failed or JobStatus.Cancelled or JobStatus.Completed)
             _jobs.TryRemove(ippId, out _);
           else
             _jobs[ippId] = new WatchedJob(watched.JobId, ippJob.State);
-        })
-        .ThenDoAsync(async j =>
-        {
-          j.Status = ippJob.State;
-          j.FailureReason = ippJob.Message ?? "";
 
           JobAction? action = ippJob.State switch
           {
@@ -92,8 +87,12 @@ public class PrinterWatch(Printer printer, IServiceScopeFactory scopeFactory, IP
             _ => null
           };
 
+          var update = new JobUpdate(j.Id, ippJob.State).NotifyDashboard();
+
           if (action != null)
-            await jobService.UpdateJob(j, (JobAction)action, ByWho.System, ct);
+            update = update.Log((JobAction)action, ByWho.System, ippJob.Message);
+
+          await jobService.UpdateJob(update, ct);
         });
     }
   }
