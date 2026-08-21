@@ -2,9 +2,10 @@ namespace PrintSpooler.Web.Services;
 
 public class FormatTime
 {
-    private const int Day = 1440;
-    private const int Hour = 60;
-    private const int Minute = 1;
+    private const int DaySeconds = 86400;
+    private const int HourSeconds = 3600;
+    private const int MinuteSeconds = 60;
+    private const int JustNowSeconds = 5;
 
     public static string Short(DateTime time)
     {
@@ -19,11 +20,12 @@ public class FormatTime
     {
         var age = DateTime.UtcNow - time;
 
-        return age.TotalMinutes switch
+        return age.TotalSeconds switch
         {
-            < Minute => "Just Now",
-            < Hour => $"{(int)age.TotalMinutes}m ago",
-            < Day => $"{(int)age.TotalHours}h ago",
+            < JustNowSeconds => "Just Now",
+            < MinuteSeconds => $"{(int)age.TotalSeconds}s ago",
+            < HourSeconds => $"{(int)age.TotalMinutes}m ago",
+            < DaySeconds => $"{(int)age.TotalHours}h ago",
             _ => $"{(int)age.TotalDays}d ago",
         };
     }

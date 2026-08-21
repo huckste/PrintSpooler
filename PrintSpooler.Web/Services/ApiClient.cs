@@ -7,11 +7,11 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
 {
   private readonly HttpClient client = httpClientFactory.CreateClient("PrintSpoolerApi");
 
-  public async Task<ErrorOr<List<T>>> Get<T>(string url)
+  private static async Task<ErrorOr<T>> Safe<T>(Func<Task<ErrorOr<T>>> action)
   {
     try
     {
-      return await client.GetFromJsonAsync<List<T>>(url) ?? [];
+      return await action();
     }
     catch (Exception ex)
     {
@@ -20,107 +20,65 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
     }
   }
 
-  public async Task<ErrorOr<T?>> Get<T>(string url, Guid id)
-  {
-    try
-    {
-      return await client.GetFromJsonAsync<T>($"{url}/{id}");
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex);
-      return Error.Failure("Api.RequestFailed", ex.Message);
-    }
-  }
+  public Task<ErrorOr<List<T>>> Get<T>(string url) =>
+      Safe<List<T>>(async () => await client.GetFromJsonAsync<List<T>>(url) ?? []);
 
-  public async Task<ErrorOr<TResponse>> Get<TResponse, TQuery>(string url, TQuery queryParams)
-  {
-    try
-    {
-      var baseAddress = client.BaseAddress;
+  public Task<ErrorOr<T?>> Get<T>(string url, Guid id) =>
+      Safe<T?>(async () => await client.GetFromJsonAsync<T>($"{url}/{id}"));
 
-      if (baseAddress is null)
-        return Error.Failure("Api.BaseAdress", "Base address cannot be null");
-
-      var builder = new UriBuilder(baseAddress);
-
-      var parameters = new RouteValueDictionary(queryParams).ToDictionary(
-          k => k.Key,
-          v => v.Value?.ToString()
-      );
-
-      var requestUri = QueryHelpers.AddQueryString(url, parameters);
-      Console.WriteLine(requestUri);
-
-      var result = await client.GetFromJsonAsync<TResponse>(requestUri);
-
-      if (result is null)
-        return Error.Failure("Api.EmptyResponse", "Server returned no content");
-
-      return result;
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex);
-      return Error.Failure("Api.RequestFailed", ex.Message);
-    }
-  }
-
-  public async Task<ErrorOr<HttpResponseMessage>> HealthCheck()
-  {
-    try
-    {
-      return await client.GetAsync("/health");
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex);
-      return Error.Failure("Api.RequestFailed", ex.Message);
-    }
-  }
-
-  public async Task<ErrorOr<TResponse>> Post<TResponse>(string url, object value)
-  {
-    try
-    {
-      var response = await client.PostAsJsonAsync(url, value);
-
-      if (response.IsSuccessStatusCode)
+  public Task<ErrorOr<TResponse>> Get<TResponse, TQuery>(string url, TQuery queryParams) =>
+      Safe<TResponse>(async () =>
       {
+        var baseAddress = client.BaseAddress;
+
+        if (baseAddress is null)
+          return Error.Failure("Api.BaseAdress", "Base address cannot be null");
+
+        var parameters = new RouteValueDictionary(queryParams).ToDictionary(
+            k => k.Key,
+            v => v.Value?.ToString()
+        );
+
+        var requestUri = QueryHelpers.AddQueryString(url, parameters);
+        Console.WriteLine(requestUri);
+
+        var result = await client.GetFromJsonAsync<TResponse>(requestUri);
+
+        return result is null
+            ? Error.Failure("Api.EmptyResponse", "Server returned no content")
+            : result;
+      });
+
+  public Task<ErrorOr<HttpResponseMessage>> HealthCheck() =>
+      Safe<HttpResponseMessage>(async () => await client.GetAsync("/health"));
+
+  public Task<ErrorOr<TResponse>> Post<TResponse>(string url, object value) =>
+      Safe<TResponse>(async () =>
+      {
+        var response = await client.PostAsJsonAsync(url, value);
+
+        if (!response.IsSuccessStatusCode)
+        {
+          var body = await response.Content.ReadAsStringAsync();
+          return Error.Failure($"{(int)response.StatusCode}", body);
+        }
+
         var result = await response.Content.ReadFromJsonAsync<TResponse>();
 
-        if (result is null)
-          return Error.Failure("Api.EmptyResponse", "Server returned no content");
+        return result is null
+            ? Error.Failure("Api.EmptyResponse", "Server returned no content")
+            : result;
+      });
 
-        return result;
-      }
+  public Task<ErrorOr<Success>> Delete(string url) =>
+      Safe<Success>(async () =>
+      {
+        var response = await client.DeleteAsync(url);
 
-      var body = await response.Content.ReadAsStringAsync();
-      return Error.Failure($"{(int)response.StatusCode}", body);
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex);
-      return Error.Failure("refused", ex.Message);
-    }
-  }
+        if (response.IsSuccessStatusCode)
+          return Result.Success;
 
-  public async Task<ErrorOr<Success>> Delete(string url)
-  {
-    try
-    {
-      var response = await client.DeleteAsync(url);
-
-      if (response.IsSuccessStatusCode)
-        return Result.Success;
-
-      var body = await response.Content.ReadAsStringAsync();
-      return Error.Failure($"{(int)response.StatusCode}", body);
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine(ex);
-      return Error.Failure("refused", ex.Message);
-    }
-  }
+        var body = await response.Content.ReadAsStringAsync();
+        return Error.Failure($"{(int)response.StatusCode}", body);
+      });
 }

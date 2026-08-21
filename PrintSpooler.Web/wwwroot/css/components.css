@@ -26,8 +26,8 @@
 }
 
 /* Standalone meta caption above a table (Queue/Logs) — a live count, not a
-   page title (the top bar already names the page as a "spooler:~$ x"
-   prompt, so a second big green label here would just repeat it). */
+   page title (the top bar already names the page, so a second big green
+   label here would just repeat it). */
 .sp-meta-caption {
     color: var(--sp-muted);
     font-size: 0.74rem;
@@ -79,7 +79,7 @@
     border: 1px solid var(--sp-border-subtle);
     border-radius: var(--sp-radius);
     overflow: hidden;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
 }
 
 .sp-stat-grid .sp-card {
@@ -87,6 +87,7 @@
     border-left: none;
     border-radius: 0;
     margin-bottom: 0;
+    padding: 0.75rem 1rem;
 }
 
 .sp-stat-grid-5 {
@@ -94,16 +95,16 @@
 }
 
 .sp-stat-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     color: var(--sp-muted);
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.3rem;
     font-weight: normal;
 }
 
 .sp-stat-value {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     color: var(--sp-text);
     line-height: 1;
 }
@@ -121,8 +122,9 @@
     background: transparent;
 }
 
-.sp-tag-submitting { color: var(--sp-green);     border-color: var(--sp-green);     }
-.sp-tag-queued     { color: var(--sp-yellow);    border-color: var(--sp-yellow);    }
+.sp-tag-submitting  { color: var(--sp-green);     border-color: var(--sp-green);     }
+.sp-tag-processing  { color: var(--sp-green);     border-color: var(--sp-green);     }
+.sp-tag-queued      { color: var(--sp-yellow);    border-color: var(--sp-yellow);    }
 .sp-tag-completed  { color: var(--sp-green-dim); border-color: var(--sp-green-dim); }
 .sp-tag-failed     { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-cancelled  { color: var(--sp-muted);     border-color: var(--sp-muted);     }
@@ -130,6 +132,20 @@
 .sp-tag-online     { color: var(--sp-green);     border-color: var(--sp-green);     }
 .sp-tag-offline    { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-unknown    { color: var(--sp-muted);     border-color: var(--sp-muted);     }
+
+/* ── Status Dot ──────────────────────────────────────────── */
+
+.sp-printer-status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sp-muted);
+}
+
+.sp-printer-status-dot-online   { background: var(--sp-green); }
+.sp-printer-status-dot-offline  { background: var(--sp-red);   }
+.sp-printer-status-dot-unknown  { background: var(--sp-muted); }
 
 /* ── Progress Bar ────────────────────────────────────────── */
 
@@ -386,6 +402,14 @@
     position: relative;
 }
 
+/* Short, unpaginated lists (e.g. Registered Printers) — cap to about
+   5 rows instead of the paginated tables' fixed 50vh. */
+.sp-table-wrapper.sp-table-wrapper-compact {
+    height: auto;
+    max-height: 14rem;
+    overflow-y: auto;
+}
+
 .sp-table {
     width: 100%;
     border-collapse: separate;
@@ -442,6 +466,14 @@
 
 .sp-table tbody tr.sp-row-fading {
     animation: sp-entry-out 0.5s ease forwards;
+}
+
+.sp-table tbody tr.sp-row-completed {
+    background: rgba(74, 250, 138, 0.12);
+}
+
+.sp-table tbody tr.sp-row-completed td {
+    color: var(--sp-green);
 }
 
 .sp-table td {

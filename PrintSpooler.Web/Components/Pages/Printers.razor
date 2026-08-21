@@ -1,8 +1,10 @@
 @page "/printers"
 @using PrintSpooler.Core.Models
 @using PrintSpooler.Web.Services;
+@using Microsoft.AspNetCore.SignalR.Client
 @inject ApiClient api
 @inject IConfiguration config
+@implements IAsyncDisposable
 
 <PageTitle>Printers</PageTitle>
 
@@ -27,7 +29,7 @@
   </div>
 </div>
 
-<div class="sp-section-title">Register Printer</div>
+<div class="sp-section-title">Discover Printers</div>
 
 <div class="sp-panel sp-card sp-printers-add-card">
 
@@ -48,7 +50,7 @@
 
     </span>
     <button class="sp-btn sp-btn-secondary" @onclick="HandleNetworkScan" disabled="@(scanning)">@(!scanning ? "Scan Network" :
-                                                                                                                                                                                                                                                      "Scanning")</button>
+                                                                                                                                                                                                                                                                                                                              "Scanning")</button>
     </div>
 
     @if (scannedPrinters.Count > 0 && !scanning)
@@ -71,26 +73,11 @@
       </div>
     }
 
-    <div class="sp-scan-divider">
-      <span>or enter manually</span>
-    </div>
-
-    <div class="sp-printers-add-fields">
-      <div class="sp-form-group sp-printers-field-name">
-        <label class="sp-label">Name</label>
-        <input class="sp-input" placeholder="e.g. Warehouse Floor — Zebra ZT411" />
-      </div>
-      <div class="sp-form-group sp-printers-field-ip">
-        <label class="sp-label">IP Address</label>
-        <input class="sp-input" placeholder="e.g. 10.0.14.22" />
-      </div>
-      <button class="sp-btn sp-btn-primary sp-printers-manual-submit">Register Printer</button>
-    </div>
   </div>
 
   <div class="sp-section-title">Registered Printers</div>
 
-  <div class="sp-panel sp-table-wrapper">
+  <div class="sp-panel sp-table-wrapper sp-table-wrapper-compact">
     <table class="sp-table">
       <colgroup>
         <col />
@@ -117,30 +104,60 @@
             <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> @(printer.Name)</td>
             <td class="sp-table-muted-sm">@(printer.Host)</td>
             <td class="sp-table-muted-sm">@(printer.IpAddress)</td>
-            <td class="sp-table-status"><span class="sp-tag sp-tag-online">@(printer.Status)</span></td>
-            <td class="sp-table-muted">12s ago</td>
-            <td class="sp-table-action">
-              <button class="sp-file-entry-remove" title="Remove" @onclick="() => HandleDeletePrinter(printer)">x</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+            <td class="sp-table-status"><span class="sp-tag sp-tag-@(printer.Status.ToString().ToLower())">@(printer.Status)</span></td>
+            <td class="sp-table-muted">@(printer.LastHeartbeat is DateTime lastHeartbeat ? FormatTime.Short(lastHeartbeat) :
+                                  "-")</td>
+              <td class="sp-table-action">
+                <button class="sp-file-entry-remove" title="Remove" @onclick="() => HandleDeletePrinter(printer)">x</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
 @code {
   private List<Printer> printers = [];
   private List<Printer> scannedPrinters = [];
   private bool scanning;
+  private HubConnection connection = default!;
+  private System.Threading.Timer agoTicker = default!;
 
-  protected override async Task OnInitializedAsync() => await LoadPrinters();
+  protected override async Task OnInitializedAsync()
+  {
+    await LoadPrinters();
+    agoTicker = new System.Threading.Timer(_ => InvokeAsync(StateHasChanged), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+  }
 
   private async Task LoadPrinters()
   {
+    var apiBaseAddress = config["ApiBaseAddress"]
+              ?? throw new InvalidOperationException("ApiBaseAddress is not configured.");
+
+    connection = new HubConnectionBuilder().WithUrl($"{apiBaseAddress}/hubs/updates").Build();
+    connection.On<Printer>("PrinterUpdated", HandlePrinterUpdate);
+
+    try
+    {
+      await connection.StartAsync();
+    }
+    catch { }
     printers = (await api.Get<Printer>("/Printer")).Match(
           value => value,
           error => []
         );
+  }
+
+  private void HandlePrinterUpdate(Printer update)
+  {
+    InvokeAsync(() =>
+    {
+      var printer = printers.FirstOrDefault(p => p.Id == update.Id);
+      if (printer is null) return;
+      printer.Status = update.Status;
+      printer.LastHeartbeat = update.LastHeartbeat;
+      StateHasChanged();
+    });
   }
 
   private async Task HandleNetworkScan()
@@ -163,5 +180,11 @@
   private async Task HandleDeletePrinter(Printer printer)
   {
     (await api.Delete($"/Printer/{printer.Id}")).ThenDo(_ => printers.Remove(printer));
+  }
+
+  public async ValueTask DisposeAsync()
+  {
+    await agoTicker.DisposeAsync();
+    await connection.DisposeAsync();
   }
 }

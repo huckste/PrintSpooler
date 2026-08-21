@@ -4,7 +4,7 @@
 
 <div @key="Key" class="sp-panel sp-printer-card @(cardExpanded ? "sp-printer-card-expanded" : "")">
   <div class="sp-printer-row" @onclick="ToggleCard" @onmouseleave="HandleRowMouseLeave">
-    <span class="sp-printer-status-dot sp-printer-status-dot-online"></span>
+    <span class="sp-printer-status-dot sp-printer-status-dot-@(Printer.Status.ToString().ToLower())"></span>
     <span class="sp-printer-name">@(Printer.Name)
       <span class="sp-printer-model">@(Printer.IpAddress)</span>
     </span>
@@ -19,16 +19,16 @@
       {
         <span class="sp-printer-stat">
           <span class="sp-printer-stat-label">Queued</span>
-          <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == OperationState.Queued))</span>
+          <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == JobStatus.Queued))</span>
         </span>
         <span class="sp-printer-stat">
           <span class="sp-printer-stat-label">Processing</span>
-          <span class="sp-printer-stat-value">@(Rows.Count(r => r.IsSending || r.Status ==
-                      OperationState.Submitting))</span>
+          <span class="sp-printer-stat-value">@(Rows.Count(r => r.IsSending || r.Status is
+                                                                                                            JobStatus.Submitting or JobStatus.Processing))</span>
           </span>
           <span class="sp-printer-stat">
             <span class="sp-printer-stat-label">Failed</span>
-            <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == OperationState.Failed))</span>
+            <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == JobStatus.Failed))</span>
           </span>
         }
       </div>
@@ -98,36 +98,38 @@
 
                 @foreach (var row in Rows)
                 {
-                  <tr @key="row.Id"
-                      class="@(selectedRows.Contains(row.Id) ? "sp-row-active" : "") @(FadingRowIds.Contains(row.Id) ? "sp-row-fading" : "") @(IsPreviewTarget(row) ? "sp-row-preview" : "")"
-                      @onclick="() => HandleRowClicked(row.Id)">
+                  <tr @key="row.Id" class="@(selectedRows.Contains(row.Id) ? "sp-row-active" : "") 
+                    @(FadingRowIds.Contains(row.Id) ? "sp-row-fading" : "") 
+                    @(CompletedRowIds.Contains(row.Id) ? "sp-row-completed" : "") 
+                    @(IsPreviewTarget(row) ? "sp-row-preview" : "")" @onclick="() => HandleRowClicked(row.Id)">
 
                     <td class="sp-table-primary">@(row.FileName)</td>
                     <td class="sp-table-num sp-table-muted">@(FormatBytes.Short(row.SizeBytes))</td>
                     <td class="sp-table-num sp-table-muted">@(row.RetryCount)</td>
-                    <td class="sp-table-muted">@(row.SubmittedAt is DateTime submittedAt ? FormatTime.Short(submittedAt) :
-                               "—")</td>
-                      <td class="sp-table-status">
-                        <span class="sp-tag sp-tag-@(row.Status.ToString().ToLower())"
-                              title="@(row.Status == OperationState.Failed ? row.ErrorText : null)">@(row.Status)</span>
-                      </td>
-                      <td class="sp-table-action">
+                    <td class="sp-table-muted">
+                      @(row.SubmittedAt is DateTime submittedAt ? FormatTime.Short(submittedAt) : "—")
+                    </td>
+                    <td class="sp-table-status">
+                      <span class="sp-tag sp-tag-@(row.Status.ToString().ToLower())"
+                            title="@(row.Status == JobStatus.Failed ? row.ErrorText : null)">@(row.Status)</span>
+                    </td>
+                    <td class="sp-table-action">
 
-                        @if (row.IsSending || row.Status == OperationState.Submitting)
-                        {
-                          <div class="sp-spinner"></div>
-                        }
-                      </td>
+                      @if (row.IsSending || row.Status is JobStatus.Submitting or JobStatus.Processing)
+                      {
+                        <div class="sp-spinner"></div>
+                      }
+                    </td>
 
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
         </div>
-      }
-    </div>
+      </div>
+    }
+  </div>
 @code
 {
   [Parameter] public List<QueueRow> Rows { get; set; } = [];
@@ -136,6 +138,7 @@
   [Parameter] public EventCallback<List<QueueRow>> OnFilesAdded { get; set; }
   [Parameter] public EventCallback<ActionArgs> OnRowAction { get; set; }
   [Parameter] public HashSet<Guid> FadingRowIds { get; set; } = [];
+  [Parameter] public HashSet<Guid> CompletedRowIds { get; set; } = [];
 
   private HashSet<Guid> selectedRows = [];
   private bool actionsOpen;
@@ -151,22 +154,22 @@
 
   private void ClearHoveredAction() => hoveredAction = null;
 
-  private static bool ActionAffectsState(OperationState state, RowActions action) => action switch
+  private static bool ActionAffectsState(JobStatus state, RowActions action) => action switch
   {
-    RowActions.Delete => state is OperationState.Failed or OperationState.Staged,
-    RowActions.Send => state == OperationState.Staged,
-    RowActions.Retry => state == OperationState.Failed,
+    RowActions.Delete => state is JobStatus.Failed or JobStatus.Staged,
+    RowActions.Send => state == JobStatus.Staged,
+    RowActions.Retry => state == JobStatus.Failed,
     _ => false
   };
 
   private bool IsPreviewTarget(QueueRow row) =>
     hoveredAction is RowActions action && ActionAffectsState(row.Status, action);
 
-  private HashSet<OperationState> PresentStates() =>
+  private HashSet<JobStatus> PresentStates() =>
     (selectedRows.Count > 0 ? Rows.Where(r => selectedRows.Contains(r.Id)) : Rows)
       .Select(r => r.Status).ToHashSet();
 
-  private static bool AnyAffected(RowActions action, HashSet<OperationState> presentStates) =>
+  private static bool AnyAffected(RowActions action, HashSet<JobStatus> presentStates) =>
     presentStates.Any(s => ActionAffectsState(s, action));
 
   private bool ShowActions => actionsOpen || selectedRows.Count > 0;
@@ -197,7 +200,7 @@
         FileName = file.Name,
         ContentType = file.ContentType,
         SizeBytes = ms.Length,
-        Status = OperationState.Staged,
+        Status = JobStatus.Staged,
         PendingData = ms.ToArray()
       });
     }
@@ -216,6 +219,7 @@
 
   private async Task HandleActions(RowActions action)
   {
+    Console.WriteLine($"action: {action}");
     await OnRowAction.InvokeAsync(new ActionArgs
     {
       Ids = selectedRows.Count > 0 ? selectedRows : null,

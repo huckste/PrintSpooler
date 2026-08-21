@@ -23,20 +23,20 @@
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Queued</p>
-    <p class="sp-stat-value">@(CountByStatus(OperationState.Queued))</p>
+    <p class="sp-stat-value">@(CountByStatus(JobStatus.Queued))</p>
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Processing</p>
-    <p class="sp-stat-value">@(cache.Values.SelectMany(c => c).Count(r => r.IsSending || r.Status ==
-                        OperationState.Submitting))</p>
+    <p class="sp-stat-value">@(cache.Values.SelectMany(c => c).Count(r => r.IsSending || r.Status is
+                                    JobStatus.Submitting or JobStatus.Processing))</p>
     </div>
     <div class="sp-card">
       <p class="sp-stat-label">Staged</p>
-      <p class="sp-stat-value">@(CountByStatus(OperationState.Staged))</p>
+      <p class="sp-stat-value">@(CountByStatus(JobStatus.Staged))</p>
     </div>
     <div class="sp-card">
       <p class="sp-stat-label">Failed</p>
-      <p class="sp-stat-value">@(CountByStatus(OperationState.Failed))</p>
+      <p class="sp-stat-value">@(CountByStatus(JobStatus.Failed))</p>
     </div>
   </div>
 
@@ -46,7 +46,7 @@
     @foreach (var printer in printers)
     {
       <PrinterCard Key="printer.Id" Printer="printer" Rows="cache[printer.Id]" FadingRowIds="fadingRowIds"
-                   OnFilesAdded="HandleFilesAdded" OnRowAction="HandleAction" />
+                   CompletedRowIds="completedRowIds" OnFilesAdded="HandleFilesAdded" OnRowAction="HandleAction" />
     }
 
   </div>
@@ -57,6 +57,7 @@
   private const string submittedBy = "dashboard-user";
   private Dictionary<Guid, List<QueueRow>> cache = [];
   private readonly HashSet<Guid> fadingRowIds = [];
+  private readonly HashSet<Guid> completedRowIds = [];
   private bool TargetedRow(QueueRow row, HashSet<Guid>? ids) => ids is null || ids.Contains(row.Id);
 
   protected override async Task OnInitializedAsync()
@@ -64,8 +65,9 @@
     var apiBaseAddress = config["ApiBaseAddress"]
           ?? throw new InvalidOperationException("ApiBaseAddress is not configured.");
 
-    connection = new HubConnectionBuilder().WithUrl($"{apiBaseAddress}/hubs/jobs").Build();
+    connection = new HubConnectionBuilder().WithUrl($"{apiBaseAddress}/hubs/updates").Build();
     connection.On<Job>("JobUpdated", HandleJobUpdate);
+    connection.On<Printer>("PrinterUpdated", HandlePrinterUpdate);
 
     try
     {
@@ -107,11 +109,17 @@
       var rows = cache[job.PrinterId];
       var row = rows.FirstOrDefault(r => r.JobId == job.Id);
 
-      if (job.Status is OperationState.Completed or OperationState.Cancelled)
+      if (job.Status is JobStatus.Completed or JobStatus.Cancelled)
       {
-        if (row is not null)
-          rows.Remove(row);
+        if (row is null)
+          return;
 
+        row.ApplyJob(job);
+        row.IsSending = false;
+        completedRowIds.Add(row.Id);
+        StateHasChanged();
+
+        _ = FadeRowAfterDelay(job.PrinterId, row.Id);
         return;
       }
 
@@ -129,7 +137,19 @@
     });
   }
 
-  private int CountByStatus(OperationState status) =>
+  private void HandlePrinterUpdate(Printer update)
+  {
+    InvokeAsync(() =>
+    {
+      var printer = printers.FirstOrDefault(p => p.Id == update.Id);
+      if (printer is null) return;
+      printer.Status = update.Status;
+      printer.LastHeartbeat = update.LastHeartbeat;
+      StateHasChanged();
+    });
+  }
+
+  private int CountByStatus(JobStatus status) =>
     cache.Values.SelectMany(c => c).Count(r => r.Status == status);
 
   private async Task SubmitEntry(QueueRow row)
@@ -161,7 +181,7 @@
 
     var error = result.FirstError;
 
-    row.Status = OperationState.Failed;
+    row.Status = JobStatus.Failed;
 
     row.ErrorText = error.Code == "refused"
       ? $"✗ {error.Description}"
@@ -181,7 +201,7 @@
   private async Task HandleSubmit(Guid? printerId = null, HashSet<Guid>? ids = null)
   {
     List<QueueRow> rows = cache.Values.SelectMany(c => c)
-       .Where(r => TargetedRow(r, ids) && r.Status == OperationState.Staged && (printerId == null || printerId == r.PrinterId))
+       .Where(r => TargetedRow(r, ids) && r.Status == JobStatus.Staged && (printerId == null || printerId == r.PrinterId))
        .ToList();
 
     await Task.WhenAll(rows.Select(SubmitEntry));
@@ -190,7 +210,7 @@
 
   private async Task HandleRetry(ActionArgs e)
   {
-    var failedRows = cache[e.PrinterId].Where(r => TargetedRow(r, e.Ids) && r.Status == OperationState.Failed).ToList();
+    var failedRows = cache[e.PrinterId].Where(r => TargetedRow(r, e.Ids) && r.Status == JobStatus.Failed).ToList();
 
     var jobRetries = failedRows
       .Where(r => r.JobId != null)
@@ -202,9 +222,35 @@
     await InvokeAsync(StateHasChanged);
   }
 
+  private async Task FadeRowAfterDelay(Guid printerId, Guid rowId)
+  {
+    await Task.Delay(2000);
+
+    try
+    {
+      var list = cache[printerId];
+      var row = list.FirstOrDefault(r => r.Id == rowId);
+
+      if (row is null)
+        return;
+
+      fadingRowIds.Add(rowId);
+      await InvokeAsync(StateHasChanged);
+      await Task.Delay(500);
+
+      list.Remove(row);
+      fadingRowIds.Remove(rowId);
+      await InvokeAsync(StateHasChanged);
+    }
+    finally
+    {
+      completedRowIds.Remove(rowId);
+    }
+  }
+
   private async Task DeleteAndFadeRow(Guid printerId, QueueRow row)
   {
-    if (row.Status == OperationState.Failed && row.JobId != null)
+    if (row.Status == JobStatus.Failed && row.JobId != null)
     {
       var result = await api.Delete($"/PrintJob/{row.JobId}");
 
@@ -227,7 +273,7 @@
     {
       case RowActions.Delete:
         var toDelete = cache[e.PrinterId]
-          .Where(r => TargetedRow(r, e.Ids) && r.Status is OperationState.Failed or OperationState.Staged)
+          .Where(r => TargetedRow(r, e.Ids) && r.Status is JobStatus.Failed or JobStatus.Staged)
           .ToList();
 
         await Task.WhenAll(toDelete.Select(r => DeleteAndFadeRow(e.PrinterId, r)));
