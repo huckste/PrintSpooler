@@ -6,6 +6,7 @@ using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
 using PrintSpooler.Infrastructure.Services;
+using SharpIpp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 
 builder.Services.AddSingleton<IPrinterDispatcher, PrinterDispatcher>();
+builder.Services.AddSingleton<SharpIppClient>();
 builder.Services.AddSingleton<IPrinterDiscoveryService, PrinterDiscoveryService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IPrinterService, PrinterService>();

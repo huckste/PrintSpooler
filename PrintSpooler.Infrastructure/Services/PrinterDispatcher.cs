@@ -9,9 +9,9 @@ using SharpIpp.Protocol.Models;
 
 namespace PrintSpooler.Infrastructure.Services;
 
-public class PrinterDispatcher : IPrinterDispatcher, IDisposable
+public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 {
-  private readonly SharpIppClient _client = new();
+  private readonly SharpIppClient _client = client;
 
   public async Task<ErrorOr<IppJobRef>> SendAsync(Job job, byte[]? jobData, CancellationToken ct)
   {
@@ -155,6 +155,4 @@ public class PrinterDispatcher : IPrinterDispatcher, IDisposable
       _ => Error.Failure("PrinterState.Failure", $"Unknown printer state: {state}"),
     };
   }
-
-  public void Dispose() => _client.Dispose();
 }
