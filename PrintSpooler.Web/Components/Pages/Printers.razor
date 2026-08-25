@@ -129,8 +129,8 @@
     hub.PrinterUpdated += OnPrinterUpdated;
     await hub.StartAsync();
 
-    printers = (await printerApi.GetPrinters())
-      .Match(
+    var res = await printerApi.GetPrinters();
+    printers = res.Match(
           value => value,
           error => []
       );
@@ -159,7 +159,9 @@
   {
     scanning = true;
 
-    scannedPrinters = (await printerApi.DiscoverNetworkPrinters()).Match(
+    var res = await printerApi.DiscoverNetworkPrinters();
+
+    scannedPrinters = res.Match(
     value => value,
     error => []
     );
@@ -167,13 +169,17 @@
     scanning = false;
   }
 
-  private async Task HandleAddPrinter(Printer printer) =>
-    (await printerApi.AddPrinter(printer))
-      .ThenDo(v => printers.Add(v));
+  private async Task HandleAddPrinter(Printer printer)
+  {
+    var res = await printerApi.AddPrinter(printer);
+    res.ThenDo(p => printers.Add(p));
+  }
 
-  private async Task HandleDeletePrinter(Printer printer) =>
-    (await printerApi.DeletePrinter(printer.Id))
-      .ThenDo(_ => printers.Remove(printer));
+  private async Task HandleDeletePrinter(Printer printer)
+  {
+    var res = await printerApi.DeletePrinter(printer.Id);
+    res.ThenDo(_ => printers.Remove(printer));
+  }
 
   public async ValueTask DisposeAsync()
   {

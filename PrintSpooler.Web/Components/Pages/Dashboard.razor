@@ -1,7 +1,8 @@
 @page "/dashboard"
 @using PrintSpooler.Core.Models
-@using PrintSpooler.Web.Services;
+@using PrintSpooler.Core.Services
 @using PrintSpooler.Web.Models;
+@using PrintSpooler.Web.Services;
 @implements IAsyncDisposable
 @inject ConnectionManager hub
 @inject PrinterApi printerApi
@@ -63,9 +64,10 @@
   private async Task LoadPrinters()
   {
 
-    printers = (await printerApi.GetPrinters())
-          .Match(value => value,
-          error => []);
+    var res = await printerApi.GetPrinters();
+
+    printers = res.Match(value => value,
+    error => []);
 
     foreach (var printer in printers)
       cache.Add(printer.Id, new List<QueueRow>());
@@ -74,13 +76,14 @@
   private async Task LoadJobs()
   {
 
-    (await jobApi.GetJobs())
-      .ThenDo(jobs =>
-      {
-        foreach (var job in jobs)
-          if (cache.TryGetValue(job.PrinterId, out var state))
-            state.Add(QueueRow.FromJob(job));
-      });
+    var res = await jobApi.GetJobs();
+
+    res.ThenDo(jobs =>
+    {
+      foreach (var job in jobs)
+        if (cache.TryGetValue(job.PrinterId, out var state))
+          state.Add(QueueRow.FromJob(job));
+    });
   }
 
   private void OnJobUpdated(Job job)
@@ -94,7 +97,7 @@
 
       row.ApplyJob(job);
 
-      if (job.Status is JobStatus.Completed or JobStatus.Cancelled)
+      if (JobPolicies.IsTerminal(job.Status))
       {
         row.IsSending = false;
         completedRowIds.Add(row.Id);
@@ -129,21 +132,22 @@
     row.IsSending = true;
     await InvokeAsync(StateHasChanged);
 
-    (await jobApi.SubmitJob(row))
-      .Switch(value =>
-      {
-        row.ApplyJob(value);
-        pendingData = null;
-      },
-      errors =>
-      {
-        var error = errors[0];
-        row.Status = JobStatus.Failed;
+    var res = await jobApi.SubmitJob(row);
 
-        row.ErrorText = error.Code == "refused"
-          ? $"✗ {error.Description}"
-          : $"✗ Error {error.Code}: {error.Description}";
-      });
+    res.Switch(value =>
+        {
+          row.ApplyJob(value);
+          pendingData = null;
+        },
+        errors =>
+        {
+          var error = errors[0];
+          row.Status = JobStatus.Failed;
+
+          row.ErrorText = error.Code == "refused"
+            ? $"✗ {error.Description}"
+            : $"✗ Error {error.Code}: {error.Description}";
+        });
 
     row.IsSending = false;
     await InvokeAsync(StateHasChanged);
@@ -186,9 +190,9 @@
   {
     if (row.JobId is { } jobId)
     {
-      var result = await jobApi.DeleteJob(jobId);
+      var res = await jobApi.DeleteJob(jobId);
 
-      if (result.IsError)
+      if (res.IsError)
         return;
     }
 
