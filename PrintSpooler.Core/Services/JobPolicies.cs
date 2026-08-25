@@ -37,4 +37,18 @@ public static class JobPolicies
 
   public static bool IsActive(JobStatus status) =>
     status is not JobStatus.Cancelled and JobStatus.Completed;
+
+  public static readonly JobStatus[] Mia = [JobStatus.Processing, JobStatus.Submitting];
+
+  public static readonly JobStatus[] Pending = [JobStatus.Queued];
+
+  public static readonly JobStatus[] Active =
+    [
+      JobStatus.Queued,
+      JobStatus.Submitting,
+      JobStatus.Processing,
+      JobStatus.Failed,
+      JobStatus.Unknown,
+      JobStatus.Staged
+    ];
 }

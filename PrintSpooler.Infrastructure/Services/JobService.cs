@@ -60,7 +60,7 @@ public class JobService(
   public async Task<List<Job>> GetAllActiveJobs() =>
       await dbContext
           .Jobs.Include(j => j.Printer)
-          .Where(j => JobPolicies.IsActive(j.Status))
+          .Where(j => JobPolicies.Active.Contains(j.Status))
           .ToListAsync();
 
   public async Task<ErrorOr<JobData>> GetJobData(Guid jobId, CancellationToken ct = default)
@@ -77,7 +77,7 @@ public class JobService(
   {
     var miaJobs = await dbContext
             .Jobs.Include(j => j.Printer)
-            .Where(j => JobPolicies.IsMia(j.Status))
+            .Where(j => JobPolicies.Mia.Contains(j.Status))
             .ToListAsync();
 
     return miaJobs.Count > 0
@@ -89,7 +89,7 @@ public class JobService(
   {
     var pendingJobs = await dbContext
             .Jobs.Include(j => j.Printer)
-            .Where(j => JobPolicies.IsPending(j.Status))
+            .Where(j => JobPolicies.Pending.Contains(j.Status))
             .ToListAsync();
 
     return pendingJobs.Count > 0
