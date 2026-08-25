@@ -4,9 +4,10 @@
 
 <div @key="Key" class="sp-panel sp-printer-card @(cardExpanded ? "sp-printer-card-expanded" : "")">
   <div class="sp-printer-row" @onclick="ToggleCard" @onmouseleave="HandleRowMouseLeave">
-    <span class="sp-printer-status-dot sp-printer-status-dot-@(Printer.Status.ToString().ToLower())"></span>
+    <span
+    class="sp-printer-status-dot sp-printer-status-dot-@(PrinterWebService.IsOnline(Printer.Status) ? "online" : "offline")"></span>
     <span class="sp-printer-name">@(Printer.Name)
-      <span class="sp-printer-model">@(Printer.IpAddress)</span>
+      <span class="sp-printer-model">[ @(Printer.Status) ]</span>
     </span>
     <div class="sp-printer-stats">
       @if (selectedRows.Count > 0)
@@ -17,24 +18,22 @@
       }
       else
       {
-        <span class="sp-printer-stat">
-          <span class="sp-printer-stat-label">Queued</span>
-          <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == JobStatus.Queued))</span>
-        </span>
-        <span class="sp-printer-stat">
-          <span class="sp-printer-stat-label">Processing</span>
-          <span class="sp-printer-stat-value">@(Rows.Count(r => r.IsSending || r.Status is
-                                                                                                            JobStatus.Submitting or JobStatus.Processing))</span>
-          </span>
+        @foreach (var status in printerStats)
+        {
           <span class="sp-printer-stat">
-            <span class="sp-printer-stat-label">Failed</span>
-            <span class="sp-printer-stat-value">@(Rows.Count(r => r.Status == JobStatus.Failed))</span>
+            <span class="sp-printer-stat-label">@(status)</span>
+            <span class="sp-printer-stat-value">@(JobWebService.CountByStatus(status, Rows))</span>
           </span>
         }
-      </div>
-      <div class="sp-printer-row-actions" @onclick:stopPropagation>
-        <div class="sp-printer-actions-tray @(ShowActions ? "sp-printer-actions-tray-open" : "")">
-          @if (selectedRows.Count == 0)
+      }
+    </div>
+    <div class="sp-printer-row-actions" @onclick:stopPropagation>
+      <div class="sp-printer-actions-tray @(ShowActions ? "sp-printer-actions-tray-open" : "")">
+
+        @{
+          var states = GetRowStates();
+
+          if (selectedRows.Count == 0)
           {
             <label class="sp-btn">Add
               <InputFile multiple OnChange="(e) => HandleFileSelected(e, Printer.Id)" style="display:none;" />
@@ -45,91 +44,83 @@
             <button class="sp-btn" @onclick="() => { selectedRows.Clear(); actionsOpen = false; }">Cancel</button>
           }
 
-          @{
-            var presentStates = PresentStates();
+          foreach (var action in actions)
+          {
+            if (ShowActionButton(action, states))
+            {
+              <button class="sp-btn" @onclick="() => HandleActions(action)" @onmouseenter="() => SetHoveredAction(action)"
+                      @onmouseleave="ClearHoveredAction">@(action)</button>
+            }
           }
+        }
 
-          @if (AnyAffected(RowActions.Delete, presentStates))
-          {
-            <button class="sp-btn" @onclick="() => HandleActions(RowActions.Delete)"
-                    @onmouseenter="() => SetHoveredAction(RowActions.Delete)" @onmouseleave="ClearHoveredAction">Delete</button>
-          }
-          @if (AnyAffected(RowActions.Send, presentStates))
-          {
-            <button class="sp-btn" @onclick="() => HandleActions(RowActions.Send)"
-                    @onmouseenter="() => SetHoveredAction(RowActions.Send)" @onmouseleave="ClearHoveredAction">Send</button>
-          }
-          @if (AnyAffected(RowActions.Retry, presentStates))
-          {
-            <button class="sp-btn" @onclick="() => HandleActions(RowActions.Retry)"
-                    @onmouseenter="() => SetHoveredAction(RowActions.Retry)" @onmouseleave="ClearHoveredAction">Retry</button>
-          }
+      </div>
+      <button class="sp-printer-actions-hint @(ShowActions ? "sp-printer-actions-hint-open" : "")"
+              @onclick="ToggleActionsHint">⋮</button>
+      <button class="sp-printer-chevron" @onclick="ToggleCard">▾</button>
+    </div>
+  </div>
+
+  @if (cardExpanded)
+  {
+    <div class="sp-printer-detail">
+      <div class="sp-printer-detail-pad">
+        <div class="sp-panel sp-table-wrapper sp-printer-table-wrapper">
+          <table class="sp-table">
+            <colgroup>
+              <col />
+              <col style="width: 100px" />
+              <col style="width: 100px" />
+              <col style="width: 100px" />
+              <col style="width: 120px" />
+              <col style="width: 40px" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th class="sp-table-num">Size</th>
+                <th class="sp-table-num">Retries</th>
+                <th>Submitted</th>
+                <th class="sp-table-status">Status</th>
+                <th class="sp-table-action"></th>
+              </tr>
+            </thead>
+            <tbody>
+
+              @foreach (var row in Rows)
+              {
+                <tr @key="row.Id" class="@(selectedRows.Contains(row.Id) ? "sp-row-active" : "") 
+                  @(FadingRowIds.Contains(row.Id) ? "sp-row-fading" : "") 
+                  @(CompletedRowIds.Contains(row.Id) ? "sp-row-completed" : "") 
+                  @(IsPreviewTarget(row) ? "sp-row-preview" : "")" @onclick="() => HandleRowClicked(row.Id)">
+
+                  <td class="sp-table-primary">@(row.FileName)</td>
+                  <td class="sp-table-num sp-table-muted">@(FormatBytes.Short(row.SizeBytes))</td>
+                  <td class="sp-table-num sp-table-muted">@(row.RetryCount)</td>
+                  <td class="sp-table-muted">
+                    @(row.SubmittedAt is DateTime submittedAt ? FormatTime.Short(submittedAt) : "—")
+                  </td>
+                  <td class="sp-table-status">
+                    <span class="sp-tag sp-tag-@(row.Status.ToString().ToLower())"
+                          title="@(ShowRowError(row))">@(row.Status)</span>
+                  </td>
+                  <td class="sp-table-action">
+
+                    @if (ShowSpinner(row.Status))
+                    {
+                      <div class="sp-spinner"></div>
+                    }
+                  </td>
+
+                </tr>
+              }
+            </tbody>
+          </table>
         </div>
-        <button class="sp-printer-actions-hint @(ShowActions ? "sp-printer-actions-hint-open" : "")"
-                @onclick="ToggleActionsHint">⋮</button>
-        <button class="sp-printer-chevron" @onclick="ToggleCard">▾</button>
       </div>
     </div>
-    @if (cardExpanded)
-    {
-      <div class="sp-printer-detail">
-        <div class="sp-printer-detail-pad">
-          <div class="sp-panel sp-table-wrapper sp-printer-table-wrapper">
-            <table class="sp-table">
-              <colgroup>
-                <col />
-                <col style="width: 100px" />
-                <col style="width: 100px" />
-                <col style="width: 100px" />
-                <col style="width: 120px" />
-                <col style="width: 40px" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Document</th>
-                  <th class="sp-table-num">Size</th>
-                  <th class="sp-table-num">Retries</th>
-                  <th>Submitted</th>
-                  <th class="sp-table-status">Status</th>
-                  <th class="sp-table-action"></th>
-                </tr>
-              </thead>
-              <tbody>
-
-                @foreach (var row in Rows)
-                {
-                  <tr @key="row.Id" class="@(selectedRows.Contains(row.Id) ? "sp-row-active" : "") 
-                    @(FadingRowIds.Contains(row.Id) ? "sp-row-fading" : "") 
-                    @(CompletedRowIds.Contains(row.Id) ? "sp-row-completed" : "") 
-                    @(IsPreviewTarget(row) ? "sp-row-preview" : "")" @onclick="() => HandleRowClicked(row.Id)">
-
-                    <td class="sp-table-primary">@(row.FileName)</td>
-                    <td class="sp-table-num sp-table-muted">@(FormatBytes.Short(row.SizeBytes))</td>
-                    <td class="sp-table-num sp-table-muted">@(row.RetryCount)</td>
-                    <td class="sp-table-muted">
-                      @(row.SubmittedAt is DateTime submittedAt ? FormatTime.Short(submittedAt) : "—")
-                    </td>
-                    <td class="sp-table-status">
-                      <span class="sp-tag sp-tag-@(row.Status.ToString().ToLower())"
-                            title="@(row.Status == JobStatus.Failed ? row.ErrorText : null)">@(row.Status)</span>
-                    </td>
-                    <td class="sp-table-action">
-
-                      @if (row.IsSending || row.Status is JobStatus.Submitting or JobStatus.Processing)
-                      {
-                        <div class="sp-spinner"></div>
-                      }
-                    </td>
-
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    }
-  </div>
+  }
+</div>
 @code
 {
   [Parameter] public List<QueueRow> Rows { get; set; } = [];
@@ -140,11 +131,15 @@
   [Parameter] public HashSet<Guid> FadingRowIds { get; set; } = [];
   [Parameter] public HashSet<Guid> CompletedRowIds { get; set; } = [];
 
+  private HashSet<RowActions> actions = Enum.GetValues<RowActions>().ToHashSet();
   private HashSet<Guid> selectedRows = [];
   private bool actionsOpen;
   private bool cardExpanded;
-
+  private HashSet<JobStatus> printerStats = [JobStatus.Failed, JobStatus.Processing, JobStatus.Staged];
   private RowActions? hoveredAction;
+
+  private bool ShowSpinner(JobStatus status) => status is JobStatus.Processing or JobStatus.Submitting;
+  private string? ShowRowError(QueueRow row) => row.Status == JobStatus.Failed ? row.ErrorText : null;
 
   private void SetHoveredAction(RowActions action)
   {
@@ -152,25 +147,32 @@
       hoveredAction = action;
   }
 
+  private HashSet<JobStatus> GetRowStates()
+  {
+    var rows = selectedRows.Count > 0 ? Rows.Where(r => selectedRows.Contains(r.Id)) : Rows;
+    return rows.Select(r => r.Status).ToHashSet();
+  }
+
+  private bool ShowActionButton(RowActions action, HashSet<JobStatus> states)
+  {
+    foreach (var state in states)
+    {
+      if (JobWebService.CanDoAction(action, state))
+        return true;
+    }
+
+    return false;
+  }
+
   private void ClearHoveredAction() => hoveredAction = null;
 
-  private static bool ActionAffectsState(JobStatus state, RowActions action) => action switch
+  private bool IsPreviewTarget(QueueRow row)
   {
-    RowActions.Delete => state is JobStatus.Failed or JobStatus.Staged,
-    RowActions.Send => state == JobStatus.Staged,
-    RowActions.Retry => state == JobStatus.Failed,
-    _ => false
-  };
+    if (hoveredAction is not { } action)
+      return false;
 
-  private bool IsPreviewTarget(QueueRow row) =>
-    hoveredAction is RowActions action && ActionAffectsState(row.Status, action);
-
-  private HashSet<JobStatus> PresentStates() =>
-    (selectedRows.Count > 0 ? Rows.Where(r => selectedRows.Contains(r.Id)) : Rows)
-      .Select(r => r.Status).ToHashSet();
-
-  private static bool AnyAffected(RowActions action, HashSet<JobStatus> presentStates) =>
-    presentStates.Any(s => ActionAffectsState(s, action));
+    return JobWebService.CanDoAction(action, row.Status);
+  }
 
   private bool ShowActions => actionsOpen || selectedRows.Count > 0;
 
@@ -219,7 +221,6 @@
 
   private async Task HandleActions(RowActions action)
   {
-    Console.WriteLine($"action: {action}");
     await OnRowAction.InvokeAsync(new ActionArgs
     {
       Ids = selectedRows.Count > 0 ? selectedRows : null,

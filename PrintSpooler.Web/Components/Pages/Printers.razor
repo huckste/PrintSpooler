@@ -1,9 +1,8 @@
 @page "/printers"
 @using PrintSpooler.Core.Models
 @using PrintSpooler.Web.Services;
-@using Microsoft.AspNetCore.SignalR.Client
-@inject ApiClient api
-@inject IConfiguration config
+@inject PrinterApi printerApi
+@inject ConnectionManager hub
 @implements IAsyncDisposable
 
 <PageTitle>Printers</PageTitle>
@@ -17,15 +16,11 @@
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Online</p>
-    <p class="sp-stat-value">@(printers.Count(p => p.Status == PrinterStatus.Online))</p>
+    <p class="sp-stat-value">@(PrinterWebService.PrintersOnlineCount(printers))</p>
   </div>
   <div class="sp-card">
     <p class="sp-stat-label">Offline</p>
-    <p class="sp-stat-value">@(printers.Count(p => p.Status == PrinterStatus.Offline))</p>
-  </div>
-  <div class="sp-card">
-    <p class="sp-stat-label">Unknown</p>
-    <p class="sp-stat-value">@(printers.Count(p => p.Status == PrinterStatus.Unknown))</p>
+    <p class="sp-stat-value">@(PrinterWebService.PrintersOfflineCount(printers))</p>
   </div>
 </div>
 
@@ -36,7 +31,6 @@
   <div class="sp-scan-head">
     <span class="sp-label sp-scan-label">
       Discover on Network
-
       <span class="sp-scan-found">
         @if (scanning)
         {
@@ -49,111 +43,112 @@
       </span>
 
     </span>
-    <button class="sp-btn sp-btn-secondary" @onclick="HandleNetworkScan" disabled="@(scanning)">@(!scanning ? "Scan Network" :
-                                                                                                                                                                                                                                                                                                                              "Scanning")</button>
-    </div>
-
-    @if (scannedPrinters.Count > 0 && !scanning)
-    {
-      <div class="sp-scan-list">
-
-        @foreach (var printer in scannedPrinters)
-        {
-          <div class="sp-scan-item">
-            <span class="sp-scan-item-dot"></span>
-            <span class="sp-scan-item-name">
-              <span class="sp-printer-glyph">⎙</span>
-              @(printer.Name)
-            </span>
-            <span class="sp-scan-item-ip">@(printer.IpAddress)</span>
-            <button class="sp-btn sp-btn-primary sp-scan-item-add" @onclick="() => HandleAddPrinter(printer)">+ Add</button>
-          </div>
-        }
-
-      </div>
-    }
-
+    <button class="sp-btn sp-btn-secondary" @onclick="HandleNetworkScan" disabled="@(scanning)">
+      @(!scanning ? "Scan Network" : "Scanning")
+    </button>
   </div>
 
-  <div class="sp-section-title">Registered Printers</div>
+  @if (scannedPrinters.Count > 0 && !scanning)
+  {
+    <div class="sp-scan-list">
 
-  <div class="sp-panel sp-table-wrapper sp-table-wrapper-compact">
-    <table class="sp-table">
-      <colgroup>
-        <col />
-        <col style="width: 200px" />
-        <col style="width: 150px" />
-        <col style="width: 100px" />
-        <col style="width: 140px" />
-        <col style="width: 60px" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Host</th>
-          <th>IP Address</th>
-          <th class="sp-table-status">Status</th>
-          <th>Last Heartbeat</th>
-          <th class="sp-table-action"></th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var printer in printers)
-        {
-          <tr>
-            <td class="sp-table-primary"><span class="sp-printer-glyph">⎙</span> @(printer.Name)</td>
-            <td class="sp-table-muted-sm">@(printer.Host)</td>
-            <td class="sp-table-muted-sm">@(printer.IpAddress)</td>
-            <td class="sp-table-status"><span class="sp-tag sp-tag-@(printer.Status.ToString().ToLower())">@(printer.Status)</span></td>
-            <td class="sp-table-muted">@(printer.LastHeartbeat is DateTime lastHeartbeat ? FormatTime.Short(lastHeartbeat) :
-                                  "-")</td>
-              <td class="sp-table-action">
-                <button class="sp-file-entry-remove" title="Remove" @onclick="() => HandleDeletePrinter(printer)">x</button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      @foreach (var printer in scannedPrinters)
+      {
+        <div class="sp-scan-item">
+          <span class="sp-scan-item-dot"></span>
+          <span class="sp-scan-item-name">
+            <span class="sp-printer-glyph">⎙</span>
+            @(printer.Name)
+          </span>
+          <span class="sp-scan-item-ip">@(printer.IpAddress)</span>
+          <button class="sp-btn sp-btn-primary sp-scan-item-add" @onclick="() => HandleAddPrinter(printer)">
+            + Add
+          </button>
+        </div>
+      }
     </div>
+  }
+</div>
+
+<div class="sp-section-title">Registered Printers</div>
+
+<div class="sp-panel sp-table-wrapper sp-table-wrapper-compact">
+  <table class="sp-table">
+    <colgroup>
+      <col />
+      <col style="width: 200px" />
+      <col style="width: 150px" />
+      <col style="width: 100px" />
+      <col style="width: 140px" />
+      <col style="width: 60px" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Host</th>
+        <th>IP Address</th>
+        <th class="sp-table-status">Status</th>
+        <th>Last Heartbeat</th>
+        <th class="sp-table-action"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var printer in printers)
+      {
+        <tr>
+          <td class="sp-table-primary">
+            <span class="sp-printer-glyph">⎙</span> @(printer.Name)
+          </td>
+          <td class="sp-table-muted-sm">@(printer.Host)</td>
+          <td class="sp-table-muted-sm">@(printer.IpAddress)</td>
+          <td class="sp-table-status">
+            <span class="sp-tag sp-tag-@(printer.Status.ToString().ToLower())">
+              @(printer.Status)
+            </span>
+          </td>
+          <td class="sp-table-muted">
+            @(printer.LastHeartbeat is DateTime lastHeartbeat ? FormatTime.Short(lastHeartbeat) : "-")
+          </td>
+          <td class="sp-table-action">
+            <button class="sp-file-entry-remove" title="Remove" @onclick="() => HandleDeletePrinter(printer)">x</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
 
 @code {
   private List<Printer> printers = [];
   private List<Printer> scannedPrinters = [];
   private bool scanning;
-  private HubConnection connection = default!;
   private System.Threading.Timer agoTicker = default!;
 
   protected override async Task OnInitializedAsync()
   {
-    await LoadPrinters();
-    agoTicker = new System.Threading.Timer(_ => InvokeAsync(StateHasChanged), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
-  }
+    hub.PrinterUpdated += OnPrinterUpdated;
+    await hub.StartAsync();
 
-  private async Task LoadPrinters()
-  {
-    var apiBaseAddress = config["ApiBaseAddress"]
-              ?? throw new InvalidOperationException("ApiBaseAddress is not configured.");
-
-    connection = new HubConnectionBuilder().WithUrl($"{apiBaseAddress}/hubs/updates").Build();
-    connection.On<Printer>("PrinterUpdated", HandlePrinterUpdate);
-
-    try
-    {
-      await connection.StartAsync();
-    }
-    catch { }
-    printers = (await api.Get<Printer>("/Printer")).Match(
+    printers = (await printerApi.GetPrinters())
+      .Match(
           value => value,
           error => []
-        );
+      );
+
+    agoTicker = new System.Threading.Timer(_ =>
+      InvokeAsync(StateHasChanged), null,
+      TimeSpan.FromSeconds(1),
+      TimeSpan.FromSeconds(1));
   }
 
-  private void HandlePrinterUpdate(Printer update)
+  private void OnPrinterUpdated(Printer update)
   {
     InvokeAsync(() =>
     {
-      var printer = printers.FirstOrDefault(p => p.Id == update.Id);
-      if (printer is null) return;
+
+      if (printers.FirstOrDefault(p => p.Id == update.Id) is not { } printer)
+        return;
+
       printer.Status = update.Status;
       printer.LastHeartbeat = update.LastHeartbeat;
       StateHasChanged();
@@ -164,7 +159,7 @@
   {
     scanning = true;
 
-    scannedPrinters = (await api.Get<Printer>("/PrinterDiscovery")).Match(
+    scannedPrinters = (await printerApi.DiscoverNetworkPrinters()).Match(
     value => value,
     error => []
     );
@@ -172,19 +167,17 @@
     scanning = false;
   }
 
-  private async Task HandleAddPrinter(Printer printer)
-  {
-    (await api.Post<Printer>("/Printer", printer)).ThenDo(v => printers.Add(v));
-  }
+  private async Task HandleAddPrinter(Printer printer) =>
+    (await printerApi.AddPrinter(printer))
+      .ThenDo(v => printers.Add(v));
 
-  private async Task HandleDeletePrinter(Printer printer)
-  {
-    (await api.Delete($"/Printer/{printer.Id}")).ThenDo(_ => printers.Remove(printer));
-  }
+  private async Task HandleDeletePrinter(Printer printer) =>
+    (await printerApi.DeletePrinter(printer.Id))
+      .ThenDo(_ => printers.Remove(printer));
 
   public async ValueTask DisposeAsync()
   {
     await agoTicker.DisposeAsync();
-    await connection.DisposeAsync();
+    hub.PrinterUpdated -= OnPrinterUpdated;
   }
 }

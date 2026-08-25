@@ -15,7 +15,7 @@
 
     <span class="system-status @health.CssClass()">
       SYSTEM
-      @health.Label()
+      @(health.Label())
     </span>
   </header>
 
@@ -47,6 +47,7 @@
 
   private async Task PollLoopAsync(CancellationToken ct)
   {
+    // restarted (with a short backoff), not abandoned.
     while (!ct.IsCancellationRequested)
     {
       try
