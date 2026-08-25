@@ -56,8 +56,9 @@ public class PrinterWatch(
     if (_jobs.IsEmpty)
       _timer.Period = Idle;
 
-    var result = await printerDispatcher.GetPrinterJobsAsync(printer, [.. _jobs.Keys], ct)
-      .ThenAsync(async value => await HandleStateUpdate(value, ct));
+    var result = await printerDispatcher
+      .GetPrinterJobsAsync(printer, [.. _jobs.Keys], ct)
+      .ThenAsync(value => HandleStateUpdate(value, ct));
 
     if (result.IsError)
       HandleErrors(result.Errors);
@@ -103,7 +104,8 @@ public class PrinterWatch(
       await jobService.GetJob(watched.JobId)
         .ThenDoAsync(async j =>
         {
-          if (ippJob.State is JobStatus.Failed or JobStatus.Cancelled or JobStatus.Completed)
+          // Failed jobs will remain. need to store the ippJobId and make code to retry that job using the ippJobId
+          if (JobPolicies.IsTerminal(ippJob.State))
             _jobs.TryRemove(ippId, out _);
           else
             _jobs[ippId] = new WatchedJob(watched.JobId, ippJob.State);
@@ -127,4 +129,5 @@ public class PrinterWatch(
 
     return errors.Count > 0 ? errors : Result.Success;
   }
+
 }

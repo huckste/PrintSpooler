@@ -31,6 +31,7 @@ public class JobService(
       FileSizeBytes = data.Bytes.Length,
       PrinterId = data.PrinterId,
       Printer = printer,
+      Status = JobPolicies.DefaultStatus()
     };
 
     dbContext.Jobs.Add(job);
@@ -59,7 +60,7 @@ public class JobService(
   public async Task<List<Job>> GetAllActiveJobs() =>
       await dbContext
           .Jobs.Include(j => j.Printer)
-          .Where(j => j.Status != JobStatus.Cancelled && j.Status != JobStatus.Completed)
+          .Where(j => JobPolicies.IsActive(j.Status))
           .ToListAsync();
 
   public async Task<ErrorOr<JobData>> GetJobData(Guid jobId, CancellationToken ct = default)
@@ -72,14 +73,28 @@ public class JobService(
     return jobData;
   }
 
+  public async Task<ErrorOr<List<Job>>> GetMiaJobs()
+  {
+    var miaJobs = await dbContext
+            .Jobs.Include(j => j.Printer)
+            .Where(j => JobPolicies.IsMia(j.Status))
+            .ToListAsync();
+
+    return miaJobs.Count > 0
+      ? miaJobs
+      : Error.NotFound("Jobs.NotFound", "No MIA jobs found");
+  }
+
   public async Task<ErrorOr<List<Job>>> GetPendingJobs()
   {
     var pendingJobs = await dbContext
             .Jobs.Include(j => j.Printer)
-            .Where(j => j.Status == JobStatus.Queued)
+            .Where(j => JobPolicies.IsPending(j.Status))
             .ToListAsync();
 
-    return pendingJobs.Count > 0 ? pendingJobs : Error.NotFound("Jobs.NotFound", "No pending jobs found");
+    return pendingJobs.Count > 0
+      ? pendingJobs
+      : Error.NotFound("Jobs.NotFound", "No pending jobs found");
   }
 
   public async Task<ErrorOr<Job>> CancelJob(Guid id) =>
@@ -91,8 +106,7 @@ public class JobService(
               .Log(JobAction.Cancelled, ByWho.User)
               .NotifyDashboard()
               )
-          )
-      .ThenDoAsync(async j => await RemoveJobData(j.Id));
+          );
 
   public async Task<ErrorOr<Job>> RetryJob(Guid id) =>
     await GetJob(id)
@@ -108,7 +122,9 @@ public class JobService(
           );
 
   public async Task RemoveJobData(Guid jobId, CancellationToken ct = default) =>
-    await dbContext.JobData.Where(d => d.JobId == jobId).ExecuteDeleteAsync(ct);
+    await dbContext.JobData
+      .Where(d => d.JobId == jobId)
+      .ExecuteDeleteAsync(ct);
 
   public async Task UpdateJob(JobUpdate update, CancellationToken ct = default)
   {
@@ -118,7 +134,12 @@ public class JobService(
     var job = await dbContext.Jobs.FirstAsync(j => j.Id == update.JobId, ct);
 
     job.Status = update.Status;
-    job.FailureReason = update.FailureReason;
+
+    if (job.Status is JobStatus.Failed)
+      job.FailureReason = update.FailureReason;
+
+    if (JobPolicies.IsTerminal(job.Status))
+      await RemoveJobData(job.Id);
 
     if (update.Retry)
       job.RetryCount++;
