@@ -141,7 +141,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
-      return Error.Unexpected("GetPrinterAttributesResponse.Transport", $"Could not reach printer at {host}: {ex.Message}");
+      return PrinterStatus.Offline;
     }
 
     if (response?.PrinterAttributes?.PrinterState is not { } state)
@@ -149,9 +149,9 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 
     return state switch
     {
-      PrinterState.Idle => PrinterStatus.Online,
-      PrinterState.Processing => PrinterStatus.Online,
-      PrinterState.Stopped => PrinterStatus.Online,
+      PrinterState.Idle => PrinterStatus.Idle,
+      PrinterState.Processing => PrinterStatus.Processing,
+      PrinterState.Stopped => PrinterStatus.Stopped,
       _ => Error.Failure("PrinterState.Failure", $"Unknown printer state: {state}"),
     };
   }

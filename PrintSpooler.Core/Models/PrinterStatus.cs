@@ -2,7 +2,10 @@ namespace PrintSpooler.Core.Models;
 
 public enum PrinterStatus
 {
-    Online,
-    Offline,
-    Unknown,
+  Online,
+  Offline,
+  Unknown,
+  Stopped,
+  Idle,
+  Processing
 }
