@@ -3,7 +3,7 @@ namespace PrintSpooler.Core.Models;
 public class Job
 {
   public Guid Id { get; set; }
-  public JobStatus Status { get; set; } = JobStatus.Queued;
+  public JobStatus Status { get; set; }
   public Printer? Printer { get; set; }
   public Guid PrinterId { get; set; }
   public JobData? Data { get; set; }
