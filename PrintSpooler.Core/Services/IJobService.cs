@@ -13,6 +13,6 @@ public interface IJobService
   Task<ErrorOr<List<Job>>> GetPendingJobs();
   Task<ErrorOr<List<Job>>> GetMiaJobs();
   Task<ErrorOr<JobData>> GetJobData(Guid jobId, CancellationToken ct = default);
-  Task UpdateJob(JobUpdate update, CancellationToken ct = default);
-  Task RemoveJobData(Guid jobId, CancellationToken ct = default);
+  Task<ErrorOr<Success>> UpdateJob(JobUpdate update, CancellationToken ct = default);
+  Task<ErrorOr<Success>> RemoveJobData(Guid jobId, CancellationToken ct = default);
 }

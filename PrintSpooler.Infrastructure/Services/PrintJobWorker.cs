@@ -2,6 +2,7 @@ using System.Threading.Channels;
 using ErrorOr;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 
@@ -11,7 +12,8 @@ public class PrintJobWorker(
     Channel<Guid> jobChannel,
     Channel<IppJobRef> ippJobChannel,
     IPrinterDispatcher printerDispatcher,
-    IServiceScopeFactory scopeFactory
+    IServiceScopeFactory scopeFactory,
+    ILogger<PrintJobWorker> logger
 ) : BackgroundService
 {
   protected override async Task ExecuteAsync(CancellationToken ct)
@@ -24,9 +26,12 @@ public class PrintJobWorker(
       using var scope = scopeFactory.CreateScope();
       var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
 
-      await jobService
+      var res = await jobService
         .GetJob(jobId)
-        .ThenDoAsync(j => HandleProcessing(jobService, j, ct));
+        .ThenAsync(j => HandleProcessing(jobService, j, ct));
+
+      if (res.IsError)
+        HandleErrors(res.Errors);
     }
   }
 
@@ -44,41 +49,64 @@ public class PrintJobWorker(
             await jobChannel.Writer.WriteAsync(j.Id);
         });
 
-    // set in flight jobs to failed 
+    // set in flight jobs to failed
     await jobService
       .GetMiaJobs()
       .ThenDoAsync(async miaJobs =>
       {
         foreach (var job in miaJobs)
-          await jobService
-            .UpdateJob(
-              new JobUpdate(job.Id, JobStatus.Failed)
-                .Log(JobAction.Failed, ByWho.System, $"Job {job.Id} was in flight during API crash")
-                .NotifyDashboard()
-            );
-      });
+        {
+          var res = await jobService.UpdateJob(
+            new JobUpdate(job.Id, JobStatus.Failed)
+            .Log(JobAction.Failed, ByWho.System, $"Job {job.Id} was in flight during API shutdown")
+            .NotifyDashboard()
+          );
 
+          if (res.IsError)
+            HandleErrors(res.Errors);
+        }
+      });
   }
 
-  private async Task HandleProcessing(IJobService jobService, Job job, CancellationToken ct)
+  private void HandleErrors(List<Error> errors)
   {
+    foreach (var e in errors)
+      logger.LogError("{Class}: {Code} - {Desription}", "PrintJobWorker", e.Code, e.Description);
+  }
+
+  private async Task<ErrorOr<Success>> HandleProcessing(IJobService jobService, Job job, CancellationToken ct)
+  {
+    List<Error> errors = [];
+
     var res = await JobPolicies
       .CanDispatch(job)
-      .ThenDoAsync(j => jobService
-        .UpdateJob(new JobUpdate(job.Id, JobStatus.Submitting)
-        .NotifyDashboard()))
+      .ThenEnsureAsync(async j =>
+      {
+        var res = await jobService
+          .UpdateJob(new JobUpdate(job.Id, JobStatus.Submitting)
+          .NotifyDashboard());
+
+        return res.IsError ? res.Errors : j;
+      })
       .ThenAsync(job => jobService.GetJobData(job.Id))
       .ThenAsync(jobData => printerDispatcher.SendAsync(job, jobData.Bytes, ct))
       .ThenDoAsync(async ippJob => await ippJobChannel.Writer.WriteAsync(ippJob));
 
     if (res.IsError)
     {
+      errors.AddRange(res.Errors);
+
       var update = new JobUpdate(job.Id, JobStatus.Failed)
             .Log(JobAction.Failed, ByWho.System, res.Errors.First().Description)
             .NotifyDashboard();
 
-      await jobService.UpdateJob(update, ct);
+      var updateRes = await jobService.UpdateJob(update, ct);
+
+      if (updateRes.IsError)
+        errors.AddRange(updateRes.Errors);
     }
+
+    return errors.Count > 0 ? errors : Result.Success;
 
   }
 

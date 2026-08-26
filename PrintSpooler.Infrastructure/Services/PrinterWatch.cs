@@ -101,8 +101,8 @@ public class PrinterWatch(
       if (ippJob.State == watched.State)
         continue;
 
-      await jobService.GetJob(watched.JobId)
-        .ThenDoAsync(async j =>
+      var res = await jobService.GetJob(watched.JobId)
+        .ThenAsync(async j =>
         {
           // Failed jobs will remain. need to store the ippJobId and make code to retry that job using the ippJobId
           if (JobPolicies.IsTerminal(ippJob.State))
@@ -123,8 +123,11 @@ public class PrinterWatch(
           if (action != null)
             update = update.Log((JobAction)action, ByWho.System, ippJob.Message);
 
-          await jobService.UpdateJob(update, ct);
+          return await jobService.UpdateJob(update, ct);
         });
+
+      if (res.IsError)
+        errors.AddRange(res.Errors);
     }
 
     return errors.Count > 0 ? errors : Result.Success;

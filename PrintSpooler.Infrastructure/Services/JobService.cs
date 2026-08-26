@@ -15,11 +15,10 @@ public class JobService(
 {
   public async Task<ErrorOr<Job>> CreateJob(JobCreationData data)
   {
-    Printer? printer = await dbContext.Printers.FirstOrDefaultAsync(p =>
-        p.Id == data.PrinterId
-    );
+    Printer? printerRes = await dbContext.Printers
+      .FirstOrDefaultAsync(p => p.Id == data.PrinterId);
 
-    if (printer is null)
+    if (printerRes is not { } printer)
       return Error.NotFound("Printer.NotFound", $"No printer found with ID {data.PrinterId}");
 
     var job = new Job
@@ -38,20 +37,23 @@ public class JobService(
     dbContext.JobData.Add(new JobData { Bytes = data.Bytes, JobId = job.Id });
     await dbContext.SaveChangesAsync();
 
-    await UpdateJob(
+    var result = await UpdateJob(
         new JobUpdate(job.Id, job.Status)
           .Log(JobAction.Created, ByWho.User)
           .WriteToChannel()
       );
+
+    if (result.IsError)
+      return result.Errors;
 
     return job;
   }
 
   public async Task<ErrorOr<Job>> GetJob(Guid id)
   {
-    var job = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
+    Job? result = await dbContext.Jobs.Include(j => j.Printer).FirstOrDefaultAsync(j => j.Id == id);
 
-    if (job is null)
+    if (result is not { } job)
       return Error.NotFound("Job.NotFound", $"No job found with ID {id}");
 
     return job;
@@ -65,9 +67,9 @@ public class JobService(
 
   public async Task<ErrorOr<JobData>> GetJobData(Guid jobId, CancellationToken ct = default)
   {
-    JobData? jobData = await dbContext.JobData.FirstOrDefaultAsync(d => d.JobId == jobId, ct);
+    JobData? result = await dbContext.JobData.FirstOrDefaultAsync(d => d.JobId == jobId, ct);
 
-    if (jobData == null)
+    if (result is not { } jobData)
       return Error.NotFound("JobData.NotFound", $"No job data found for job ID {jobId}");
 
     return jobData;
@@ -97,60 +99,98 @@ public class JobService(
       : Error.NotFound("Jobs.NotFound", "No pending jobs found");
   }
 
-  public async Task<ErrorOr<Job>> CancelJob(Guid id) =>
-    await GetJob(id)
-      .Then(JobPolicies.CanCancel)
-      .ThenDoAsync(j =>
-          UpdateJob(
-            new JobUpdate(j.Id, JobStatus.Cancelled)
-              .Log(JobAction.Cancelled, ByWho.User)
-              .NotifyDashboard()
-              )
-          );
+  public async Task<ErrorOr<Job>> CancelJob(Guid id)
+  {
+    var job = await GetJob(id);
 
-  public async Task<ErrorOr<Job>> RetryJob(Guid id) =>
-    await GetJob(id)
+    var update = await job.Then(JobPolicies.CanCancel)
+      .ThenAsync(j =>
+        UpdateJob(
+          new JobUpdate(j.Id, JobStatus.Cancelled)
+          .Log(JobAction.Cancelled, ByWho.User)
+          .NotifyDashboard()
+        )
+      );
+
+    return update.IsError ? update.Errors : job;
+  }
+
+  public async Task<ErrorOr<Job>> RetryJob(Guid id)
+  {
+    var job = await GetJob(id);
+
+    var update = await job
       .Then(JobPolicies.CanRetry)
-      .ThenDoAsync(j =>
-           UpdateJob(
-             new JobUpdate(j.Id, JobStatus.Queued)
-              .RetryJob()
-              .Log(JobAction.Retried, ByWho.User)
-              .NotifyDashboard()
-              .WriteToChannel()
-              )
-          );
+      .ThenAsync(j =>
+        UpdateJob(
+          new JobUpdate(j.Id, JobStatus.Queued)
+          .RetryJob()
+          .Log(JobAction.Retried, ByWho.User)
+          .NotifyDashboard()
+          .WriteToChannel()
+        )
+      );
 
-  public async Task RemoveJobData(Guid jobId, CancellationToken ct = default) =>
-    await dbContext.JobData
+    return update.IsError ? update.Errors : job;
+  }
+
+  public async Task<ErrorOr<Success>> RemoveJobData(Guid jobId, CancellationToken ct = default)
+  {
+    int rowsDeleted = await dbContext.JobData
       .Where(d => d.JobId == jobId)
       .ExecuteDeleteAsync(ct);
 
-  public async Task UpdateJob(JobUpdate update, CancellationToken ct = default)
+    Error? error = rowsDeleted switch
+    {
+      < 1 => Error.Failure("Job.RemoveJobData", $"Failed to delete job data for id: {jobId}"),
+      > 1 => Error.Unexpected("Job.RemoveJobData", $"Deleted more than one row: {rowsDeleted}"),
+      _ => null
+    };
+
+    return error == null ? Result.Success : (Error)error;
+  }
+
+  public async Task<ErrorOr<Success>> UpdateJob(JobUpdate update, CancellationToken ct = default)
   {
     if (update.AuditLog != null)
       dbContext.AuditLogs.Add(update.AuditLog);
 
-    var job = await dbContext.Jobs.FirstAsync(j => j.Id == update.JobId, ct);
+    ErrorOr<Job> job = await GetJob(update.JobId)
+      .Then(j =>
+      {
+        j.Status = update.Status;
 
-    job.Status = update.Status;
+        if (j.Status is JobStatus.Failed)
+          j.FailureReason = update.FailureReason;
 
-    if (job.Status is JobStatus.Failed)
-      job.FailureReason = update.FailureReason;
+        if (update.Retry)
+          j.RetryCount++;
 
-    if (JobPolicies.IsTerminal(job.Status))
-      await RemoveJobData(job.Id);
+        return j;
+      });
 
-    if (update.Retry)
-      job.RetryCount++;
+    if (job.IsError)
+      return job.Errors;
+
+    if (JobPolicies.IsTerminal(job.Value.Status))
+    {
+      var rowsDeleted = await RemoveJobData(job.Value.Id);
+
+      if (rowsDeleted.IsError)
+        return rowsDeleted.Errors;
+    }
 
     await dbContext.SaveChangesAsync(ct);
 
     if (update.Notify)
-      await jobNotifier.JobUpdateAsync(job, ct);
+      await jobNotifier.JobUpdateAsync(job.Value, ct);
 
     if (update.Write)
-      await jobChannel.Writer.WriteAsync(job.Id);
+      await jobChannel.Writer.WriteAsync(job.Value.Id);
+
+
+    return Result.Success;
+
   }
 
 }
