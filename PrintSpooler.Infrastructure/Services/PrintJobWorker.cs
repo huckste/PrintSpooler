@@ -71,7 +71,7 @@ public class PrintJobWorker(
   private void HandleErrors(List<Error> errors)
   {
     foreach (var e in errors)
-      logger.LogError("{Class}: {Code} - {Desription}", "PrintJobWorker", e.Code, e.Description);
+      logger.LogError("{Code} - {Desription}", e.Code, e.Description);
   }
 
   private async Task<ErrorOr<Success>> HandleProcessing(IJobService jobService, Job job, CancellationToken ct)
