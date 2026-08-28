@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using PrintSpooler.Core.Models;
+using ErrorOr;
 
 namespace PrintSpooler.Web.Services;
 
@@ -30,10 +31,22 @@ public class ConnectionManager : IAsyncDisposable
     _connection.Reconnected += async _ => ConnectionLost?.Invoke(false);
   }
 
-  public async Task StartAsync()
+  public async Task<ErrorOr<Success>> StartAsync()
   {
-    if (_connection.State != HubConnectionState.Connected)
+
+    if (_connection.State == HubConnectionState.Connected)
+      return Result.Success;
+
+    try
+    {
       await _connection.StartAsync();
+      return Result.Success;
+    }
+    catch (Exception ex)
+    {
+      return Error.Failure("HubConnection.Failure", $"Failed to start hub connection: {ex.Message}");
+    }
+
   }
 
   public async ValueTask DisposeAsync() => await _connection.DisposeAsync();

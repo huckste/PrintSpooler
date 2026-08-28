@@ -1,5 +1,6 @@
 namespace PrintSpooler.Web.Services;
 
+using System.Text.Json;
 using ErrorOr;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -13,10 +14,17 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
     {
       return await action();
     }
+    catch (HttpRequestException ex)
+    {
+      return Error.Failure("Api.Unreachable", ex.Message);
+    }
+    catch (JsonException ex)
+    {
+      return Error.Failure("Api.BadPayload", ex.Message);
+    }
     catch (Exception ex)
     {
-      Console.WriteLine(ex);
-      return Error.Failure("Api.RequestFailed", ex.Message);
+      return Error.Failure("Api.Unexpected", ex.Message);
     }
   }
 
