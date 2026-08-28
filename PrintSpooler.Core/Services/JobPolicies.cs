@@ -36,7 +36,7 @@ public static class JobPolicies
     status is JobStatus.Cancelled or JobStatus.Completed;
 
   public static bool IsActive(JobStatus status) =>
-    status is not JobStatus.Cancelled and JobStatus.Completed;
+    Active.Contains(status);
 
   public static readonly JobStatus[] Mia = [JobStatus.Processing, JobStatus.Submitting];
 
