@@ -1,4 +1,5 @@
 @page "/dashboard"
+@using ErrorOr
 @using PrintSpooler.Core.Models
 @using PrintSpooler.Core.Services
 @using PrintSpooler.Web.Models;
@@ -55,35 +56,42 @@
   {
     hub.JobUpdated += OnJobUpdated;
     hub.PrinterUpdated += OnPrinterUpdated;
-    await hub.StartAsync();
 
-    await LoadPrinters();
-    await LoadJobs();
+    await hub.StartAsync()
+          .ThenAsync(_ => LoadPrinters())
+          .ThenAsync(_ => LoadJobs());
   }
 
-  private async Task LoadPrinters()
+  private async Task<ErrorOr<Success>> LoadPrinters()
   {
-
     var res = await printerApi.GetPrinters();
 
-    printers = res.Match(value => value,
-    error => []);
+    if (res.IsError)
+      return res.Errors;
+
+    printers = res.Value;
 
     foreach (var printer in printers)
       cache.Add(printer.Id, new List<QueueRow>());
+
+    return Result.Success;
   }
 
-  private async Task LoadJobs()
+  private async Task<ErrorOr<Success>> LoadJobs()
   {
 
     var res = await jobApi.GetJobs();
 
-    res.ThenDo(jobs =>
-    {
-      foreach (var job in jobs)
-        if (cache.TryGetValue(job.PrinterId, out var state))
-          state.Add(QueueRow.FromJob(job));
-    });
+    if (res.IsError)
+      return res.Errors;
+
+    List<Job> jobs = res.Value;
+
+    foreach (var job in jobs)
+      if (cache.TryGetValue(job.PrinterId, out var state))
+        state.Add(QueueRow.FromJob(job));
+
+    return Result.Success;
   }
 
   private void OnJobUpdated(Job job)
