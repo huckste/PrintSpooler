@@ -15,7 +15,7 @@ builder.Services.AddHttpClient(
     {
       client.BaseAddress = new Uri(apiBaseAddress);
     }
-);
+).RemoveAllLoggers();
 
 builder.Services.AddScoped<ApiClient>();
 builder.Services.AddScoped<ConnectionManager>();

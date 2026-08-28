@@ -4,6 +4,7 @@
 @using ErrorOr
 @implements IDisposable
 @inject ApiClient api
+@inject ILogger<MainLayout> logger
 
 <div class="app-shell">
   <header class="topbar">
@@ -47,55 +48,24 @@
 
   private async Task PollLoopAsync(CancellationToken ct)
   {
-    // restarted (with a short backoff), not abandoned.
+
     while (!ct.IsCancellationRequested)
     {
-      try
-      {
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+      using var timer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 
-        while (await timer.WaitForNextTickAsync(ct))
-          await CheckHealth();
-      }
-      catch (OperationCanceledException)
-      {
-        break; // expected on Dispose — clean exit
-      }
-      catch
-      {
-        // unexpected throw from the loop machinery (timer/circuit state) —
-        // back off and restart rather than leaving the indicator dead
-        try
-        {
-          await Task.Delay(2000, ct);
-        }
-        catch
-        {
-          break;
-        }
-      }
+      while (await timer.WaitForNextTickAsync(ct))
+        await CheckHealth();
     }
   }
 
   private async Task CheckHealth()
   {
-    try
-    {
-      health = await api.HealthCheck().Match(
-        value => value.IsSuccessStatusCode ? HealthState.Online : HealthState.Offline,
-        error => HealthState.Offline
-      );
+    health = await api.HealthCheck().Match(
+      value => value.IsSuccessStatusCode ? HealthState.Online : HealthState.Offline,
+      error => HealthState.Offline
+    );
 
-      await InvokeAsync(StateHasChanged);
-    }
-    catch (OperationCanceledException)
-    {
-      // loop torn down mid-check (Dispose) — expected
-    }
-    catch
-    {
-      // any other failure — never let it drop the poll loop
-    }
+    await InvokeAsync(StateHasChanged);
   }
 
   public void Dispose()
