@@ -30,7 +30,7 @@ public class PrinterWatch(
   {
     ObjectDisposedException.ThrowIf(_disposed, this);
 
-    _jobs.TryAdd(ippId, new WatchedJob(jobId, JobStatus.Unknown));
+    _jobs.TryAdd(ippId, new WatchedJob(jobId, JobStatus.Submitting));
     _timer.Period = Active;
   }
 
@@ -92,25 +92,25 @@ public class PrinterWatch(
         continue;
       }
 
-      if (ippJob.State == JobStatus.Unknown)
+      if (ippJob.State is not { } state)
       {
-        errors.Add(Error.Failure("HandleStateUpdate.JobStatus", $"Unknown status for ippId: {ippId}"));
+        errors.Add(Error.Failure("HandleStateUpdate.JobStatus", $"Null status for ippId: {ippId}"));
         continue;
       }
 
-      if (ippJob.State == watched.State)
+      if (state == watched.State)
         continue;
 
       var res = await jobService.GetJob(watched.JobId)
         .ThenAsync(async j =>
         {
           // Failed jobs will remain. need to store the ippJobId and make code to retry that job using the ippJobId
-          if (JobPolicies.IsTerminal(ippJob.State))
+          if (JobPolicies.IsTerminal(state))
             _jobs.TryRemove(ippId, out _);
           else
-            _jobs[ippId] = new WatchedJob(watched.JobId, ippJob.State);
+            _jobs[ippId] = new WatchedJob(watched.JobId, state);
 
-          JobAction? action = ippJob.State switch
+          JobAction? action = state switch
           {
             JobStatus.Cancelled => JobAction.Cancelled,
             JobStatus.Completed => JobAction.Completed,
@@ -118,7 +118,7 @@ public class PrinterWatch(
             _ => null
           };
 
-          var update = new JobUpdate(j.Id, ippJob.State).NotifyDashboard();
+          var update = new JobUpdate(j.Id, state).NotifyDashboard();
 
           if (action != null)
             update = update.Log((JobAction)action, ByWho.System, ippJob.Message);

@@ -9,7 +9,9 @@ public class QueueRow
   public string FileName { get; init; } = string.Empty;
   public string ContentType { get; init; } = string.Empty;
 
-  public JobStatus Status { get; set; }
+  // null until the API has accepted the file and given us back a Job.
+  // A staged row has no status because it is not a job yet.
+  public JobStatus? Status { get; set; }
   public long SizeBytes { get; set; }
   public int RetryCount { get; set; }
   public DateTime? SubmittedAt { get; set; }
@@ -19,6 +21,12 @@ public class QueueRow
   public Guid? JobId { get; set; }
 
   public bool IsSending { get; set; }
+
+  public bool IsStaged => JobId is null;
+
+  public string StatusLabel => LabelFor(Status);
+
+  public static string LabelFor(JobStatus? status) => status?.ToString() ?? "Staged";
 
   public static QueueRow FromJob(Job job) => new()
   {

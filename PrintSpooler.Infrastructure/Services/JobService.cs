@@ -30,7 +30,7 @@ public class JobService(
       FileSizeBytes = data.Bytes.Length,
       PrinterId = data.PrinterId,
       Printer = printer,
-      Status = JobPolicies.DefaultStatus()
+      Status = JobPolicies.DefaultStatus
     };
 
     dbContext.Jobs.Add(job);
@@ -75,16 +75,16 @@ public class JobService(
     return jobData;
   }
 
-  public async Task<ErrorOr<List<Job>>> GetMiaJobs()
+  public async Task<ErrorOr<List<Job>>> GetInFlightJobs()
   {
-    var miaJobs = await dbContext
+    var inflightJobs = await dbContext
             .Jobs.Include(j => j.Printer)
-            .Where(j => JobPolicies.Mia.Contains(j.Status))
+            .Where(j => JobPolicies.InFlight.Contains(j.Status))
             .ToListAsync();
 
-    return miaJobs.Count > 0
-      ? miaJobs
-      : Error.NotFound("Jobs.NotFound", "No MIA jobs found");
+    return inflightJobs.Count > 0
+      ? inflightJobs
+      : Error.NotFound("Jobs.NotFound", "No in flight jobs found");
   }
 
   public async Task<ErrorOr<List<Job>>> GetPendingJobs()

@@ -94,22 +94,27 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     if (response?.JobsAttributes is not { } attributes)
       return Error.Failure("JobsAttributes.Failure", "Job returned no attributes");
 
-    ippJobs = [..attributes.Select(j => new IppJobStatus
-        {
-          Id = j.JobId,
-          State = j.JobState switch
-          {
-            JobState.Pending => JobStatus.Queued,
-            JobState.PendingHeld => JobStatus.Queued,
-            JobState.Processing => JobStatus.Processing,
-            JobState.ProcessingStopped => JobStatus.Failed,
-            JobState.Canceled => JobStatus.Cancelled,
-            JobState.Aborted => JobStatus.Failed,
-            JobState.Completed => JobStatus.Completed,
-            _ => JobStatus.Unknown
-          },
-          Message = j.JobStateMessage,
-        })];
+    foreach (var a in attributes)
+    {
+      JobStatus? status = a.JobState switch
+      {
+        JobState.Pending => JobStatus.Submitting,
+        JobState.PendingHeld => JobStatus.Submitting,
+        JobState.Processing => JobStatus.Processing,
+        JobState.ProcessingStopped => JobStatus.Failed,
+        JobState.Canceled => JobStatus.Cancelled,
+        JobState.Aborted => JobStatus.Failed,
+        JobState.Completed => JobStatus.Completed,
+        _ => null
+      };
+
+      ippJobs.Add(new IppJobStatus
+      {
+        Id = a.JobId,
+        State = status,
+        Message = a.JobStateMessage,
+      });
+    }
 
     return ippJobs;
   }

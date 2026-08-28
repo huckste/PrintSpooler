@@ -21,7 +21,7 @@
         @foreach (var status in printerStats)
         {
           <span class="sp-printer-stat">
-            <span class="sp-printer-stat-label">@(status)</span>
+            <span class="sp-printer-stat-label">@(QueueRow.LabelFor(status))</span>
             <span class="sp-printer-stat-value">@(JobWebService.CountByStatus(status, Rows))</span>
           </span>
         }
@@ -31,7 +31,7 @@
       <div class="sp-printer-actions-tray @(ShowActions ? "sp-printer-actions-tray-open" : "")">
 
         @{
-          var states = GetRowStates();
+          var targetRows = GetTargetRows();
 
           if (selectedRows.Count == 0)
           {
@@ -46,7 +46,7 @@
 
           foreach (var action in actions)
           {
-            if (ShowActionButton(action, states))
+            if (ShowActionButton(action, targetRows))
             {
               <button class="sp-btn" @onclick="() => HandleActions(action)" @onmouseenter="() => SetHoveredAction(action)"
                       @onmouseleave="ClearHoveredAction">@(action)</button>
@@ -101,12 +101,12 @@
                     @(row.SubmittedAt is DateTime submittedAt ? FormatTime.Short(submittedAt) : "—")
                   </td>
                   <td class="sp-table-status">
-                    <span class="sp-tag sp-tag-@(row.Status.ToString().ToLower())"
-                          title="@(ShowRowError(row))">@(row.Status)</span>
+                    <span class="sp-tag sp-tag-@(row.StatusLabel.ToLower())"
+                          title="@(ShowRowError(row))">@(row.StatusLabel)</span>
                   </td>
                   <td class="sp-table-action">
 
-                    @if (ShowSpinner(row.Status))
+                    @if (ShowSpinner(row))
                     {
                       <div class="sp-spinner"></div>
                     }
@@ -135,11 +135,12 @@
   private HashSet<Guid> selectedRows = [];
   private bool actionsOpen;
   private bool cardExpanded;
-  private HashSet<JobStatus> printerStats = [JobStatus.Failed, JobStatus.Processing, JobStatus.Staged];
+  // null == staged
+  private JobStatus?[] printerStats = [JobStatus.Failed, JobStatus.Processing, null];
   private RowActions? hoveredAction;
 
-  private bool ShowSpinner(JobStatus status) => status is JobStatus.Processing or JobStatus.Submitting;
-  private string? ShowRowError(QueueRow row) => row.Status == JobStatus.Failed ? row.ErrorText : null;
+  private bool ShowSpinner(QueueRow row) => row.Status is JobStatus.Processing or JobStatus.Submitting;
+  private string? ShowRowError(QueueRow row) => row.ErrorText;
 
   private void SetHoveredAction(RowActions action)
   {
@@ -147,22 +148,13 @@
       hoveredAction = action;
   }
 
-  private HashSet<JobStatus> GetRowStates()
-  {
-    var rows = selectedRows.Count > 0 ? Rows.Where(r => selectedRows.Contains(r.Id)) : Rows;
-    return rows.Select(r => r.Status).ToHashSet();
-  }
+  private List<QueueRow> GetTargetRows() =>
+    selectedRows.Count > 0
+      ? [.. Rows.Where(r => selectedRows.Contains(r.Id))]
+      : Rows;
 
-  private bool ShowActionButton(RowActions action, HashSet<JobStatus> states)
-  {
-    foreach (var state in states)
-    {
-      if (JobWebService.CanDoAction(action, state))
-        return true;
-    }
-
-    return false;
-  }
+  private bool ShowActionButton(RowActions action, List<QueueRow> rows) =>
+    rows.Any(row => JobWebService.CanDoAction(action, row));
 
   private void ClearHoveredAction() => hoveredAction = null;
 
@@ -171,7 +163,7 @@
     if (hoveredAction is not { } action)
       return false;
 
-    return JobWebService.CanDoAction(action, row.Status);
+    return JobWebService.CanDoAction(action, row);
   }
 
   private bool ShowActions => actionsOpen || selectedRows.Count > 0;
@@ -202,7 +194,6 @@
         FileName = file.Name,
         ContentType = file.ContentType,
         SizeBytes = ms.Length,
-        Status = JobStatus.Staged,
         PendingData = ms.ToArray()
       });
     }

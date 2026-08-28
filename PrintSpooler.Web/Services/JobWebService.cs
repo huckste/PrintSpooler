@@ -5,11 +5,11 @@ namespace PrintSpooler.Web.Services;
 
 public static class JobWebService
 {
-
-  public static int CountByStatus(JobStatus status, Dictionary<Guid, List<QueueRow>> rowsDict) =>
+  // null counts staged rows — same convention as QueueRow.Status.
+  public static int CountByStatus(JobStatus? status, Dictionary<Guid, List<QueueRow>> rowsDict) =>
     ToList(rowsDict).Count(row => row.Status == status);
 
-  public static int CountByStatus(JobStatus status, List<QueueRow> rows) =>
+  public static int CountByStatus(JobStatus? status, List<QueueRow> rows) =>
       rows.Count(row => row.Status == status);
 
   public static List<QueueRow> ToList(Dictionary<Guid, List<QueueRow>> rowsDict, RowActions action, Guid? printerId = null, HashSet<Guid>? rowIds = null)
@@ -17,7 +17,7 @@ public static class JobWebService
     return [.. rowsDict.Values
       .SelectMany(rowList => rowList)
       .Where(r => TargetedRow(r, rowIds)
-          && CanDoAction(action, r.Status)
+          && CanDoAction(action, r)
           && (printerId == null || printerId == r.PrinterId))];
   }
 
@@ -26,12 +26,12 @@ public static class JobWebService
 
   public static bool TargetedRow(QueueRow row, HashSet<Guid>? ids) => ids is null || ids.Contains(row.Id);
 
-  public static bool CanDoAction(RowActions action, JobStatus status) =>
+  public static bool CanDoAction(RowActions action, QueueRow row) =>
     action switch
     {
-      RowActions.Delete => RowPolicies.CanCancel(status),
-      RowActions.Retry => RowPolicies.CanRetry(status),
-      RowActions.Send => RowPolicies.CanSend(status),
+      RowActions.Delete => RowPolicies.CanCancel(row),
+      RowActions.Retry => RowPolicies.CanRetry(row),
+      RowActions.Send => RowPolicies.CanSend(row),
       _ => false
     };
 

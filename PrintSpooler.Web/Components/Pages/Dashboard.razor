@@ -26,7 +26,7 @@
   @foreach (var status in stats)
   {
     <div class="sp-card">
-      <p class="sp-stat-label">@(status)</p>
+      <p class="sp-stat-label">@(QueueRow.LabelFor(status))</p>
       <p class="sp-stat-value">
         @(JobWebService.CountByStatus(status, cache))
       </p>
@@ -50,7 +50,8 @@
   private Dictionary<Guid, List<QueueRow>> cache = [];
   private readonly HashSet<Guid> fadingRowIds = [];
   private readonly HashSet<Guid> completedRowIds = [];
-  private HashSet<JobStatus> stats = [JobStatus.Failed, JobStatus.Staged, JobStatus.Processing, JobStatus.Queued];
+  // null == staged
+  private JobStatus?[] stats = [JobStatus.Failed, null, JobStatus.Processing, JobStatus.Queued];
 
   protected override async Task OnInitializedAsync()
   {
@@ -149,8 +150,9 @@
         },
         errors =>
         {
+          // The submit failed, so no Job exists — the row is still staged and
+          // the bytes are still local. Surface the error, leave it re-sendable.
           var error = errors[0];
-          row.Status = JobStatus.Failed;
 
           row.ErrorText = error.Code == "refused"
             ? $"✗ {error.Description}"

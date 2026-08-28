@@ -43,7 +43,7 @@ public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNoti
   public async Task<ErrorOr<Success>> DeletePrinter(Guid id) =>
     await GetPrinter(id)
       .FailIfAsync(
-        p => dbContext.Jobs.AnyAsync(j => j.PrinterId == p.Id && JobPolicies.IsActive(j.Status)),
+        p => dbContext.Jobs.AnyAsync(j => j.PrinterId == p.Id && JobPolicies.Active.Contains(j.Status)),
         async p => Error.Conflict("Printer.HasActiveJobs", $"Cannot delete {p.Name}: has active jobs")
       )
       .ThenDo(p => dbContext.Printers.Remove(p))
