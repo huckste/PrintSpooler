@@ -10,13 +10,21 @@ jobs, queues them, delivers to a real printer via IPP, tracks status, logs
 everything. Genericized, not tied to any employer's systems. Built in ~1 week,
 pushed to GitHub via `gh`.
 
-## Current build status: APP BUILDS CLEAN; TEST PROJECT DOES NOT
+The app is feature-complete for its purpose. Remaining work is a fixed,
+closed list — see **Definition of done** at the bottom of this file. Do not
+propose work outside it; the failure mode for this project is scope growth,
+not missing features.
 
-`PrintSpooler.Core` / `Infrastructure` / `Api` / `Web` all build clean.
-`PrintSpooler.Tests` exists but does not compile — its `JobPoliciesTest`
-`[InlineData]` rows still name `JobStatus.Staged`/`Unknown`, both removed. The
-suite is being built from scratch, step by step, as a learning exercise.
-See **Tests**.
+`README.md` already exists and is good — architecture diagram, dependency
+direction, job-flow diagram, honest out-of-scope section. It needs a demo GIF
+and a CI badge, not a rewrite.
+
+## Current build status: SOLUTION BUILDS CLEAN; NO TEST PROJECT
+
+`PrintSpooler.Core` / `Infrastructure` / `Api` / `Web` all build clean, and
+they are the whole solution — the first `PrintSpooler.Tests` attempt was
+deleted rather than repaired, to restart from a decision about *what* is worth
+testing instead of from whatever was easiest to assert. See **Tests**.
 
 ## Architecture — project references
 
@@ -391,10 +399,12 @@ Logs page filters/search/page change
 
 ## Tests
 
-`PrintSpooler.Tests` (xunit + FluentAssertions) exists but does not compile.
-Being built from scratch as a deliberate learning exercise — the author writes
-every line; do NOT write test code for them. Mode: ask a guiding question, let
-them attempt, correct with reasoning.
+No test project. A first attempt (xunit + FluentAssertions) was deleted — its
+`JobPolicies` tests enumerated every `JobStatus` by hand in `[InlineData]`
+rows, which restated the guard bodies and then broke the moment the enum
+changed. Rebuilding from scratch as a deliberate learning exercise; the author
+writes every line, do NOT write test code for them. Mode: ask a guiding
+question, let them attempt, correct with reasoning.
 
 **What counts as a test worth writing here** (settled by the author, applies to
 everything below):
@@ -414,17 +424,28 @@ everything below):
   client-evaluates and hides exactly the translation bugs worth catching.
 - Mock-heavy tests that assert a fake was called mostly test the fake.
 
-Candidate relation tests (none hardcode a status): `Terminal`/`Pending`/
-`InFlight`/`Retryable` partition `JobStatus` exhaustively and pairwise
-disjointly · `Retryable ∩ Terminal = ∅` (bytes must survive for retry) ·
-`Retryable ⊆ Cancellable` · `CanDispatch` succeeds implies `IsActive`.
-Plus mechanism tests: fail a job then retry and assert `JobData` still exists
-and `FailureReason` is cleared; `DeletePrinter` against real SQL; startup
-recovery with seeded `Queued`/`Submitting` rows; `POST /PrintJob` status codes
-via `WebApplicationFactory`.
+**Scope: 8–12 tests, not a suite.** Selection rule the author set — test what
+is hard to stage against real hardware. A failed submit, a crash mid-print, a
+printer that reports a state we don't model: all painful to reproduce live,
+all cheap to assert. Anything you can just click through in the dashboard
+doesn't need a test here.
 
-Known bugs deliberately left unfixed so their tests can catch them (do not
-fix these unprompted — finding them is the exercise):
+Candidates, in rough priority:
+- `Terminal`/`Pending`/`InFlight`/`Retryable` partition `JobStatus`
+  exhaustively and pairwise disjointly (fires when a new status is added and
+  left unclassified)
+- `Retryable ∩ Terminal = ∅` — bytes must survive for retry to work
+- fail a job, retry it, assert `JobData` still exists and `FailureReason` is
+  cleared
+- startup recovery with seeded `Queued`/`Submitting` rows
+- `ErrorOr` → HTTP status mapping via `WebApplicationFactory` (404 for a
+  missing job, 409 for cancelling a completed one)
+- `DeletePrinter` against a real provider — a predicate method inside a
+  `Where` throws only at runtime
+
+Known bugs that were parked for tests to catch. Tests are now scoped smaller
+and #1 is visible in the demo, so both are on the **Definition of done** list
+to fix directly:
 1. `JobService.UpdateJob` — `FailureReason` assigned only when status is
    `Failed`, never cleared, so a retried job keeps a stale reason.
 2. `PrinterService.CreatePrinter` — dup check ORs `p.Host == printer.Host`; EF
@@ -434,34 +455,72 @@ fix these unprompted — finding them is the exercise):
 rework: the inverted `IsActive` pattern match, and `DeletePrinter` calling a
 predicate method inside an EF query instead of `Active.Contains`.)
 
-Reference implementation (a full 4-layer suite, written then parked) lives in
-the session scratchpad at `reference-tests/` — for the assistant to consult,
-not to paste back in.
+## Definition of done
 
-## Not built yet
+This is the finish line, agreed 2026-08-28. Goal is a project that reads well
+to a company hiring for full-stack C# — not a product. Nothing outside this
+list gets built; when these nine ship, the project is **complete**.
 
-- File transcoding (text/PDF/image → PCL raster) — only printer-native
-  content types (e.g. JPEG) work today. SkiaSharp planned for rasterizing.
-- Multi-printer batch submission UI (backend already supports it — one
-  `CreateJob` call per printer, no new domain logic needed).
-- Print settings (copies/paper size/duplex) via IPP job attributes — would
-  need `Get-Printer-Attributes` to discover what each printer actually
-  supports before exposing options.
-- IPP `Cancel-Job` — `CancelJob` currently only writes the DB, so cancelling a
-  printing job doesn't stop the printer. See the **Open** note under
-  `JobPolicies`.
-- Persisting the printer-assigned IPP job id on `Job` — it lives only in
-  `PrinterWatch`'s in-memory dictionary today, so a restart loses track of
-  jobs that are actually still printing (they get marked `Failed`). Also
-  blocks retrying a specific IPP job. Noted in a comment at
-  `PrinterWatch.HandleStateUpdate`.
-- Reading IPP `job-state-reasons` — already requested in
-  `RequestedAttributes` but never parsed. Would separate "held" from "warming
-  up" for `pending-held`.
-- Auth (JWT + roles) — descoped, revisit if time allows.
-- Deployment (Azure App Service, App Insights, Key Vault).
-- Tests — see **Tests** above. Nothing passing yet.
-- DB retention/purge policy for terminal `Job` rows — table grows unbounded.
+Ordered by value per hour of work:
+
+1. **`ErrorOr` → HTTP status mapping.** Every controller currently returns
+   `statusCode: 400` for every error, so a missing job is a 400 instead of 404
+   and cancelling a completed job is a 400 instead of 409. `ErrorOr` already
+   carries `ErrorType`; it's discarded at the boundary. One extension method,
+   used by all four controllers. Most-noticed thing in an API review.
+2. **Cancel tells the truth.** The dashboard offers Cancel on a printing job
+   and it doesn't stop the printer — `CancelJob` only writes the DB. Either
+   send IPP `Cancel-Job`, or narrow `CanCancel` to a `Cancellable` array
+   (`Pending ∪ Retryable`). Author's preference is the real cancel. A demo
+   that lies is worse than a missing button.
+3. **Stale `FailureReason`.** Bug #1 in **Tests** — a retried job shows its old
+   error in the dashboard. Visible in the demo recording, so fix it directly.
+4. **Tests + CI together.** 8–12 tests per **Tests** above, plus a GitHub
+   Actions workflow (restore / build / test on push) and a badge in the
+   README. No `.github/` exists today. CI is what makes the tests count for a
+   reviewer who won't run them.
+5. **Persist the IPP job id on `Job`.** Lives only in `PrinterWatch`'s
+   in-memory dictionary, so a restart marks still-printing jobs `Failed`.
+   Column + migration + rehydrate `PrinterWatch` on startup. This is the
+   strongest distributed-systems story in the project — reconciling against a
+   device you don't control, across a crash.
+6. **Auth, minimal.** JWT + one login endpoint + `[Authorize]`. No ASP.NET
+   Identity, no roles, no refresh tokens. Seed a demo user and put the
+   credentials in the README so the demo stays clickable.
+7. **`docker-compose` with `mssql/server`.** Makes the project runnable by
+   someone with no Azure account. Deliberately NOT a SQLite provider switch —
+   EF migrations are provider-specific, so that means maintaining a second
+   migration set forever plus silent behavioural drift. Same outcome, a tenth
+   of the work.
+8. **XML doc comments** on Core interfaces and `JobPolicies` — practice
+   knowing where they earn their place. Skip obvious private methods;
+   over-commenting reads as badly as under-commenting.
+9. **Demo GIF at the top of the README.** Real file, real printer, dashboard
+   moving live. Record last, once everything above is final. This is the asset
+   a reviewer actually consumes — nobody clones a portfolio repo.
+
+## Explicitly out of scope
+
+Decided, not pending. These belong in the README's limitations section, where
+a stated boundary reads as judgment rather than as a gap.
+
+- File transcoding (text/PDF → raster). Only printer-native content types
+  print. Guard it at `CreateJob` using `Printer.SupportedContentTypes` (today
+  discovered by mDNS, stored, and never read) and say so in the README.
+- A fake `IPrinterDispatcher` for demo purposes — considered and rejected.
+  The README already documents that everything except the print itself works
+  without a printer, and faking the one part that talks to real hardware
+  throws away the most interesting thing the project does.
+- Reading IPP `job-state-reasons` (would separate "held" from "warming up").
+- Multi-printer batch submission UI (backend already supports it).
+- Print settings (copies/paper size/duplex) via IPP job attributes.
+- `Printer.FailoverPrinterId` — in the model and 6 migrations, zero logic.
+  Leave it or delete it; do not build failover.
+- Deployment to Azure App Service. Optional stretch after the nine above.
+- DB retention/purge for terminal `Job` rows — table grows unbounded.
+- `GetPendingJobs`/`GetInFlightJobs` returning `Error.NotFound` on empty
+  (an empty queue is a valid answer, not a failure). Cosmetic; fix only if
+  touching that code anyway.
 
 ## Working style / how to help this person
 
