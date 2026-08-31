@@ -75,29 +75,17 @@ public class JobService(
     return jobData;
   }
 
-  public async Task<ErrorOr<List<Job>>> GetInFlightJobs()
-  {
-    var inflightJobs = await dbContext
-            .Jobs.Include(j => j.Printer)
-            .Where(j => JobPolicies.InFlight.Contains(j.Status))
-            .ToListAsync();
+  public async Task<List<Job>> GetInFlightJobs() =>
+    await dbContext
+      .Jobs.Include(j => j.Printer)
+      .Where(j => JobPolicies.InFlight.Contains(j.Status))
+      .ToListAsync();
 
-    return inflightJobs.Count > 0
-      ? inflightJobs
-      : Error.NotFound("Jobs.NotFound", "No in flight jobs found");
-  }
-
-  public async Task<ErrorOr<List<Job>>> GetPendingJobs()
-  {
-    var pendingJobs = await dbContext
-            .Jobs.Include(j => j.Printer)
-            .Where(j => JobPolicies.Pending.Contains(j.Status))
-            .ToListAsync();
-
-    return pendingJobs.Count > 0
-      ? pendingJobs
-      : Error.NotFound("Jobs.NotFound", "No pending jobs found");
-  }
+  public async Task<List<Job>> GetPendingJobs() =>
+    await dbContext
+      .Jobs.Include(j => j.Printer)
+      .Where(j => JobPolicies.Pending.Contains(j.Status))
+      .ToListAsync();
 
   public async Task<ErrorOr<Job>> CancelJob(Guid id)
   {
@@ -159,9 +147,7 @@ public class JobService(
       .Then(j =>
       {
         j.Status = update.Status;
-
-        if (j.Status is JobStatus.Failed)
-          j.FailureReason = update.FailureReason;
+        j.FailureReason = update.FailureReason;
 
         if (update.Retry)
           j.RetryCount++;
@@ -188,9 +174,6 @@ public class JobService(
     if (update.Write)
       await jobChannel.Writer.WriteAsync(job.Value.Id);
 
-
     return Result.Success;
-
   }
-
 }

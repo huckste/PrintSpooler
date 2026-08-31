@@ -41,29 +41,25 @@ public class PrintJobWorker(
     var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
 
     // requeue any jobs that are still queued on startup
-    await jobService.GetPendingJobs()
-      .ThenDoAsync(async jobs =>
-      {
-        foreach (var j in jobs)
-          await jobChannel.Writer.WriteAsync(j.Id);
-      });
+    List<Job> pendingJobs = await jobService.GetPendingJobs();
+
+    foreach (var j in pendingJobs)
+      await jobChannel.Writer.WriteAsync(j.Id);
 
     // Set any in flight jobs to failed as the status is unknown
-    await jobService.GetInFlightJobs()
-      .ThenDoAsync(async jobs =>
-      {
-        foreach (var j in jobs)
-        {
-          var res = await jobService.UpdateJob(
-            new JobUpdate(j.Id, JobStatus.Failed)
-            .Log(JobAction.Failed, ByWho.System, $"Job {j.Id} was in flight during API shutdown")
-            .NotifyDashboard()
-          );
+    List<Job> inFlightJobs = await jobService.GetInFlightJobs();
 
-          if (res.IsError)
-            HandleErrors(res.Errors);
-        }
-      });
+    foreach (var j in inFlightJobs)
+    {
+      var res = await jobService.UpdateJob(
+        new JobUpdate(j.Id, JobStatus.Failed)
+        .Log(JobAction.Failed, ByWho.System, $"Job {j.Id} was in flight during API shutdown")
+        .NotifyDashboard()
+      );
+
+      if (res.IsError)
+        HandleErrors(res.Errors);
+    }
   }
 
   private void HandleErrors(List<Error> errors)
@@ -105,7 +101,5 @@ public class PrintJobWorker(
     }
 
     return errors.Count > 0 ? errors : Result.Success;
-
   }
-
 }
