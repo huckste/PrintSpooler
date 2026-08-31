@@ -1,6 +1,7 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using PrintSpooler.Api.Contracts;
+using PrintSpooler.Api.Extensions;
 using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 
@@ -19,7 +20,7 @@ public class PrinterController(IPrinterService printerService) : ControllerBase
         )
         .Match(
             printer => CreatedAtAction(nameof(Post), new { id = printer.Id }, printer),
-            errors => Problem(detail: errors.First().Description, statusCode: 400)
+            errors => Problem(detail: errors.First().Description, statusCode: errors.ToStatusCode())
         );
   }
 
@@ -28,7 +29,7 @@ public class PrinterController(IPrinterService printerService) : ControllerBase
   {
     return await printerService
         .GetPrinter(id)
-        .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: 400));
+        .Match(Ok, errors => Problem(detail: errors.First().Description, statusCode: errors.ToStatusCode()));
   }
 
   [HttpGet(Name = "GetPrinters")]
@@ -39,6 +40,6 @@ public class PrinterController(IPrinterService printerService) : ControllerBase
   {
     return await printerService
         .DeletePrinter(id)
-        .Match(value => Ok(value), errors => Problem(detail: errors.First().Description, statusCode: 400));
+        .Match(value => Ok(value), errors => Problem(detail: errors.First().Description, statusCode: errors.ToStatusCode()));
   }
 }

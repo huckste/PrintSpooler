@@ -2,6 +2,7 @@ using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
+using PrintSpooler.Api.Extensions;
 
 namespace PrintSpooler.Api.Controllers;
 
@@ -23,5 +24,5 @@ public class LogsController(ILogsService logService) : ControllerBase
   public async Task<IActionResult> Get([FromQuery] LogQueryParams queryParams) =>
       await logService
           .GetLogs(queryParams)
-          .Match(Ok, error => Problem(detail: error.First().Description, statusCode: 400));
+          .Match(Ok, error => Problem(detail: error.First().Description, statusCode: error.ToStatusCode()));
 }
