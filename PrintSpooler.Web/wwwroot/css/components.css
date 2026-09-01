@@ -125,6 +125,7 @@
 .sp-tag-submitting  { color: var(--sp-green);     border-color: var(--sp-green);     }
 .sp-tag-processing  { color: var(--sp-green);     border-color: var(--sp-green);     }
 .sp-tag-queued      { color: var(--sp-yellow);    border-color: var(--sp-yellow);    }
+.sp-tag-cancelling  { color: var(--sp-yellow);    border-color: var(--sp-yellow);    }
 .sp-tag-completed  { color: var(--sp-green-dim); border-color: var(--sp-green-dim); }
 .sp-tag-failed     { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-cancelled  { color: var(--sp-muted);     border-color: var(--sp-muted);     }

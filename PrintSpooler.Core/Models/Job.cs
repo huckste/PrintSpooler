@@ -4,6 +4,7 @@ public class Job
 {
   public Guid Id { get; set; }
   public JobStatus Status { get; set; }
+  public int? IppJobId { get; set; }
   public Printer? Printer { get; set; }
   public Guid PrinterId { get; set; }
   public JobData? Data { get; set; }

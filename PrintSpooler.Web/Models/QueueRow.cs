@@ -20,7 +20,11 @@ public class QueueRow
   public byte[]? PendingData { get; set; }
   public Guid? JobId { get; set; }
 
-  public bool IsSending { get; set; }
+  // null until the printer has accepted the job and handed back an IPP id.
+  public int? IppJobId { get; set; }
+
+  // Drives the row spinner and hides the action buttons
+  public bool IsBusy { get; set; }
 
   public bool IsStaged => JobId is null;
 
@@ -38,7 +42,8 @@ public class QueueRow
     RetryCount = job.RetryCount,
     SubmittedAt = job.SubmittedAt,
     ErrorText = job.FailureReason,
-    JobId = job.Id
+    JobId = job.Id,
+    IppJobId = job.IppJobId
   };
 
   public void ApplyJob(Job job)
@@ -49,5 +54,6 @@ public class QueueRow
     SubmittedAt = job.SubmittedAt;
     ErrorText = job.FailureReason;
     JobId = job.Id;
+    IppJobId = job.IppJobId;
   }
 }

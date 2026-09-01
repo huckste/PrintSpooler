@@ -46,7 +46,8 @@ Web ────────> Core (DTOs only, via ApiClient over HTTP — no pr
 ## Core — Models (`PrintSpooler.Core/Models`)
 
 - `Job` — one print job. `Id`, `Printer?`/`PrinterId`, `Data?` (nav to
-  `JobData`), `SubmittedBy`, `FileName`, `ContentType`, `FileSizeBytes`,
+  `JobData`), `IppJobId?` (printer-assigned, written by `SetIppJobId` after a
+  successful send), `SubmittedBy`, `FileName`, `ContentType`, `FileSizeBytes`,
   `Status` (`JobStatus`), `RetryCount`/`MaxRetries`, `SubmittedAt`,
   `CompletedAt?`, `FailureReason?`.
 - `JobData` — job's raw file bytes, 1:1 with `Job` on `JobId`. Meant to be
@@ -88,19 +89,24 @@ Web ────────> Core (DTOs only, via ApiClient over HTTP — no pr
 - `PagedResult<T>` — `Items`, `TotalCount`, `Page`, `PageSize`,
   computed `TotalPages`.
 
-**Enums:** `JobStatus` (`Queued`/`Submitting`/`Processing`/`Completed`/
-`Cancelled`/`Failed` — shared by `Job.Status` and by `IppJobStatus.State?`, the
+**Enums:** `JobStatus` (`Queued`/`Submitting`/`Processing`/`Cancelling`/
+`Completed`/`Cancelled`/`Failed` — shared by `Job.Status` and by `IppJobStatus.State?`, the
 poller's mapping of IPP `job-state`. Deliberately has no `Staged` (Web-only
 concept — see `QueueRow.IsStaged`) and no `Unknown` (that was a null wearing an
 enum member's clothes; unmappable IPP states are now `null`). `Submitting`
 covers both our send-in-progress window and the printer's IPP
 `pending`/`pending-held` — in all of them the bytes have left us and nothing
-has hit paper) ·
+has hit paper. `Cancelling` = we sent IPP `Cancel-Job` and are waiting for the
+printer to confirm; `PrinterWatch` owns the move to `Cancelled`) ·
 `PrinterStatus` (`Online`/`Offline`/`Unknown`/`Stopped`/`Idle`/`Processing` —
 granular states from IPP `printer-state`, added in migration
 `AddPrinterStateGranularity`; Web treats `Idle`/`Processing`/`Stopped` as
 "online" via `PrinterWebService.IsOnline`) · `JobAction`
-(`Created`/`Cancelled`/`Completed`/`Failed`/`Retried`) · `ByWho`
+(`Created`/`CancelRequested`/`Cancelled`/`Completed`/`Failed`/`Retried` —
+`CancelRequested` is written by `JobService` when the user cancels a job that
+is already at the printer; the matching `Cancelled` comes later from
+`PrinterWatch`, so a `Cancelled` with no `CancelRequested` before it was
+cancelled at the printer itself) · `ByWho`
 (`System`/`User`) · `OrderByField` (`JobAction`/`ByWho`/`Timestamp`/`Details`) ·
 `SortDirection` (`Asc`/`Desc`).
 
@@ -109,7 +115,7 @@ granular states from IPP `printer-state`, added in migration
 - `IJobService` — `CreateJob(JobCreationData)`, `GetJob(Guid)`,
   `GetAllActiveJobs() -> Task<List<Job>>` (not `ErrorOr` — an empty queue is a
   valid answer, not a failure), `CancelJob(Guid)`,
-  `RetryJob(Guid)`, `GetPendingJobs() -> ErrorOr<List<Job>>` (Queued),
+  `RetryJob(Guid)`, `SetIppJobId(Guid, int, ct)`, `GetPendingJobs() -> ErrorOr<List<Job>>` (Queued),
   `GetInFlightJobs() -> ErrorOr<List<Job>>` (Submitting/Processing),
   `GetJobData(Guid, ct) -> ErrorOr<JobData>`, `UpdateJob(JobUpdate, ct) ->
   ErrorOr<Success>`, `RemoveJobData(Guid, ct) -> ErrorOr<Success>`.
@@ -117,6 +123,7 @@ granular states from IPP `printer-state`, added in migration
   `DeletePrinter -> ErrorOr<Success>` (guards against active jobs via
   `JobPolicies.IsActive`), `UpdatePrinter(printer, ct)` (SaveChanges + notify).
 - `IPrinterDispatcher` — `SendAsync(job, bytes, ct) -> ErrorOr<IppJobRef>` ·
+  `CancelPrinterJob(printer, ippId, ct) -> ErrorOr<Success>` (IPP `Cancel-Job`) ·
   `GetPrinterJobsAsync(printer, int[] ids, ct) -> ErrorOr<List<IppJobStatus>>`
   · `GetPrinterStatusAsync(printer, ct) -> ErrorOr<PrinterStatus>`.
 - `IPrinterDiscoveryService` — `ProbeForNetworkPrinters()` → mDNS scan.
@@ -128,28 +135,31 @@ granular states from IPP `printer-state`, added in migration
   reads from them, so a policy is written down exactly once:
   - `Terminal` = Completed|Cancelled — JobData deleted on these
   - `Pending` = Queued (ours, not yet dispatched)
-  - `InFlight` = Submitting|Processing (at the printer)
+  - `InFlight` = Submitting|Processing|Cancelling (at the printer)
   - `Retryable` = Failed
+  - `Cancellable` = `Pending ∪ Retryable ∪ (InFlight \ Cancelling)` — a
+    positive union with one exclusion rather than `Active.Except(Cancelling)`,
+    so an unclassified new status still fails closed
   - `Active` = **derived**, `Enum.GetValues<JobStatus>().Except(Terminal)`, so
     `Active` and `Terminal` can never drift and a newly added status defaults
     to active (visible on dashboard, blocks printer delete)
   - `DefaultStatus` = Queued (field, not a method)
 
-  Predicates `IsPending`/`IsTerminal`/`IsActive`/`IsInFlight` are `Contains`
+  Predicates `IsPending`/`IsTerminal`/`IsActive`/`IsInFlight`/`IsCancellable`
+  are `Contains`
   over those arrays. Guards return `ErrorOr<Job>` and use **positive**
   membership, never set complement, so an unclassified status fails closed:
-  `CanCancel` (currently `Active` — deliberately wide, see below),
   `CanRetry` (`Retryable`), `CanDispatch` (`Pending`).
+
+  `CanCancel` is the exception to the status-only rule: it takes a whole `Job`,
+  because `Submitting` covers two different situations. With an `IppJobId` the
+  job is sitting in the printer's IPP queue and is cancellable; without one we
+  are mid-`SendAsync`, the printer has no id to cancel by, and accepting the
+  request would mark the job `Cancelled` and print it anyway — so that case
+  returns `Error.Conflict("Job.Sending")`.
 
   The arrays are also what EF queries use (`JobPolicies.Active.Contains(...)`
   translates to SQL `IN`; a predicate method call does not).
-
-  **Open:** `CanCancel` allows in-flight jobs, but `JobService.CancelJob` only
-  writes the DB — it does not send IPP `Cancel-Job`. Cancelling a printing job
-  currently marks it Cancelled, deletes JobData, and lets `PrinterWatch`
-  overwrite the status when the printer reports Completed. Intentional
-  placeholder: IPP cancel is being added. When it lands, split a `Cancellable`
-  array (`Pending ∪ Retryable`) out of `Active` if cancel should narrow again.
 
 ## Infrastructure (`PrintSpooler.Infrastructure`)
 
@@ -160,20 +170,32 @@ granular states from IPP `printer-state`, added in migration
   `JobUpdate`/`UpdateJob` path (save + optional audit + optional notify +
   optional `Channel<Guid>` write; deletes `JobData` on terminal states).
   `CreateJob` validates the printer exists, saves `Job` + `JobData`, then
-  `UpdateJob` with `.Log(Created).WriteToChannel()`. `CancelJob`/`RetryJob`
-  guard via `JobPolicies.CanCancel`/`CanRetry` then `UpdateJob` (Retry adds
-  `.RetryJob().WriteToChannel()`). `RemoveJobData` does a direct
-  `ExecuteDeleteAsync` — used by `UpdateJob`'s terminal-state cleanup.
+  `UpdateJob` with `.Log(Created).WriteToChannel()`. `RetryJob`
+  guards via `JobPolicies.CanRetry` then `UpdateJob` (adds
+  `.RetryJob().WriteToChannel()`). `CancelJob` guards via
+  `JobPolicies.CanCancel`, then branches on `IppJobId` (**not** status): null
+  means the job never reached the printer, so it goes straight to `Cancelled`;
+  otherwise it sends IPP `Cancel-Job` and, on success, writes `Cancelling` +
+  `CancelRequested`/`User` and lets `PrinterWatch` confirm the terminal
+  `Cancelled`/`System`. The four cancel-ish outcomes stay distinguishable in
+  the audit log: `Cancelled`/`User` alone (never reached the printer),
+  `CancelRequested` then `Cancelled` (we asked, printer complied), `Cancelled`
+  alone (cancelled at the printer's own panel), `Failed` (printer aborted). A refused cancel leaves
+  the status untouched, records `FailureReason`, and returns the error — the
+  job is still printing, so saying otherwise would lie. `RemoveJobData` and
+  `SetIppJobId` are direct `ExecuteDeleteAsync` / `ExecuteUpdateAsync` calls
+  that bypass `UpdateJob` — neither is a status change, so neither audits,
+  notifies, nor writes to the channel.
 - `PrintJobWorker : BackgroundService` — on startup, re-enqueues any `Queued`
-  jobs from the DB, then marks any in-flight (`Submitting`/`Processing`) jobs as
-  `Failed` + audit + notify (crash recovery — the printer-assigned IPP job id
-  lives only in `PrinterWatch`'s memory, so a restart genuinely loses track of
-  those jobs). Consumes
+  jobs from the DB, then marks every `JobPolicies.InFlight` job
+  (`Submitting`/`Processing`/`Cancelling`) as `Failed` + audit + notify (crash
+  recovery — `Job.IppJobId` survives the restart but `PrinterWatch`'s tracking
+  does not, so nothing is watching those jobs any more). Consumes
   `jobChannel` indefinitely. Per job: `JobPolicies.CanDispatch` (already
   `Cancelled`? stop) → marks `Submitting` → `GetJobData` → `SendAsync`.
   On dispatch failure: marks `Failed` + audit (retry is manual via
-  `JobService.RetryJob`, not automatic here). On dispatch success: hands the
-  returned `IppJobRef` to `PrinterPoller` over `Channel<IppJobRef>` —
+  `JobService.RetryJob`, not automatic here). On dispatch success: persists the IPP id via
+  `SetIppJobId`, then hands the returned `IppJobRef` to `PrinterPoller` over `Channel<IppJobRef>` —
   `PrinterPoller` owns `Completed`/`Failed` detection from that point via IPP
   polling, not this worker. Fresh DB scope per job via
   `IServiceScopeFactory`.
@@ -220,7 +242,9 @@ granular states from IPP `printer-state`, added in migration
     printer's `PrinterWatch.AddJob`.
 - `Migrations/` — `InitialCreate`, `FixColumnTypos`, `AddPrinterForeignKey`,
   `EnumToStringConversions`, `AddJobData`, `AddFileSizeToJob`,
-  `AddPrinterDiscoveryFields`, `AddPrinterStateGranularity`.
+  `AddPrinterDiscoveryFields`, `AddPrinterStateGranularity`, `AddIppJobIdToJob`.
+  Adding a `JobStatus` member needs no migration — enums persist as strings
+  with no check constraint.
 
 ## Api (`PrintSpooler.Api`)
 
@@ -233,8 +257,9 @@ granular states from IPP `printer-state`, added in migration
   `Channel<IppJobRef>` singleton (submitted-job hand-off, `PrintJobWorker`
   writes → `PrinterPoller` reads), SignalR.
 - `PrintJobController` — `POST /PrintJob` (201 + body / 400 Problem Details),
-  `GET /PrintJob/{id}`, `GET /PrintJob` (all active), `DELETE /PrintJob/{id}`
-  (cancel), `POST /PrintJob/{id}/retry`.
+  `GET /PrintJob/{id}`, `GET /PrintJob` (all active), `POST /PrintJob/{id}/cancel`,
+  `POST /PrintJob/{id}/retry`. Cancel is a POST, not a DELETE — it does not
+  remove the job row.
 - `PrinterController` — `POST /Printer`, `GET /Printer/{id}`, `GET /Printer`,
   `DELETE /Printer/{id}`.
 - `PrinterDiscoveryController` — `GET /PrinterDiscovery` → runs mDNS probe.
@@ -268,7 +293,8 @@ granular states from IPP `printer-state`, added in migration
     old per-page raw `HubConnection`.
   - `JobApi` (Scoped) — `GetJobs()`, `SubmitJob(QueueRow)` (maps `PendingData`
     → `RawData`, `SubmittedBy="dashboard-user"`), `RetryJob(Guid?)`
-    (`POST /PrintJob/{id}/retry`), `DeleteJob(Guid?)`.
+    (`POST /PrintJob/{id}/retry`), `CancelJob(Guid?)`
+    (`POST /PrintJob/{id}/cancel`).
   - `PrinterApi` (Scoped) — `GetPrinters()`, `DiscoverNetworkPrinters()`
     (`GET /PrinterDiscovery`), `AddPrinter(Printer)`, `DeletePrinter(Guid)`.
   - `JobWebService` (static) — `CountByStatus(JobStatus?, ...)` (null counts
@@ -281,7 +307,9 @@ granular states from IPP `printer-state`, added in migration
     and `CanCancel(row)`, both of which read Core's `JobPolicies.Retryable` /
     `IsActive` directly. **Not** a mirror of Core's rules — Web owns only the
     staged case (a row with no `Job` yet) and defers every real-job decision to
-    Core, so the button set can't drift from what the API will accept.
+    Core, so the button set can't drift from what the API will accept —
+    including Core's `Submitting`-with-no-`IppJobId` exclusion, which is why
+    `QueueRow` carries `IppJobId`.
 - **Pages:**
   - `Dashboard.razor` (`/dashboard`) — home page. Injects `ConnectionManager`,
     subscribes `hub.JobUpdated`/`hub.PrinterUpdated`; loads printers
@@ -317,7 +345,7 @@ granular states from IPP `printer-state`, added in migration
     `<select>`, click-outside-to-close backdrop, `@bind-Value` support.
   - `SpSelectOption<TValue>` — `Value`/`Label` pair for `SpSelect`.
 - **Models:** `QueueRow` (client-side view of a `Job`, plus `PendingData`/
-  `IsSending`/`ErrorText`/`JobId?` for not-yet-submitted files and submitted
+  `IsBusy`/`ErrorText`/`JobId?`/`IppJobId?` for not-yet-submitted files and submitted
   jobs — `FromJob`/`ApplyJob` sync it from a real `Job`). `Status` is
   `JobStatus?`: null means staged, since a staged row is a picked file, not a
   job. `IsStaged` (`JobId is null`) is the discriminator;
@@ -325,8 +353,10 @@ granular states from IPP `printer-state`, added in migration
   dashboard/card stat tiles are plain `JobStatus?[]` on the same convention.
   A failed submit leaves the row staged with
   `ErrorText` set and the bytes still local — it is not marked `Failed`,
-  because no `Job` exists to have failed. · `RowActions` enum
-  (`Delete`/`Send`/`Retry`) · `ActionArgs` (bundles selected row ids + action
+  because no `Job` exists to have failed. `IsBusy` means an API call for that
+  row is outstanding: it drives the row spinner and makes
+  `JobWebService.CanDoAction` return false, so a slow request can't be fired
+  twice. · `RowActions` enum (`Cancel`/`Send`/`Retry`) · `ActionArgs` (bundles selected row ids + action
   + printer for the Dashboard's action handler) · `HealthState` enum
   (`Unknown`/`Online`/`Offline`) + `Label()`/`CssClass()` extensions.
 - **Formatters:** `FormatBytes.Short` (B/KB/MB) · `FormatTime.Short`/`Full`/
@@ -443,12 +473,9 @@ Candidates, in rough priority:
 - `DeletePrinter` against a real provider — a predicate method inside a
   `Where` throws only at runtime
 
-Known bugs that were parked for tests to catch. Tests are now scoped smaller
-and #1 is visible in the demo, so both are on the **Definition of done** list
-to fix directly:
-1. `JobService.UpdateJob` — `FailureReason` assigned only when status is
-   `Failed`, never cleared, so a retried job keeps a stale reason.
-2. `PrinterService.CreatePrinter` — dup check ORs `p.Host == printer.Host`; EF
+One known bug still parked for tests to catch (the stale-`FailureReason` one
+is fixed):
+1. `PrinterService.CreatePrinter` — dup check ORs `p.Host == printer.Host`; EF
    preserves C# null semantics, so two host-less printers read as duplicates.
 
 (Two earlier planted bugs are now fixed as a side effect of the `JobPolicies`
@@ -468,20 +495,22 @@ Ordered by value per hour of work:
    and cancelling a completed job is a 400 instead of 409. `ErrorOr` already
    carries `ErrorType`; it's discarded at the boundary. One extension method,
    used by all four controllers. Most-noticed thing in an API review.
-2. **Cancel tells the truth.** The dashboard offers Cancel on a printing job
-   and it doesn't stop the printer — `CancelJob` only writes the DB. Either
-   send IPP `Cancel-Job`, or narrow `CanCancel` to a `Cancellable` array
-   (`Pending ∪ Retryable`). Author's preference is the real cancel. A demo
-   that lies is worse than a missing button.
-3. **Stale `FailureReason`.** Bug #1 in **Tests** — a retried job shows its old
-   error in the dashboard. Visible in the demo recording, so fix it directly.
+2. ~~**Cancel tells the truth.**~~ **Done.** Real IPP `Cancel-Job`, a
+   `Cancelling` status the printer has to confirm, `Cancellable` split out of
+   `Active`, and a `Submitting`-with-no-IPP-id guard for the send race. Cancel
+   moved from `DELETE /PrintJob/{id}` to `POST /PrintJob/{id}/cancel`, and the
+   dashboard shows a spinner for any row with an outstanding request.
+3. ~~**Stale `FailureReason`.**~~ **Done.** `UpdateJob` assigns
+   `FailureReason` on every write instead of only on `Failed`, so a retried job
+   no longer carries its old error.
 4. **Tests + CI together.** 8–12 tests per **Tests** above, plus a GitHub
    Actions workflow (restore / build / test on push) and a badge in the
    README. No `.github/` exists today. CI is what makes the tests count for a
    reviewer who won't run them.
-5. **Persist the IPP job id on `Job`.** Lives only in `PrinterWatch`'s
-   in-memory dictionary, so a restart marks still-printing jobs `Failed`.
-   Column + migration + rehydrate `PrinterWatch` on startup. This is the
+5. **Rehydrate `PrinterWatch` on startup.** `Job.IppJobId` is now a persisted
+   column (`AddIppJobIdToJob`), but nothing reads it back after a restart, so
+   `PrintJobWorker.Init` still marks every in-flight job `Failed`. What is left
+   is seeding each `PrinterWatch` from the DB instead. This is the
    strongest distributed-systems story in the project — reconciling against a
    device you don't control, across a crash.
 6. **Auth, minimal.** JWT + one login endpoint + `[Authorize]`. No ASP.NET
@@ -518,6 +547,12 @@ a stated boundary reads as judgment rather than as a gap.
   Leave it or delete it; do not build failover.
 - Deployment to Azure App Service. Optional stretch after the nine above.
 - DB retention/purge for terminal `Job` rows — table grows unbounded.
+- Concurrent dispatch. `PrintJobWorker` is one serial loop: a job stays
+  `Queued` until the one ahead of it has been read out of SQL and pushed over
+  IPP, both of which scale with file size. FIFO per instance is what a spooler
+  is, and `Queued` is the honest label for that wait.
+- A cancel timeout. A printer that accepts `Cancel-Job` but never reports
+  `canceled` leaves the job `Cancelling` and pinned in `PrinterWatch._jobs`.
 - `GetPendingJobs`/`GetInFlightJobs` returning `Error.NotFound` on empty
   (an empty queue is a valid answer, not a failure). Cosmetic; fix only if
   touching that code anyway.

@@ -84,6 +84,7 @@ public class PrintJobWorker(
       })
       .ThenAsync(job => jobService.GetJobData(job.Id))
       .ThenAsync(jobData => printerDispatcher.SendAsync(job, jobData.Bytes, ct))
+      .ThenDoAsync(ippJob => jobService.SetIppJobId(ippJob.JobId, ippJob.IppId, ct))
       .ThenDoAsync(async ippJob => await ippJobChannel.Writer.WriteAsync(ippJob));
 
     if (res.IsError)

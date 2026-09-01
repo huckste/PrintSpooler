@@ -8,11 +8,12 @@ public interface IJobService
   Task<ErrorOr<Job>> CreateJob(JobCreationData data);
   Task<ErrorOr<Job>> GetJob(Guid id);
   Task<List<Job>> GetAllActiveJobs();
-  Task<ErrorOr<Job>> CancelJob(Guid id);
+  Task<ErrorOr<Job>> CancelJob(Guid id, CancellationToken ct = default);
   Task<ErrorOr<Job>> RetryJob(Guid id);
   Task<List<Job>> GetPendingJobs();
   Task<List<Job>> GetInFlightJobs();
   Task<ErrorOr<JobData>> GetJobData(Guid jobId, CancellationToken ct = default);
   Task<ErrorOr<Success>> UpdateJob(JobUpdate update, CancellationToken ct = default);
+  Task<ErrorOr<Success>> SetIppJobId(Guid jobId, int ippJobId, CancellationToken ct = default);
   Task<ErrorOr<Success>> RemoveJobData(Guid jobId, CancellationToken ct = default);
 }

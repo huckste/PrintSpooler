@@ -36,7 +36,7 @@ GET http://localhost:5164/health
 GET http://localhost:5164/Logs?actionFilter=Created&performedBy=User&page=2&pageSize=5
 
 ### Cancel a job (valid job)
-DELETE http://localhost:5164/PrintJob/9085a148-7ecf-4b73-8099-b8eaace95324
+POST http://localhost:5164/PrintJob/9085a148-7ecf-4b73-8099-b8eaace95324/cancel
 
 
 ### Create a printer

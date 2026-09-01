@@ -55,9 +55,46 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
 
     if (response.JobAttributes?.JobId is not { } id)
-      return Error.Failure("JobAttributes.Id", "Job returned no Id");
+      return Error.NotFound("JobAttributes.Id", "Job returned no Id");
 
     return new IppJobRef(job.PrinterId, job.Id, id);
+  }
+
+  public async Task<ErrorOr<Success>> CancelPrinterJob(Printer? printer, int? id, CancellationToken ct)
+  {
+    if (printer is null)
+      return Error.NotFound("CancelPrinterJob.Printer", $"Could not find a printer for ipp id: {id}");
+
+    if (printer.Host is not { } host)
+      return Error.NotFound("GetPrinterJobsAsync.Host", $"Could not find host for printer: {printer.Name}");
+
+    CancelJobResponse? response;
+
+    try
+    {
+      var request = new CancelJobRequest
+      {
+        OperationAttributes = new()
+        {
+          PrinterUri = new Uri($"ipp://{host}:631/ipp/print"),
+          JobId = id
+        }
+      };
+
+      response = await _client.CancelJobAsync(request, ct);
+    }
+    catch (IppResponseException ex)
+    {
+      return Error.Failure("CancelJobResponse.Reject", $"IPP error: {ex.Message}");
+    }
+    catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
+    {
+      return Error.Unexpected("CancelJobResponse.Transport", $"Could not reach printer at {host}: {ex.Message}");
+    }
+
+    return response?.StatusCode == IppStatusCode.SuccessfulOk
+      ? Result.Success
+      : Error.Failure("CancelJobResponse.Failure", $"Unable to cancel job: {response?.StatusCode}");
   }
 
   public async Task<ErrorOr<List<IppJobStatus>>> GetPrinterJobsAsync(Printer printer, int[] ids, CancellationToken ct)

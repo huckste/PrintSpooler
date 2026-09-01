@@ -41,7 +41,7 @@
           }
           else
           {
-            <button class="sp-btn" @onclick="() => { selectedRows.Clear(); actionsOpen = false; }">Cancel</button>
+            <button class="sp-btn" @onclick="() => { selectedRows.Clear(); actionsOpen = false; }">Clear</button>
           }
 
           foreach (var action in actions)
@@ -139,7 +139,8 @@
   private JobStatus?[] printerStats = [JobStatus.Failed, JobStatus.Processing, null];
   private RowActions? hoveredAction;
 
-  private bool ShowSpinner(QueueRow row) => row.Status is JobStatus.Processing or JobStatus.Submitting;
+  private bool ShowSpinner(QueueRow row) =>
+    row.IsBusy || row.Status is JobStatus.Processing or JobStatus.Submitting or JobStatus.Cancelling;
   private string? ShowRowError(QueueRow row) => row.ErrorText;
 
   private void SetHoveredAction(RowActions action)

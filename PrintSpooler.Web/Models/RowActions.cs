@@ -2,7 +2,7 @@ namespace PrintSpooler.Web.Models;
 
 public enum RowActions
 {
-  Delete,
+  Cancel,
   Send,
   Retry
 }

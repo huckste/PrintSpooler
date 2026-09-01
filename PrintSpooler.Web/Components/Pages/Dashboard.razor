@@ -108,7 +108,7 @@
 
       if (JobPolicies.IsTerminal(job.Status))
       {
-        row.IsSending = false;
+        row.IsBusy = false;
         completedRowIds.Add(row.Id);
         StateHasChanged();
 
@@ -138,30 +138,36 @@
     if (row.PendingData is not { } pendingData)
       return;
 
-    row.IsSending = true;
+    row.IsBusy = true;
     await InvokeAsync(StateHasChanged);
 
-    var res = await jobApi.SubmitJob(row);
+    try
+    {
+      var res = await jobApi.SubmitJob(row);
 
-    res.Switch(value =>
-        {
-          row.ApplyJob(value);
-          pendingData = null;
-        },
-        errors =>
-        {
-          // The submit failed, so no Job exists — the row is still staged and
-          // the bytes are still local. Surface the error, leave it re-sendable.
-          var error = errors[0];
-
-          row.ErrorText = error.Code == "refused"
-            ? $"✗ {error.Description}"
-            : $"✗ Error {error.Code}: {error.Description}";
-        });
-
-    row.IsSending = false;
-    await InvokeAsync(StateHasChanged);
+      res.Switch(value =>
+          {
+            row.ApplyJob(value);
+            pendingData = null;
+          },
+          errors =>
+          {
+            // The submit failed, so no Job exists — the row is still staged and
+            // the bytes are still local. Surface the error, leave it re-sendable.
+            row.ErrorText = ErrorTextFor(errors[0]);
+          });
+    }
+    finally
+    {
+      row.IsBusy = false;
+      await InvokeAsync(StateHasChanged);
+    }
   }
+
+  private static string ErrorTextFor(ErrorOr.Error error) =>
+    error.Code == "refused"
+      ? $"✗ {error.Description}"
+      : $"✗ Error {error.Code}: {error.Description}";
 
   private async Task OnFilesAdded(List<QueueRow> rows)
   {
@@ -196,16 +202,38 @@
     }
   }
 
-  private async Task DeleteAndFadeRow(QueueRow row)
+  private async Task CancelRow(QueueRow row)
   {
-    if (row.JobId is { } jobId)
+    // A staged row is a picked file, not a job — drop it locally, no API call.
+    if (row.JobId is not { } jobId)
     {
-      var res = await jobApi.DeleteJob(jobId);
-
-      if (res.IsError)
-        return;
+      await FadeAndRemoveRow(row);
+      return;
     }
 
+    row.IsBusy = true;
+    await InvokeAsync(StateHasChanged);
+
+    try
+    {
+      // This is only a cancel request
+      // The cancellation confirmation will come through OnJobUpdated
+      var res = await jobApi.CancelJob(jobId);
+
+      if (res.IsError)
+        row.ErrorText = ErrorTextFor(res.Errors[0]);
+      else
+        row.ApplyJob(res.Value);
+    }
+    finally
+    {
+      row.IsBusy = false;
+      await InvokeAsync(StateHasChanged);
+    }
+  }
+
+  private async Task FadeAndRemoveRow(QueueRow row)
+  {
     fadingRowIds.Add(row.Id);
     await InvokeAsync(StateHasChanged);
     await Task.Delay(500);
@@ -213,6 +241,27 @@
     cache[row.PrinterId].Remove(row);
     fadingRowIds.Remove(row.Id);
     await InvokeAsync(StateHasChanged);
+  }
+
+  private async Task RetryRow(QueueRow row, Guid jobId)
+  {
+    row.IsBusy = true;
+    await InvokeAsync(StateHasChanged);
+
+    try
+    {
+      var res = await jobApi.RetryJob(jobId);
+
+      if (res.IsError)
+        row.ErrorText = ErrorTextFor(res.Errors[0]);
+      else
+        row.ApplyJob(res.Value);
+    }
+    finally
+    {
+      row.IsBusy = false;
+      await InvokeAsync(StateHasChanged);
+    }
   }
 
   private async Task OnRowAction(ActionArgs e)
@@ -223,8 +272,8 @@
     {
       switch (e.Action)
       {
-        case RowActions.Delete:
-          await DeleteAndFadeRow(r);
+        case RowActions.Cancel:
+          await CancelRow(r);
           break;
         case RowActions.Send:
           await SubmitEntry(r);
@@ -234,7 +283,7 @@
           if (r.JobId is not { } jobId)
             await SubmitEntry(r);
           else
-            await jobApi.RetryJob(jobId);
+            await RetryRow(r, jobId);
           break;
       }
     }

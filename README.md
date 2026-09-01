@@ -71,3 +71,8 @@ Web/           Blazor pages (Dashboard, Printers, Logs), ApiClient
 ## Out of scope (deliberately)
 
 Auth, deployment, file transcoding, multi-printer batch UI, tests.
+
+Dispatch is a single serial loop — one job at a time, FIFO per instance. A job
+stays `Queued` until the one ahead of it has been read out of the database and
+pushed to the printer over IPP, both of which scale with file size. Jobs queue
+behind each other by design; that is what a spooler is.

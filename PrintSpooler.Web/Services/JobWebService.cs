@@ -26,10 +26,11 @@ public static class JobWebService
 
   public static bool TargetedRow(QueueRow row, HashSet<Guid>? ids) => ids is null || ids.Contains(row.Id);
 
+  // A row with a request already outstanding offers no actions
   public static bool CanDoAction(RowActions action, QueueRow row) =>
-    action switch
+    !row.IsBusy && action switch
     {
-      RowActions.Delete => RowPolicies.CanCancel(row),
+      RowActions.Cancel => RowPolicies.CanCancel(row),
       RowActions.Retry => RowPolicies.CanRetry(row),
       RowActions.Send => RowPolicies.CanSend(row),
       _ => false

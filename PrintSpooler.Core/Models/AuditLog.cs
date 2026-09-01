@@ -22,6 +22,7 @@ public class AuditLog
 public enum JobAction
 {
   Created,
+  CancelRequested,
   Cancelled,
   Completed,
   Failed,

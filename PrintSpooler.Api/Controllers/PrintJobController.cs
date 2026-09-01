@@ -42,8 +42,8 @@ public class PrintJobController(IJobService jobService) : ControllerBase
   [HttpGet(Name = "GetAllActivePrintJob")]
   public async Task<IActionResult> Get() => Ok(await jobService.GetAllActiveJobs());
 
-  [HttpDelete("{id}", Name = "CancelPrintJob")]
-  public async Task<IActionResult> Delete(Guid id)
+  [HttpPost("{id}/cancel", Name = "CancelPrintJob")]
+  public async Task<IActionResult> Cancel(Guid id)
   {
     return await jobService
         .CancelJob(id)

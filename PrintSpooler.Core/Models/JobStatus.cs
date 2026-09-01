@@ -2,14 +2,13 @@ namespace PrintSpooler.Core.Models;
 
 public enum JobStatus
 {
+  ///<summary>A job is queued to be sent to a printer (not onboard printer queue) </summary>
   Queued,
-
-  // Handed off to the printer but not yet printing. Covers both our own
-  // send-in-progress window and the printer's IPP pending/pending-held states —
-  // in all of them the bytes are gone from us and nothing has hit paper yet.
+  ///<summary>A job is being submitted to a printer </summary>
   Submitting,
-
+  ///<summary>A printer is activily working on a print job </summary>
   Processing,
+  Cancelling,
   Completed,
   Cancelled,
   Failed

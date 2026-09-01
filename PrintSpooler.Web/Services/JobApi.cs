@@ -22,8 +22,8 @@ public class JobApi(ApiClient api)
   public Task<ErrorOr<Job>> RetryJob(Guid? id) =>
     api.Post<Job>($"/PrintJob/{id}/retry", new { });
 
-  public Task<ErrorOr<Success>> DeleteJob(Guid? id) =>
-    api.Delete($"/PrintJob/{id}");
+  public Task<ErrorOr<Job>> CancelJob(Guid? id) =>
+    api.Post<Job>($"/PrintJob/{id}/cancel", new { });
 
 }
 

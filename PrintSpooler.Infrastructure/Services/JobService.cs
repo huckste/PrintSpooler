@@ -10,7 +10,8 @@ using PrintSpooler.Infrastructure.Data;
 public class JobService(
     AppDbContext dbContext,
     Channel<Guid> jobChannel,
-    IJobNotifier jobNotifier
+    IJobNotifier jobNotifier,
+    IPrinterDispatcher printerDispatcher
     ) : IJobService
 {
   public async Task<ErrorOr<Job>> CreateJob(JobCreationData data)
@@ -87,20 +88,42 @@ public class JobService(
       .Where(j => JobPolicies.Pending.Contains(j.Status))
       .ToListAsync();
 
-  public async Task<ErrorOr<Job>> CancelJob(Guid id)
+  public async Task<ErrorOr<Job>> CancelJob(Guid id, CancellationToken ct = default)
   {
-    var job = await GetJob(id);
+    var job = await GetJob(id).Then(JobPolicies.CanCancel);
 
-    var update = await job.Then(JobPolicies.CanCancel)
-      .ThenAsync(j =>
-        UpdateJob(
-          new JobUpdate(j.Id, JobStatus.Cancelled)
-          .Log(JobAction.Cancelled, ByWho.User)
-          .NotifyDashboard()
-        )
-      );
+    if (job.IsError)
+      return job.Errors;
 
-    return update.IsError ? update.Errors : job;
+    // null IPP id means job never reached printer. Nothing to cancel
+    if (job.Value.IppJobId is not { } ippJobId)
+    {
+      var cancelled = await UpdateJob(new JobUpdate(id, JobStatus.Cancelled)
+        .Log(JobAction.Cancelled, ByWho.User)
+        .NotifyDashboard(), ct);
+
+      return cancelled.IsError ? cancelled.Errors : job;
+    }
+
+    var result = await printerDispatcher.CancelPrinterJob(job.Value.Printer, ippJobId, ct);
+
+    if (result.IsError)
+    {
+      var failed = new JobUpdate(id, job.Value.Status).NotifyDashboard();
+      failed.FailureReason = result.Errors.First().Description;
+
+      var failedUpdate = await UpdateJob(failed, ct);
+
+      return failedUpdate.IsError ? failedUpdate.Errors : result.Errors;
+    }
+
+    // The printer accepted the cancel.
+    // PrinterWatch reports the job cancellation.
+    var cancelling = await UpdateJob(new JobUpdate(id, JobStatus.Cancelling)
+      .Log(JobAction.CancelRequested, ByWho.User)
+      .NotifyDashboard(), ct);
+
+    return cancelling.IsError ? cancelling.Errors : job;
   }
 
   public async Task<ErrorOr<Job>> RetryJob(Guid id)
@@ -120,6 +143,19 @@ public class JobService(
       );
 
     return update.IsError ? update.Errors : job;
+  }
+
+  // ExecuteUpdateAsync bypasses the change tracker,
+  // which is fine because the worker's scope ends right after the call.
+  public async Task<ErrorOr<Success>> SetIppJobId(Guid jobId, int ippJobId, CancellationToken ct = default)
+  {
+    int rowsUpdated = await dbContext.Jobs
+      .Where(j => j.Id == jobId)
+      .ExecuteUpdateAsync(s => s.SetProperty(j => j.IppJobId, ippJobId), ct);
+
+    return rowsUpdated == 1
+      ? Result.Success
+      : Error.Failure("Job.SetIppJobId", $"Expected to update one job for id {jobId}, updated {rowsUpdated}");
   }
 
   public async Task<ErrorOr<Success>> RemoveJobData(Guid jobId, CancellationToken ct = default)
