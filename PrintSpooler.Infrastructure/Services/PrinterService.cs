@@ -38,6 +38,20 @@ public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNoti
     return printer;
   }
 
+  public async Task<ErrorOr<Success>> UpdatePrinterStatus(Guid id, PrinterStatus status)
+  {
+    var printer = await GetPrinter(id);
+
+    if (printer.IsError)
+      return printer.Errors;
+
+    printer.Value.Status = status;
+
+    await UpdatePrinter(printer.Value);
+
+    return Result.Success;
+  }
+
   public async Task<List<Printer>> GetPrinters() => await dbContext.Printers.ToListAsync();
 
   public async Task<ErrorOr<Success>> DeletePrinter(Guid id) =>

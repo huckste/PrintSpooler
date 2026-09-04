@@ -11,40 +11,46 @@ public class PrinterWatch(
     Printer printer,
     IServiceScopeFactory scopeFactory,
     IPrinterDispatcher printerDispatcher,
-    ILogger<PrinterPoller> logger) : IDisposable
+    ILogger<PrinterWatch> logger) : IDisposable
 {
   private static readonly TimeSpan Idle = TimeSpan.FromSeconds(60);
   private static readonly TimeSpan Active = TimeSpan.FromSeconds(5);
+  private static readonly TimeSpan PollTimeout = TimeSpan.FromSeconds(10);
+
+  // Consecutive polls a printer may answer without mentioning a job before giving up
+  private const int MaxMissedPolls = 3;
 
   private readonly ConcurrentDictionary<int, WatchedJob> _jobs = [];
   private readonly PeriodicTimer _timer = new(Idle);
-  private bool _disposed;
 
   public void Dispose()
   {
     _timer.Dispose();
-    _disposed = true;
   }
 
   public void AddJob(int ippId, Guid jobId)
   {
-    ObjectDisposedException.ThrowIf(_disposed, this);
-
-    _jobs.TryAdd(ippId, new WatchedJob(jobId, JobStatus.Submitting));
+    _jobs.TryAdd(ippId, new WatchedJob(jobId));
     _timer.Period = Active;
   }
 
   public async Task RunAsync(CancellationToken ct)
   {
-    ObjectDisposedException.ThrowIf(_disposed, this);
-
     while (await _timer.WaitForNextTickAsync(ct))
     {
+      // Without this an unresponsive printer stalls the loop indefinitely, and holds up shutdown.
+      using var pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+      pollCts.CancelAfter(PollTimeout);
+
       try
       {
-        await PollJobs(ct);
+        await PollJobs(pollCts.Token);
       }
-      catch (Exception ex)
+      catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+      {
+        HandleErrors([Error.Failure("PrinterWatch.Timeout", $"No job from {printer.Name} within {PollTimeout.TotalSeconds}s")]);
+      }
+      catch (Exception ex) when (ex is not OperationCanceledException)
       {
         HandleErrors([Error.Unexpected("PollJobs.Exception", $"Ex: {ex.Message}")]);
       }
@@ -53,8 +59,12 @@ public class PrinterWatch(
 
   private async Task PollJobs(CancellationToken ct)
   {
+    logger.LogInformation("{method}: {operation}", "PollJobs", "Start");
     if (_jobs.IsEmpty)
+    {
       _timer.Period = Idle;
+      return;
+    }
 
     var result = await printerDispatcher
       .GetPrinterJobsAsync(printer, [.. _jobs.Keys], ct)
@@ -77,60 +87,108 @@ public class PrinterWatch(
 
     List<Error> errors = [];
 
-    foreach (var ippJob in ippJobs)
+    var tracked = _jobs.ToArray();
+
+    List<Job> jobs = await jobService.GetJobs([.. tracked.Select(t => t.Value.JobId)], ct);
+    var byJobId = jobs.ToDictionary(j => j.Id);
+    var reported = ippJobs
+      .Where(j => j.Id is not null)
+      .ToDictionary(j => j.Id!.Value);
+
+    foreach (var (ippId, watched) in tracked)
     {
-
-      if (ippJob.Id is not { } ippId)
+      if (!byJobId.TryGetValue(watched.JobId, out var job))
       {
-        errors.Add(Error.NotFound("HandleStateUpdate.IppJobId", "Could not find id for ipp job"));
+        _jobs.TryRemove(ippId, out _);
+        errors.Add(Error.NotFound("HandleStateUpdate.Job", $"No job {watched.JobId} behind ipp id {ippId}"));
         continue;
       }
 
-      if (!_jobs.TryGetValue(ippId, out var watched))
+      if (!reported.TryGetValue(ippId, out var ippJob))
       {
-        errors.Add(Error.NotFound("HandleStateUpdate.TryGetValue", $"Could not find value for ippId: {ippId}"));
+        var missing = await HandleMissingJob(jobService, ippId, watched, job, ct);
+
+        if (missing.IsError)
+          errors.AddRange(missing.Errors);
+
         continue;
       }
+
+      _jobs[ippId] = watched with { MissedPolls = 0 };
 
       if (ippJob.State is not { } state)
       {
-        errors.Add(Error.Failure("HandleStateUpdate.JobStatus", $"Null status for ippId: {ippId}"));
+        errors.Add(Error.Failure("HandleStateUpdate.JobStatus", $"Unmodelled IPP state for ipp id: {ippId}"));
         continue;
       }
 
-      if (state == watched.State)
+      // We have asked the printer to cancel and are waiting on it to confirm
+      if (job.Status is JobStatus.Cancelling && JobPolicies.IsInFlight(state))
         continue;
 
-      var res = await jobService.GetJob(watched.JobId)
-        .ThenAsync(async j =>
-        {
-          // Failed jobs will remain. need to store the ippJobId and make code to retry that job using the ippJobId
-          if (JobPolicies.IsTerminal(state))
-            _jobs.TryRemove(ippId, out _);
-          else
-            _jobs[ippId] = new WatchedJob(watched.JobId, state);
+      if (state == job.Status)
+        continue;
 
-          JobAction? action = state switch
-          {
-            JobStatus.Cancelled => JobAction.Cancelled,
-            JobStatus.Completed => JobAction.Completed,
-            JobStatus.Failed => JobAction.Failed,
-            _ => null
-          };
+      // The printer is done - no longer reports as in flight
+      if (!JobPolicies.IsInFlight(state))
+        _jobs.TryRemove(ippId, out _);
 
-          var update = new JobUpdate(j.Id, state).NotifyDashboard();
+      JobAction? action = state switch
+      {
+        JobStatus.Cancelled => JobAction.Cancelled,
+        JobStatus.Completed => JobAction.Completed,
+        JobStatus.Failed => JobAction.Failed,
+        _ => null
+      };
 
-          if (action != null)
-            update = update.Log((JobAction)action, ByWho.System, ippJob.Message);
+      var update = new JobUpdate(job.Id, state).NotifyDashboard();
 
-          return await jobService.UpdateJob(update, ct);
-        });
+      if (action is { } jobAction)
+        update = update.Log(jobAction, ByWho.System, ippJob.Message);
+
+      var res = await jobService.UpdateJob(update, ct);
 
       if (res.IsError)
         errors.AddRange(res.Errors);
     }
 
     return errors.Count > 0 ? errors : Result.Success;
+  }
+
+  // The printer answered but said nothing about this job, so it is gone from the printer's queue
+  private async Task<ErrorOr<Success>> HandleMissingJob(
+    IJobService jobService,
+    int ippId,
+    WatchedJob watched,
+    Job job,
+    CancellationToken ct)
+  {
+    // Already resolved by some other path
+    if (!JobPolicies.IsInFlight(job.Status))
+    {
+      _jobs.TryRemove(ippId, out _);
+      return Result.Success;
+    }
+
+    var missed = watched.MissedPolls + 1;
+
+    if (missed < MaxMissedPolls)
+    {
+      _jobs[ippId] = watched with { MissedPolls = missed };
+      return Result.Success;
+    }
+
+    _jobs.TryRemove(ippId, out _);
+
+    var (status, action) = job.Status is JobStatus.Cancelling
+      ? (JobStatus.Cancelled, JobAction.Cancelled)
+      : (JobStatus.Failed, JobAction.Failed);
+
+    return await jobService.UpdateJob(
+      new JobUpdate(job.Id, status)
+        .Log(action, ByWho.System,
+             $"{printer.Name} stopped reporting IPP job {ippId} after {missed} polls")
+        .NotifyDashboard(), ct);
   }
 
 }

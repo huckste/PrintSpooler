@@ -10,29 +10,34 @@ public class PrinterHeartbeat(
     Printer printer,
     IServiceScopeFactory scopeFactory,
     IPrinterDispatcher printerDispatcher,
-    ILogger<PrinterPoller> logger) : IDisposable
+    ILogger<PrinterHeartbeat> logger) : IDisposable
 {
   private static readonly TimeSpan Interval = TimeSpan.FromSeconds(30);
+  private static readonly TimeSpan PollTimeout = TimeSpan.FromSeconds(10);
   private readonly PeriodicTimer _timer = new(Interval);
-  private bool _disposed;
 
   public void Dispose()
   {
     _timer.Dispose();
-    _disposed = true;
   }
 
   public async Task RunAsync(CancellationToken ct)
   {
-    ObjectDisposedException.ThrowIf(_disposed, this);
-
     while (await _timer.WaitForNextTickAsync(ct))
     {
+      // Without this an unresponsive printer stalls the loop indefinitely.
+      using var pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+      pollCts.CancelAfter(PollTimeout);
+
       try
       {
-        await Poll(ct);
+        await Poll(pollCts.Token);
       }
-      catch (Exception ex)
+      catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+      {
+        HandleErrors([Error.Failure("PrinterHeartbeat.Timeout", $"No status from {printer.Name} within {PollTimeout.TotalSeconds}s")]);
+      }
+      catch (Exception ex) when (ex is not OperationCanceledException)
       {
         HandleErrors([Error.Unexpected("PrinterHeartbeat.RunAsync", $"Ex: {ex.Message}")]);
       }
