@@ -128,8 +128,12 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
       return Error.Unexpected("GetJobsResponse.Transport", $"Could not reach printer at {host}: {ex.Message}");
     }
 
-    if (response?.JobsAttributes is not { } attributes)
-      return Error.Failure("JobsAttributes.Failure", "Job returned no attributes");
+    if (response is null)
+      return Error.Failure("GetJobsResponse.Empty", $"No response from printer {printer.Name}");
+
+    // The printer answered and knows none of these jobs and should not be marked as failure
+    if (response.JobsAttributes is not { } attributes)
+      return ippJobs;
 
     foreach (var a in attributes)
     {

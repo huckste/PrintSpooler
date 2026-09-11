@@ -1,0 +1,20 @@
+name: A create printer
+method: POST
+url: $localhost/Printer
+timeout: 0
+followRedirects: true
+maxRedirects: 5
+body: |-
+  {
+    "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+    "Name": "TEST DUP"
+  }
+body_type: json
+capture:
+  printerId:
+    value: body.id
+    persist: environment
+assert:
+  - expression: status
+    operator: equals
+    value: 201

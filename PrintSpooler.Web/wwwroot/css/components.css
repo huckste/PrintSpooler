@@ -73,7 +73,10 @@
 
 .sp-stat-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* One equal column per card, however many there are. A fixed count has to
+       be kept in sync with the markup by hand, and drifts when a card is removed. */
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
     gap: 1px;
     background: var(--sp-border-subtle);
     border: 1px solid var(--sp-border-subtle);
@@ -88,10 +91,6 @@
     border-radius: 0;
     margin-bottom: 0;
     padding: 0.75rem 1rem;
-}
-
-.sp-stat-grid-5 {
-    grid-template-columns: repeat(5, 1fr);
 }
 
 .sp-stat-label {

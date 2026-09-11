@@ -1,0 +1,54 @@
+- id: af4691ce-411c-49c8-8f9f-9f66839a8971
+  timestamp: 1788909094613
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.015430999919772148
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15746499970555305
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 31.92109699966386
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.964419999625534
+      type: body
+      message: Body received - 782 bytes
+    - timeMs: 31.96679600002244
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobs
+    name: Jobs
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:11:33 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3df28315-75aa-4d0e-934e-ea6595e20610","status":6,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:11:27.1285824","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-08T23:08:57.2296506","completedAt":null,"failureReason":"IPP
+      error: Printer returned error code"}]
+    timeMs: 31.9991770000197
+    size: 782

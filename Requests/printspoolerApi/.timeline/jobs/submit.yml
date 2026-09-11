@@ -1,0 +1,156 @@
+- id: 42a82d33-12cc-4eca-8b6e-3d6c12383919
+  timestamp: 1788936559309
+  envName: development
+  network:
+    - timeMs: 0.006919000297784805
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06809300184249878
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 200.17705599963665
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 200.23179899901152
+      type: body
+      message: Body received - 654 bytes
+    - timeMs: 200.23511400073767
+      type: complete
+      message: Completed in 200ms
+  request:
+    id: jobs/submit
+    name: Submit
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "cffec806-d304-43ff-ba53-a46a7decad48"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:49:19 GMT
+      location: http://localhost:5164/PrintJob?id=70649283-f5e0-41df-b4f7-510ff3adc6af
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"70649283-f5e0-41df-b4f7-510ff3adc6af","status":0,"ippJobId":null,"printer":{"id":"cffec806-d304-43ff-ba53-a46a7decad48","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"cffec806-d304-43ff-ba53-a46a7decad48","data":{"bytes":"aGVsbG8=","jobId":"70649283-f5e0-41df-b4f7-510ff3adc6af"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:49:19.1353046Z","completedAt":null,"failureReason":null}
+    timeMs: 200.2694699987769
+    size: 654
+- id: 07fe4ee7-97c9-4324-a291-be5cddb800b6
+  timestamp: 1788936548968
+  envName: development
+  network:
+    - timeMs: 0.02078299969434738
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.19683599844574928
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 31.87397799640894
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 31.932119999080896
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 31.935996998101473
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobs/submit
+    name: Submit
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "1d88bd2c-dd88-4964-8e3b-4a332abf5c7b"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:49:08 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No printer found with ID
+      1d88bd2c-dd88-4964-8e3b-4a332abf5c7b","traceId":"00-079af0ba3dc6c7b04353773b5c5aa098-5f87f179521d26bb-00"}
+    timeMs: 31.957910999655724
+    size: 235
+- id: 0d1c1e3a-6a33-44a7-bc33-ee27576f0da2
+  timestamp: 1788933995185
+  envName: development
+  network:
+    - timeMs: 0.009211000055074692
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06811299920082092
+      type: request
+      message: POST http://localhost:5164//PrintJob
+    - timeMs: 193.69834699854255
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 193.74268899857998
+      type: body
+      message: Body received - 654 bytes
+    - timeMs: 193.74592999741435
+      type: complete
+      message: Completed in 194ms
+  request:
+    id: jobs/submit
+    name: Submit
+    method: POST
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "bf4c0d34-b798-4fb7-ad58-5a04c0659044"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:06:34 GMT
+      location: http://localhost:5164/PrintJob?id=8a0a8e59-71a8-4ea5-bafb-5a730435ee87
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"8a0a8e59-71a8-4ea5-bafb-5a730435ee87","status":0,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":{"bytes":"aGVsbG8=","jobId":"8a0a8e59-71a8-4ea5-bafb-5a730435ee87"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:06:35.0193877Z","completedAt":null,"failureReason":null}
+    timeMs: 193.75766699761152
+    size: 654

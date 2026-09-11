@@ -1,0 +1,831 @@
+- id: 2af68eca-28bb-46e5-94b7-e757bf4a83cc
+  timestamp: 1788909622379
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: 5
+        actual: 5
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.005297000054270029
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.061167999636381865
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 67.5502100000158
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 67.58445099974051
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 67.58646599994972
+      type: complete
+      message: Completed in 68ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:20:21 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 67.59444599971175
+    size: 950
+- id: 472e482b-4040-4b8d-994c-e4b3455eb8c0
+  timestamp: 1788909612870
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: 5
+        actual: 5
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.005033000372350216
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05961799994111061
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 66.89193799998611
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 68.7849630001001
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 68.79322999995202
+      type: complete
+      message: Completed in 69ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:20:11 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 68.80224400013685
+    size: 950
+- id: 6e4b5f26-b8df-4657-b301-7bf9d7c3c795
+  timestamp: 1788909603765
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: Params.PageSize
+        actual: 5
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.004989999812096357
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06507099978625774
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 66.52215299988165
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 66.55543199973181
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 66.55719099985436
+      type: complete
+      message: Completed in 67ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:20:02 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 66.56559199979529
+    size: 950
+- id: f989acbf-35cb-441b-90ea-fb878b546251
+  timestamp: 1788909603228
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: Params.PageSize
+        actual: 5
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.004608000162988901
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.052250999957323074
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 68.47937300009653
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 68.50602500000969
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 68.50745399994776
+      type: complete
+      message: Completed in 69ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:20:02 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 68.51501599978656
+    size: 950
+- id: cb938a05-a328-4ad2-8f62-4f3e94f68c68
+  timestamp: 1788909602620
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: Params.PageSize
+        actual: 5
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.016749000176787376
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10837400006130338
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 68.15161699987948
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 68.1947630001232
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 68.19921300001442
+      type: complete
+      message: Completed in 68ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:20:01 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 68.21493599982932
+    size: 950
+- id: 63f9e166-1d64-4bcf-9ecb-b35efdd57be0
+  timestamp: 1788909601616
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: Params.PageSize
+        actual: 5
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.025250999722629786
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.24690599972382188
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 68.54567899974063
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 68.59423399996012
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 68.59658600017428
+      type: complete
+      message: Completed in 69ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:20:00 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 68.62871100008488
+    size: 950
+- id: f60d0c39-63d9-422e-ab91-bebbc919a6ca
+  timestamp: 1788909581337
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: params
+        actual: 5
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.008351000025868416
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06556600006297231
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 72.13491400005296
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 72.18527000024915
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 72.18774100020528
+      type: complete
+      message: Completed in 72ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:19:40 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 72.19623400038108
+    size: 950
+- id: 279a2db4-7174-4ff7-a726-ffd6a47e1b19
+  timestamp: 1788909578672
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: 5
+        actual: 5
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.008836000226438046
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05948100006207824
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 65.42267700005323
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 65.4651820003055
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 65.46736100036651
+      type: complete
+      message: Completed in 65ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:19:37 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 65.47644600039348
+    size: 950
+- id: d4c3039e-3a03-4b95-8229-d8b5388f8d4e
+  timestamp: 1788909559933
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.page
+        operator: equals
+        expected: 2
+        actual: 2
+        passed: true
+        message: Assertion passed
+      - expression: body.pageSize
+        operator: equals
+        expected: 5
+        actual: 5
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.01967200031504035
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11628700001165271
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 66.57564599998295
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 66.63046899996698
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 66.6392830000259
+      type: complete
+      message: Completed in 67ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:19:18 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 66.65669699991122
+    size: 950
+- id: 3381f0c3-21f0-4633-a719-f1c048183064
+  timestamp: 1788909506086
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.02258099988102913
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2407889999449253
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 64.41365800006315
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 64.49024700000882
+      type: body
+      message: Body received - 950 bytes
+    - timeMs: 64.49426499987021
+      type: complete
+      message: Completed in 64ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:18:25 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"be7a9794-d2cd-4e3b-b61a-66f8d45b1de1","jobId":"062b5212-6a47-4837-b137-065a913742db","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.544489","details":null},{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null}],"totalCount":175,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 64.52647799998522
+    size: 950
+- id: 879e07f0-3106-4488-ae36-0773fb925270
+  timestamp: 1788907903373
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.013918000040575862
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13800599984824657
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 63.74910299992189
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 63.83126599993557
+      type: body
+      message: Body received - 951 bytes
+    - timeMs: 63.83551299991086
+      type: complete
+      message: Completed in 64ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:51:42 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null},{"id":"a6bae32a-a8da-41f5-93b5-ffc83f1de62b","jobId":"e7c18f37-69ba-4e34-803d-de1eba93789f","action":0,"performedBy":1,"timestamp":"2026-09-01T05:36:25.2989248","details":null}],"totalCount":174,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 63.85758199985139
+    size: 951
+- id: be532673-0578-4de9-8bbc-84c8b318c6c8
+  timestamp: 1788907808243
+  envName: development
+  network:
+    - timeMs: 0.022394000086933374
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.22262499993667006
+      type: request
+      message: GET http://localhost:5164/Logs?...
+    - timeMs: 85.2888329999987
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 85.32262900006026
+      type: body
+      message: Body received - 951 bytes
+    - timeMs: 85.32497700001113
+      type: complete
+      message: Completed in 85ms
+  request:
+    id: logs
+    name: Logs
+    method: GET
+    url: http://localhost:5164/Logs
+    headers: {}
+    params:
+      - name: actionFilter
+        value: Created
+        enabled: true
+      - name: performedBy
+        value: User
+        enabled: true
+      - name: page
+        value: '2'
+        enabled: true
+      - name: pageSize
+        value: '5'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:50:07 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{"items":[{"id":"6130f7c1-2e27-4b2b-91a2-bdb0af613d79","jobId":"310fafb4-96d7-4f37-959f-1b0f7658a787","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.3401317","details":null},{"id":"b687931e-3190-48c6-b1dd-e89308f3ce3a","jobId":"55155853-1585-418f-a4ed-39a1e6c7bf67","action":0,"performedBy":1,"timestamp":"2026-09-01T16:27:43.0746579","details":null},{"id":"b7f521ae-2a4c-4306-aa35-afdb1aa1beac","jobId":"a01141bc-2aa9-4bcd-91f4-e607ef924eb9","action":0,"performedBy":1,"timestamp":"2026-09-01T16:26:04.1049167","details":null},{"id":"6c9d5c69-98ad-4e29-a73a-472274bcdc81","jobId":"fc0916b2-0ece-44a5-a26f-099e59d4f4b6","action":0,"performedBy":1,"timestamp":"2026-09-01T15:48:20.4533483","details":null},{"id":"a6bae32a-a8da-41f5-93b5-ffc83f1de62b","jobId":"e7c18f37-69ba-4e34-803d-de1eba93789f","action":0,"performedBy":1,"timestamp":"2026-09-01T05:36:25.2989248","details":null}],"totalCount":174,"page":2,"pageSize":5,"totalPages":35}'
+    timeMs: 85.34938400005922
+    size: 951

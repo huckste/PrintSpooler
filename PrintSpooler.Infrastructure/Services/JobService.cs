@@ -82,6 +82,12 @@ public class JobService(
       .Where(j => JobPolicies.InFlight.Contains(j.Status))
       .ToListAsync();
 
+  // No Include: callers of this want status, not the printer.
+  public async Task<List<Job>> GetJobs(Guid[] ids, CancellationToken ct = default) =>
+    await dbContext.Jobs
+      .Where(j => ids.Contains(j.Id))
+      .ToListAsync(ct);
+
   public async Task<List<Job>> GetPendingJobs() =>
     await dbContext
       .Jobs.Include(j => j.Printer)
@@ -173,6 +179,9 @@ public class JobService(
 
     return error == null ? Result.Success : (Error)error;
   }
+
+  public async Task<List<Job>> GetActiveJobsByPrinter(Guid printerId) =>
+     await dbContext.Jobs.Where(j => j.PrinterId == printerId).ToListAsync();
 
   public async Task<ErrorOr<Success>> UpdateJob(JobUpdate update, CancellationToken ct = default)
   {

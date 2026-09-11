@@ -79,9 +79,13 @@ Web ────────> Core (DTOs only, via ApiClient over HTTP — no pr
   `job-state` onto `JobStatus`). `State` is null when the printer reports an
   IPP state we don't model — `PrinterWatch` logs it and skips, so an unmodeled
   state can never corrupt `Job.Status`.
-- `WatchedJob` — `JobId`, `State` (`JobStatus`). `PrinterWatch`'s own
-  bookkeeping record — one per in-flight IPP job it's polling, cached in
-  `PrinterWatch`'s `ConcurrentDictionary<int, WatchedJob>` keyed by IPP job ID.
+- `WatchedJob` — `JobId`, `MissedPolls`. `PrinterWatch`'s own bookkeeping —
+  one per in-flight IPP job it's polling, in a
+  `ConcurrentDictionary<int, WatchedJob>` keyed by IPP job ID. Deliberately
+  holds **no** status: the DB is the only record of that, and a second copy
+  could only drift from it. `MissedPolls` is the inverse — consecutive polls in
+  which the printer answered but said nothing about this job, which the DB
+  cannot know.
 - `LogQueryParams` — filter/sort/page params for `GET /Logs`
   (`SearchTerms`, `JobId?`, `DateFrom?`/`DateTo?` as `DateOnly?`,
   `ActionFilter?`, `PerformedBy?`, `OrderByField`, `SortDirection`, `Page`,
@@ -117,7 +121,8 @@ cancelled at the printer itself) · `ByWho`
   valid answer, not a failure), `CancelJob(Guid)`,
   `RetryJob(Guid)`, `SetIppJobId(Guid, int, ct)`, `GetPendingJobs() -> ErrorOr<List<Job>>` (Queued),
   `GetInFlightJobs() -> ErrorOr<List<Job>>` (Submitting/Processing),
-  `GetJobData(Guid, ct) -> ErrorOr<JobData>`, `UpdateJob(JobUpdate, ct) ->
+  `GetJobs(Guid[] ids, ct) -> Task<List<Job>>` (one round trip for a set —
+  `Contains` translates to SQL `IN`), `GetJobData(Guid, ct) -> ErrorOr<JobData>`, `UpdateJob(JobUpdate, ct) ->
   ErrorOr<Success>`, `RemoveJobData(Guid, ct) -> ErrorOr<Success>`.
 - `IPrinterService` — `GetPrinter`, `CreatePrinter`, `GetPrinters`,
   `DeletePrinter -> ErrorOr<Success>` (guards against active jobs via
@@ -207,7 +212,13 @@ cancelled at the printer itself) · `ByWho`
   `GetPrinterJobsAsync` maps IPP `job-state` to `JobStatus?`:
   `pending`/`pending-held` → `Submitting`, `processing` → `Processing`,
   `processing-stopped`/`aborted` → `Failed`, `canceled` → `Cancelled`,
-  `completed` → `Completed`, anything else → `null`.
+  `completed` → `Completed`, anything else → `null`. Asks by
+  `job-ids` and deliberately sends **no** `which-jobs` — the two are mutually
+  exclusive (PWG 5100.7) and a printer given both rejects the request. `job-ids`
+  returns the named jobs in any state, which is what completion detection and
+  startup rehydration both need. A printer that answers but knows none of the
+  ids returns an **empty list**, not an error, so `PrinterWatch` can tell "job
+  is gone" from "printer unreachable".
 - `PrinterDiscoveryService : IPrinterDiscoveryService` — mDNS scan via
   `Zeroconf` for `_ipp._tcp.local.`, parses TXT records into `Printer` objects
   (not yet persisted — caller has to `POST /Printer` separately).
@@ -224,22 +235,34 @@ cancelled at the printer itself) · `ByWho`
 - `PrinterPoller : BackgroundService` — seeds one `PrinterWatch` + one
   `PrinterHeartbeat` per printer on startup, runs all of them plus a
   `RouteJobs` loop concurrently via `Task.WhenAll`.
-  - `PrinterWatch` — per printer. Holds `ConcurrentDictionary<int,
-    WatchedJob>` of in-flight IPP jobs, keyed by IPP job ID; `AddJob` seeds
-    each at `Submitting`, which is true at hand-off time and makes the
-    printer's first `pending` report a no-change (no DB write, no SignalR
-    push). A `PeriodicTimer` polls `IPrinterDispatcher.GetPrinterJobsAsync` —
-    60s idle, drops to 5s while any job is tracked. A `null` state is logged
-    and skipped. On a state change: updates
-    `Job.Status`/`FailureReason` in the DB, writes an `AuditLog` row for
-    terminal states (`Failed`/`Cancelled`/`Completed`), pushes via
-    `IJobNotifier`, and stops tracking the job once terminal.
+  - `PrinterWatch` — per printer. Tracks in-flight IPP jobs in a
+    `ConcurrentDictionary<int, WatchedJob>` keyed by IPP job ID. A
+    `PeriodicTimer` polls `IPrinterDispatcher.GetPrinterJobsAsync` — 60s idle,
+    5s while any job is tracked; each poll is bounded by a 10s linked-token
+    deadline so an unresponsive printer can't stall the loop or hold up
+    shutdown. Each poll reads every tracked job in **one** `GetJobs` query and
+    compares the printer's report against `Job.Status` in the DB, so the watch
+    cannot drift from the job's real status. Per job:
+    - reported, state unchanged, or `null` (unmodelled IPP state) → skip
+    - reported in-flight while the DB says `Cancelling` → skip; we are waiting
+      on the cancel and the printer's "still working" report is stale news
+    - reported, state changed → update `Job.Status`, `AuditLog` row for
+      `Failed`/`Cancelled`/`Completed`, notify; stop tracking once the reported
+      state is no longer `InFlight`
+    - **not** reported for `MaxMissedPolls` (3) consecutive answered polls →
+      the printer has purged it, so resolve it and stop tracking. `Cancelling`
+      resolves to `Cancelled` (the disappearance *is* the cancel confirming —
+      many printers drop a cancelled job instead of reporting `canceled`);
+      anything else resolves to `Failed`. Only successful responses count as
+      misses, so an unreachable printer can never resolve a live job.
   - `PrinterHeartbeat` — per printer. `PeriodicTimer` polls
     `IPrinterDispatcher.GetPrinterStatusAsync` every 30s, writes
     `Printer.Status`/`LastHeartbeat`.
   - `RouteJobs` — reads `Channel<IppJobRef>` (written by `PrintJobWorker`
-    after a successful `SendAsync`), hands each ref to the matching
-    printer's `PrinterWatch.AddJob`.
+    after a successful `SendAsync`, and by its startup rehydration sweep),
+    hands each ref to the matching printer's `PrinterWatch.AddJob`. A ref for a
+    printer with no watch is marked `Failed` rather than dropped — nothing else
+    would ever resolve it.
 - `Migrations/` — `InitialCreate`, `FixColumnTypos`, `AddPrinterForeignKey`,
   `EnumToStringConversions`, `AddJobData`, `AddFileSizeToJob`,
   `AddPrinterDiscoveryFields`, `AddPrinterStateGranularity`, `AddIppJobIdToJob`.
@@ -482,6 +505,54 @@ is fixed):
 rework: the inverted `IsActive` pattern match, and `DeletePrinter` calling a
 predicate method inside an EF query instead of `Active.Contains`.)
 
+## Known problems (real bugs, not scheduled)
+
+Distinct from **Explicitly out of scope** below: those are decisions, these are
+defects. Neither is on the **Definition of done** list, so neither blocks
+finishing — but neither should be written up as a design choice either.
+
+### 1. `PrinterPoller` never reconciles the printer list
+
+`ExecuteAsync` reads `GetPrinters()` exactly once at startup and builds one
+`PrinterWatch` + one `PrinterHeartbeat` per printer. Nothing re-reads it, so
+both printer-management actions on the Printers page leave the poller stale:
+
+- **Printer added after startup** — no watch, no heartbeat, so its status never
+  updates. Worse, any job dispatched to it reaches `RouteJobs` with no matching
+  watch and is marked `Failed`.
+- **Printer deleted after startup** — its `PrinterHeartbeat` keeps the stale
+  `Printer` snapshot and keeps polling. `HandleStatusUpdate` then calls
+  `GetPrinter(printer.Id)`, gets `NotFound`, and logs an error every 30s
+  forever, against a printer we no longer manage. This is the one a reviewer
+  would notice, because it fills the console.
+
+Three fixes, increasing cost: (a) document "restart the API after adding or
+removing a printer" and accept the delete-case log spam; (b) let a watch or
+heartbeat retire itself when `GetPrinter` returns `NotFound` — a handful of
+lines, kills the spam, leaves the add case needing a restart; (c) a periodic
+reconcile loop in `PrinterPoller`, correct for both but real concurrency work
+(safe add/remove against a live `Task.WhenAll`, plus disposal ordering).
+
+### 2. Dispatch ignores whether the printer is already busy
+
+`PrintJobWorker` sends every job the moment the channel yields it, with no
+regard for what the printer is doing. The HP ENVY Inspire 7200 used for testing
+handles exactly one job at a time, so submitting two back to back is wrong for
+it: the correct behaviour is send → wait for that job to reach a terminal state
+→ send the next, with never more than one job in operation per printer. Other
+printers queue internally and would be fine, so this is a per-device property,
+not a universal rule.
+
+Note this is **not** the same as the serial-dispatch limitation recorded in the
+README. That one is about our own throughput (job N waits for job N-1's upload).
+This one is about exceeding what the printer itself will accept.
+
+The awkward part of any fix is the wait. Gating dispatch on "does this printer
+have an in-flight job" is easy (`JobPolicies.InFlight` over `PrinterId`); doing
+it without a busy-spin is not, since re-enqueuing onto `Channel<Guid>`
+immediately just spins. It wants a signal from `PrinterWatch` when a printer
+goes idle, or a delayed re-enqueue.
+
 ## Definition of done
 
 This is the finish line, agreed 2026-08-28. Goal is a project that reads well
@@ -507,10 +578,10 @@ Ordered by value per hour of work:
    Actions workflow (restore / build / test on push) and a badge in the
    README. No `.github/` exists today. CI is what makes the tests count for a
    reviewer who won't run them.
-5. **Rehydrate `PrinterWatch` on startup.** `Job.IppJobId` is now a persisted
-   column (`AddIppJobIdToJob`), but nothing reads it back after a restart, so
-   `PrintJobWorker.Init` still marks every in-flight job `Failed`. What is left
-   is seeding each `PrinterWatch` from the DB instead. This is the
+5. ~~**Persist the IPP job id and rehydrate on startup.**~~ **Done.**
+   `Job.IppJobId` is a persisted column (`AddIppJobIdToJob`) and
+   `PrintJobWorker.Init` re-routes in-flight jobs through `Channel<IppJobRef>`
+   so `PrinterWatch` picks them back up; only jobs with no IPP id are failed. This is the
    strongest distributed-systems story in the project — reconciling against a
    device you don't control, across a crash.
 6. **Auth, minimal.** JWT + one login endpoint + `[Authorize]`. No ASP.NET
@@ -525,7 +596,8 @@ Ordered by value per hour of work:
    knowing where they earn their place. Skip obvious private methods;
    over-commenting reads as badly as under-commenting.
 9. **Demo GIF at the top of the README.** Real file, real printer, dashboard
-   moving live. Record last, once everything above is final. This is the asset
+   moving live. Record last, once everything above is final. Toolchain and
+   capture notes live in `docs/recording-demo.md`. This is the asset
    a reviewer actually consumes — nobody clones a portfolio repo.
 
 ## Explicitly out of scope

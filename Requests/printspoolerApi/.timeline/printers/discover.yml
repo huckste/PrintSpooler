@@ -1,0 +1,1835 @@
+- id: a334649e-8972-4597-a1d9-a1d4b576d046
+  timestamp: 1788936866527
+  envName: development
+  network:
+    - timeMs: 0.006423000246286392
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07039100304245949
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.3648190014064
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.3969470001757
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2002.4003710001707
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:54:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2002.4118590019643
+    size: 366
+- id: 328f2e6b-b384-4268-bb2e-74b71f24fce6
+  timestamp: 1788936863540
+  envName: development
+  network:
+    - timeMs: 0.01828799769282341
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11747699975967407
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.2452109977603
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.284157000482
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2002.2886239998043
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:54:23 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2002.3040810003877
+    size: 2
+- id: 448db2fc-8f38-4912-babf-d1b7370fd707
+  timestamp: 1788936808599
+  envName: development
+  network:
+    - timeMs: 0.005993999540805817
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0722070001065731
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.3510139994323
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.3822299987078
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2002.3854460008442
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:53:28 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2002.4076890014112
+    size: 366
+- id: 6d21cb3b-ba43-4180-a1d0-dbc890861203
+  timestamp: 1788936805614
+  envName: development
+  network:
+    - timeMs: 0.006381001323461533
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07366999983787537
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.1181910000741
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.1530540026724
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2002.1552480012178
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:53:25 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2002.1656309999526
+    size: 2
+- id: 1fa03b39-867d-411f-8bc3-dd4c59d74b03
+  timestamp: 1788936802578
+  envName: development
+  network:
+    - timeMs: 0.015115000307559967
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11894199997186661
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.451781000942
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.4960110001266
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2002.5014210008085
+      type: complete
+      message: Completed in 2003ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:53:22 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2002.514320999384
+    size: 2
+- id: b28e2921-b5a8-42a1-b700-cabe10eb09e5
+  timestamp: 1788936759154
+  envName: development
+  network:
+    - timeMs: 0.02723899856209755
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.22818199917674065
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.9281990006566
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.0048249997199
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2002.0111929997802
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:52:38 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2002.0437059998512
+    size: 366
+- id: f429cc29-aea8-444e-a115-94d1443cb51d
+  timestamp: 1788936620727
+  envName: development
+  network:
+    - timeMs: 0.005840998142957687
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06327199935913086
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.2656379975379
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.2971959970891
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2001.3007839992642
+      type: complete
+      message: Completed in 2001ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:20 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2001.3112779967487
+    size: 366
+- id: 5af817a3-e05f-44eb-a7ea-ce3f077826ae
+  timestamp: 1788936617493
+  envName: development
+  network:
+    - timeMs: 0.008993998169898987
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10291500017046928
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2000.999540001154
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.0489719994366
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2001.0528520010412
+      type: complete
+      message: Completed in 2001ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:17 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2001.0766859985888
+    size: 2
+- id: afde8628-8e0c-43be-bdbd-0ad0d6b21451
+  timestamp: 1788936614378
+  envName: development
+  network:
+    - timeMs: 0.010134000331163406
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11968399956822395
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2004.4306150004268
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2004.4689459986985
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2004.4729549996555
+      type: complete
+      message: Completed in 2004ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:14 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2004.4837470017374
+    size: 2
+- id: b970ed1e-cb85-4f17-9329-769f17e488fd
+  timestamp: 1788936611212
+  envName: development
+  network:
+    - timeMs: 0.02939799800515175
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1863659992814064
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2000.7733779996634
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2000.8493939973414
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2000.859424997121
+      type: complete
+      message: Completed in 2001ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:10 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2000.882741998881
+    size: 2
+- id: 09b02044-c911-4ec9-bd9c-06d0c932d5cb
+  timestamp: 1788936455973
+  envName: development
+  network:
+    - timeMs: 0.006108000874519348
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06525600329041481
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.8714210018516
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.9090270027518
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2001.9111420027912
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:35 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2001.922704000026
+    size: 366
+- id: 9852a144-f8fb-4e84-ba0a-654b638c00ce
+  timestamp: 1788936450269
+  envName: development
+  network:
+    - timeMs: 0.005737997591495514
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06191399693489075
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.8721069991589
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.8915549963713
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2001.893312998116
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:30 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2001.9034139998257
+    size: 2
+- id: c3cb41b9-b94e-48f3-83ee-c0527be06b33
+  timestamp: 1788936447102
+  envName: development
+  network:
+    - timeMs: 0.006080999970436096
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0777520015835762
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.6777430027723
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.72142900154
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2001.724934000522
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2001.740134999156
+    size: 2
+- id: c5ebca1f-f769-43fe-9683-914c11be3b91
+  timestamp: 1788936443874
+  envName: development
+  network:
+    - timeMs: 0.006570998579263687
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07757999747991562
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.674782000482
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.6973950006068
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2002.6996359974146
+      type: complete
+      message: Completed in 2003ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:23 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2002.7077089995146
+    size: 2
+- id: a11672ca-fee7-409d-ac74-6e94cb47962e
+  timestamp: 1788936409356
+  envName: development
+  network:
+    - timeMs: 0.028088998049497604
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.17972199991345406
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.1637130007148
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.223625998944
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2002.2284590005875
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:46:49 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2002.2469200007617
+    size: 366
+- id: ad185620-c189-4b49-8da0-91cc939274f2
+  timestamp: 1788936328425
+  envName: development
+  network:
+    - timeMs: 0.05141200125217438
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.21247000247240067
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.2010290026665
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.2584180012345
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2001.2629950009286
+      type: complete
+      message: Completed in 2001ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:45:28 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2001.2777280025184
+    size: 366
+- id: 78e355be-acce-49db-8076-e1b213c31dc8
+  timestamp: 1788936324790
+  envName: development
+  network:
+    - timeMs: 0.02710999920964241
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2784870006144047
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2006.009655997157
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2006.0644639991224
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2006.0701400004327
+      type: complete
+      message: Completed in 2006ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:45:24 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2006.100702997297
+    size: 2
+- id: 3672bdf4-5428-4a87-8c89-c06816f43399
+  timestamp: 1788935976080
+  envName: development
+  network:
+    - timeMs: 0.0055270008742809296
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06225199997425079
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.9552589990199
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.999076999724
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2002.0024310015142
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:39:35 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2002.0153100006282
+    size: 366
+- id: c4310924-88df-4462-8072-20d6ce5e2f4f
+  timestamp: 1788935949036
+  envName: development
+  network:
+    - timeMs: 0.008093003183603287
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08767599985003471
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.1986520029604
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.2316120006144
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2002.2341140024364
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:39:08 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2002.2443390004337
+    size: 366
+- id: c4462510-2899-4dec-8fda-4e8267b6c7d4
+  timestamp: 1788935944792
+  envName: development
+  network:
+    - timeMs: 0.005251999944448471
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06725399941205978
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.960733000189
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2003.002732001245
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2003.0058110021055
+      type: complete
+      message: Completed in 2003ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:39:04 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2003.0290660001338
+    size: 2
+- id: 18f4a2fb-1f30-4bee-90bb-4843465da3f1
+  timestamp: 1788935936725
+  envName: development
+  network:
+    - timeMs: 0.008171997964382172
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0900529995560646
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.1575659997761
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.1815569996834
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2001.1847609989345
+      type: complete
+      message: Completed in 2001ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:38:56 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2001.194035999477
+    size: 2
+- id: 76b6b55c-d0c2-4f29-971b-ef8ac6bc14b6
+  timestamp: 1788935932731
+  envName: development
+  network:
+    - timeMs: 0.028127998113632202
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.14103499799966812
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.7667759992182
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.823475997895
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2001.8314699977636
+      type: complete
+      message: Completed in 2002ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:38:52 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2001.8526209965348
+    size: 2
+- id: 85ad17fd-43ee-44a1-b215-30d6d746afd5
+  timestamp: 1788935928174
+  envName: development
+  network:
+    - timeMs: 0.06582299992442131
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.5336869992315769
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2002.6015929989517
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2002.7000509984791
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2002.709346998483
+      type: complete
+      message: Completed in 2003ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:38:48 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2002.7465699985623
+    size: 2
+- id: cdef80c3-8ebf-4a08-a561-789d81f7ba09
+  timestamp: 1788935923597
+  envName: development
+  network:
+    - timeMs: 0.029451999813318253
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1895650029182434
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2006.3830890022218
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2006.4191550016403
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2006.4232560023665
+      type: complete
+      message: Completed in 2006ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:38:43 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2006.4351750016212
+    size: 2
+- id: 1c1ebb55-343c-46e1-b908-dd39dd1861bd
+  timestamp: 1788935906621
+  envName: development
+  network:
+    - timeMs: 0.013778001070022583
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0965149998664856
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2001.0347980000079
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2001.1019069999456
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 2001.1047310009599
+      type: complete
+      message: Completed in 2001ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:38:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"00000000-0000-0000-0000-000000000000","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 2001.1154270023108
+    size: 366
+- id: b2a9777b-2683-4fec-b00f-f9d65b321415
+  timestamp: 1788935899710
+  envName: development
+  network:
+    - timeMs: 0.008875001221895218
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09685000032186508
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 2003.5054720006883
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 2003.6195100024343
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 2003.6348179988563
+      type: complete
+      message: Completed in 2004ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:38:19 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 2003.6612679995596
+    size: 2
+- id: 5e968671-835e-4ef1-9b15-1da7ab232e36
+  timestamp: 1788935888908
+  envName: development
+  network:
+    - timeMs: 0.005483999848365784
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05412200093269348
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 1000.2786010019481
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: eb99d3bf-5c04-4eb3-9a8c-94bf6e63fcd0
+  timestamp: 1788935876111
+  envName: development
+  network:
+    - timeMs: 0.005677998065948486
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05465399846434593
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.21130200102925
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: e95bed66-6e48-433d-9ac0-6cb8879ca6e7
+  timestamp: 1788935875340
+  envName: development
+  network:
+    - timeMs: 0.01006300002336502
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13268500193953514
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.20490100234747
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 138dc3fb-c702-4e73-a8cf-f348832279c0
+  timestamp: 1788935823359
+  envName: development
+  network:
+    - timeMs: 0.006621003150939941
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07382400333881378
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.27595000341535
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 2a04e460-8fda-4abc-83cc-83897dc567de
+  timestamp: 1788935072033
+  envName: development
+  network:
+    - timeMs: 0.02611600235104561
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.24049100279808044
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.17584799975157
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: c809a0bd-5ab6-4028-8527-2188d3297ba0
+  timestamp: 1788935063861
+  envName: development
+  network:
+    - timeMs: 0.008973002433776855
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08952600136399269
+      type: request
+      message: GET http://localhost:5164/DiscoverPrinter
+    - timeMs: 7.115981001406908
+      type: response
+      message: 404 Not Found - 3 headers
+    - timeMs: 7.132431000471115
+      type: body
+      message: Body received - 0 bytes
+    - timeMs: 7.133855000138283
+      type: complete
+      message: Completed in 7ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/DiscoverPrinter
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-length: '0'
+      date: Wed, 09 Sep 2026 06:24:23 GMT
+      server: Kestrel
+    body: ''
+    timeMs: 7.1481770016252995
+    size: 0
+- id: f39d0a78-0abe-4d67-8928-710b49bf8af5
+  timestamp: 1788935061110
+  envName: development
+  network:
+    - timeMs: 0.007628999650478363
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.20239799842238426
+      type: request
+      message: GET http://localhost:5164/DiscoverPrinter
+    - timeMs: 1.6154100000858307
+      type: response
+      message: 404 Not Found - 3 headers
+    - timeMs: 1.6311490014195442
+      type: body
+      message: Body received - 0 bytes
+    - timeMs: 1.6334550008177757
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/DiscoverPrinter
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-length: '0'
+      date: Wed, 09 Sep 2026 06:24:21 GMT
+      server: Kestrel
+    body: ''
+    timeMs: 1.6403460018336773
+    size: 0
+- id: 80f06c69-4930-4a1f-a0b9-7b383d445aea
+  timestamp: 1788934922740
+  envName: development
+  network:
+    - timeMs: 0.005277000367641449
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05717800185084343
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.15633799880743
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: caebb5e4-dab7-409b-b35d-3a7ff428c2aa
+  timestamp: 1788934922253
+  envName: development
+  network:
+    - timeMs: 0.00841199979186058
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08791499957442284
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.23151699826121
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 033076f7-1d38-4d5a-bda6-15e8dba5c3a5
+  timestamp: 1788934921782
+  envName: development
+  network:
+    - timeMs: 0.010900001972913742
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10995899885892868
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.20211499929428
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 8a04e3e2-d698-4570-bf78-8fd204105753
+  timestamp: 1788934886876
+  envName: development
+  network:
+    - timeMs: 0.008894000202417374
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10218900069594383
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.1636850014329
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 2a600d22-d556-42cd-ace2-4477d4fc803e
+  timestamp: 1788934874766
+  envName: development
+  network:
+    - timeMs: 0.00955599918961525
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09256799891591072
+      type: request
+      message: GET http://localhost:5164/Printer/PrinterDiscovery
+    - timeMs: 21.764139998704195
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 21.807792998850346
+      type: body
+      message: Body received - 255 bytes
+    - timeMs: 21.81096300110221
+      type: complete
+      message: Completed in 22ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/Printer/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:21:14 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value 'PrinterDiscovery' is not
+      valid."]},"traceId":"00-355b830f7a30d6199120a6b1228a7af4-19fcdee8538d6a25-00"}
+    timeMs: 21.82284500077367
+    size: 255
+- id: 47c98df4-d4bc-422a-8ab7-7598d91f2944
+  timestamp: 1788934856994
+  envName: development
+  network:
+    - timeMs: 0.029399000108242035
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.20908400043845177
+      type: request
+      message: GET http://localhost:5164/Discovery
+    - timeMs: 1.9722940027713776
+      type: response
+      message: 404 Not Found - 3 headers
+    - timeMs: 2.0089560002088547
+      type: body
+      message: Body received - 0 bytes
+    - timeMs: 2.0144830010831356
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/Discovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-length: '0'
+      date: Wed, 09 Sep 2026 06:20:56 GMT
+      server: Kestrel
+    body: ''
+    timeMs: 2.0312710031867027
+    size: 0
+- id: a999768e-68c7-4a87-8411-b92264dea54e
+  timestamp: 1788934854707
+  envName: development
+  network:
+    - timeMs: 0.015877000987529755
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1621220000088215
+      type: request
+      message: GET http://localhost:5164/Discovery
+    - timeMs: 1.8595589995384216
+      type: response
+      message: 404 Not Found - 3 headers
+    - timeMs: 1.8858750015497208
+      type: body
+      message: Body received - 0 bytes
+    - timeMs: 1.8881100006401539
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/Discovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-length: '0'
+      date: Wed, 09 Sep 2026 06:20:54 GMT
+      server: Kestrel
+    body: ''
+    timeMs: 1.9046070016920567
+    size: 0
+- id: 3b582687-04d9-4875-9254-0351e349373d
+  timestamp: 1788934830661
+  envName: development
+  network:
+    - timeMs: 0.011502999812364578
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09533900022506714
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.21984500065446
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 898375cd-eb49-4259-9a77-cbe7ba57540e
+  timestamp: 1788934802445
+  envName: development
+  network:
+    - timeMs: 0.0051719993352890015
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05996299907565117
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.19412399828434
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: b0ce4fac-fb3c-4ffe-b12e-fb6d817160c2
+  timestamp: 1788934796064
+  envName: development
+  network:
+    - timeMs: 0.005803998559713364
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0777989998459816
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.18566299974918
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 7e577a38-454e-440f-91c4-fa5b444e8631
+  timestamp: 1788934752726
+  envName: development
+  network:
+    - timeMs: 0.005495000630617142
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06567500159144402
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.14962200075388
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 4cf453df-539d-43e0-aede-2ce8a17b4113
+  timestamp: 1788934751734
+  envName: development
+  network:
+    - timeMs: 0.008267000317573547
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09062299877405167
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.18368200212717
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: ab5914ce-ca00-4717-b18d-dd7fa6209c02
+  timestamp: 1788934751086
+  envName: development
+  network:
+    - timeMs: 0.005407001823186874
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06147700175642967
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.18081299960613
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: f8cf9f8c-95d2-48f5-abae-6e3b7b212c90
+  timestamp: 1788934750543
+  envName: development
+  network:
+    - timeMs: 0.007211998105049133
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08579899743199348
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.23119399696589
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: a26c94bd-c456-419d-b568-a08e5f4f85e2
+  timestamp: 1788934749720
+  envName: development
+  network:
+    - timeMs: 0.013686999678611755
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09281599894165993
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.18466099724174
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: b91c34a1-6ded-460c-8f60-375ff5b47123
+  timestamp: 1788934748942
+  envName: development
+  network:
+    - timeMs: 0.01612299680709839
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.12244299799203873
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.21059799939394
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 9c23b0c3-1204-4d02-ae8d-67d977d96a41
+  timestamp: 1788934748230
+  envName: development
+  network:
+    - timeMs: 0.014955997467041016
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10354099795222282
+      type: request
+      message: GET http://localhost:5164/PrinterDiscovery
+    - timeMs: 100.2054859995842
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers/discover
+    name: Discover
+    method: GET
+    url: http://localhost:5164/PrinterDiscovery
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'

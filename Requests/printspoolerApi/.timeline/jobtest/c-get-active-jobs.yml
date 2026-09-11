@@ -1,0 +1,60 @@
+- id: 08060b1c-a949-46a3-91c9-3caa55fb9522
+  timestamp: 1788936992214
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: body[0].id
+        operator: equals
+        expected: 71f6062b-8e45-4462-a092-3465d82410c3
+        actual: 71f6062b-8e45-4462-a092-3465d82410c3
+        passed: true
+        message: Assertion passed
+      - expression: body[0].printerId
+        operator: equals
+        expected: 31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+        actual: 31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.006717998534440994
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07058800011873245
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 30.13290200009942
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.166561000049114
+      type: body
+      message: Body received - 632 bytes
+    - timeMs: 30.168416999280453
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: jobtest/c-get-active-jobs
+    name: C get active jobs
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:56:31 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"71f6062b-8e45-4462-a092-3465d82410c3","status":6,"ippJobId":null,"printer":{"id":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:56:29.0878839","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 30.196465000510216
+    size: 632

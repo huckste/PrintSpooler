@@ -1,12 +1,13 @@
 namespace PrintSpooler.Infrastructure.Services;
 
+using System.Threading.Channels;
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
 using PrintSpooler.Core.Models;
 using PrintSpooler.Core.Services;
 using PrintSpooler.Infrastructure.Data;
 
-public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNotifier) : IPrinterService
+public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNotifier, Channel<PrinterEvent> printerChannel) : IPrinterService
 {
   public async Task<ErrorOr<Printer>> CreatePrinter(Printer printer)
   {
@@ -25,6 +26,9 @@ public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNoti
     dbContext.Printers.Add(printer);
     await dbContext.SaveChangesAsync();
 
+    // CreatePrinter, after the SaveChanges path succeeds:
+    await printerChannel.Writer.WriteAsync(new PrinterEvent(printer.Id, PrinterEventType.Add));
+
     return printer;
   }
 
@@ -38,17 +42,40 @@ public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNoti
     return printer;
   }
 
+  public async Task<ErrorOr<Success>> UpdatePrinterStatus(Guid id, PrinterStatus status)
+  {
+    var printer = await GetPrinter(id);
+
+    if (printer.IsError)
+      return printer.Errors;
+
+    printer.Value.Status = status;
+
+    await UpdatePrinter(printer.Value);
+
+    return Result.Success;
+  }
+
   public async Task<List<Printer>> GetPrinters() => await dbContext.Printers.ToListAsync();
 
-  public async Task<ErrorOr<Success>> DeletePrinter(Guid id) =>
-    await GetPrinter(id)
-      .FailIfAsync(
-        p => dbContext.Jobs.AnyAsync(j => j.PrinterId == p.Id && JobPolicies.Active.Contains(j.Status)),
-        async p => Error.Conflict("Printer.HasActiveJobs", $"Cannot delete {p.Name}: has active jobs")
-      )
-      .ThenDo(p => dbContext.Printers.Remove(p))
-      .ThenDoAsync(async p => await UpdatePrinter(p))
-      .Then(_ => Result.Success);
+  public async Task<ErrorOr<Success>> DeletePrinter(Guid id)
+  {
+    var res = await GetPrinter(id)
+          .FailIfAsync(
+            p => dbContext.Jobs.AnyAsync(j => j.PrinterId == p.Id && JobPolicies.Active.Contains(j.Status)),
+            async p => Error.Conflict("Printer.HasActiveJobs", $"Cannot delete {p.Name}: has active jobs")
+          )
+          .ThenDo(p => dbContext.Printers.Remove(p))
+          .ThenDoAsync(async p => await UpdatePrinter(p))
+          .Then(_ => Result.Success);
+
+    // if delete succeeds - signal printer manager to kill that printer monitor
+    if (!res.IsError)
+      await printerChannel.Writer.WriteAsync(new PrinterEvent(id, PrinterEventType.Remove));
+
+    return res;
+
+  }
 
   public async Task UpdatePrinter(Printer printer, CancellationToken ct = default)
   {

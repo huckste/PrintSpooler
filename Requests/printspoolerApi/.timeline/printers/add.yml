@@ -1,0 +1,860 @@
+- id: 0d7f6371-17e6-43a5-aab0-8994711dde95
+  timestamp: 1788936869555
+  envName: development
+  network:
+    - timeMs: 0.011261999607086182
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.12414699792861938
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 82.1207069978118
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 82.18702400103211
+      type: body
+      message: Body received - 364 bytes
+    - timeMs: 82.19115699827671
+      type: complete
+      message: Completed in 82ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: >-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+      "supportedContentTypes":
+      ["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]
+
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:54:29 GMT
+      location: http://localhost:5164/Printer?id=5b95f99e-f79f-4c39-864e-aacb4f7b2658
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"5b95f99e-f79f-4c39-864e-aacb4f7b2658","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}
+    timeMs: 82.22233999893069
+    size: 364
+- id: a68de46b-a0d6-462c-9b39-120cd20850aa
+  timestamp: 1788936851209
+  envName: development
+  network:
+    - timeMs: 0.006966002285480499
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06952600181102753
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 34.37253000214696
+      type: response
+      message: 409 Conflict - 4 headers
+    - timeMs: 34.424708999693394
+      type: body
+      message: Body received - 289 bytes
+    - timeMs: 34.426497999578714
+      type: complete
+      message: Completed in 34ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: >-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+      "supportedContentTypes":
+      ["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]
+
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 409
+    statusText: Conflict
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:54:10 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.10","title":"Conflict","status":409,"detail":"Printer
+      already exist with name HP ENVY Inspire 7200 series or ipAddress
+      192.168.50.52 or host
+      hpd0ad08c445fe.local","traceId":"00-e763de5c9519e4ef5ce5a86a54903a02-c52a275583df3102-00"}
+    timeMs: 34.43672700226307
+    size: 289
+- id: ddfd79b7-8efa-4034-a5c0-3d61f4b72962
+  timestamp: 1788936824233
+  envName: development
+  network:
+    - timeMs: 0.0064690001308918
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07390400022268295
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 1.3475820012390614
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.3757349997758865
+      type: body
+      message: Body received - 436 bytes
+    - timeMs: 1.377301000058651
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:53:43 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["The JSON
+      object contains a trailing comma at the end which is not supported in this
+      mode. Change the reader options. Path: $ | LineNumber: 6 |
+      BytePositionInLine: 0."],"printerRequest":["The printerRequest field is
+      required."]},"traceId":"00-60718ec265bd93004ee755c6878ef96f-66c6cd81f4003266-00"}
+    timeMs: 1.383143000304699
+    size: 436
+- id: 73e6a7e9-6f7d-432c-9e0d-e3df56ece54a
+  timestamp: 1788936815856
+  envName: development
+  network:
+    - timeMs: 0.007483001798391342
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07169099897146225
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 69.2443579994142
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 69.27983900159597
+      type: body
+      message: Body received - 279 bytes
+    - timeMs: 69.28157100081444
+      type: complete
+      message: Completed in 69ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:53:35 GMT
+      location: http://localhost:5164/Printer?id=4a8a0a80-c709-4b56-9b6c-20eeb0fe67df
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"4a8a0a80-c709-4b56-9b6c-20eeb0fe67df","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":null,"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}
+    timeMs: 69.2910910025239
+    size: 279
+- id: 7a369a26-633c-409b-85ce-84e0658ae919
+  timestamp: 1788936762568
+  envName: development
+  network:
+    - timeMs: 0.027394000440835953
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2485250011086464
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 73.01746100187302
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 73.08397699892521
+      type: body
+      message: Body received - 245 bytes
+    - timeMs: 73.08978899940848
+      type: complete
+      message: Completed in 73ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:52:42 GMT
+      location: http://localhost:5164/Printer?id=b869cb5e-cc3d-45b3-8bfc-d537d5ef906b
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"b869cb5e-cc3d-45b3-8bfc-d537d5ef906b","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":null,"printerUuid":null}
+    timeMs: 73.10637300089002
+    size: 245
+- id: 796ed7ab-6105-44c2-9d73-f672dc383708
+  timestamp: 1788936709838
+  envName: development
+  network:
+    - timeMs: 0.009408999234437943
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09020299836993217
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 92.31161399930716
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 92.34648999944329
+      type: body
+      message: Body received - 227 bytes
+    - timeMs: 92.34891399741173
+      type: complete
+      message: Completed in 92ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:51:49 GMT
+      location: http://localhost:5164/Printer?id=c366c3a4-3629-47aa-9040-3342169a7e45
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"c366c3a4-3629-47aa-9040-3342169a7e45","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 92.3623269982636
+    size: 227
+- id: 21991fed-5ff7-4bf5-a97a-017ada31d7d0
+  timestamp: 1788936626091
+  envName: development
+  network:
+    - timeMs: 0.009273998439311981
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10262899845838547
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 2.232542999088764
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 2.2549149990081787
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 2.25874700024724
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "supportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:25 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-d4d6141d5ed4eec9026d68d1447cc17f-6fd340ff2710e430-00"}
+    timeMs: 2.267262998968363
+    size: 384
+- id: c2479e3e-7a1b-4ef7-8592-dd700b0eafa7
+  timestamp: 1788936625262
+  envName: development
+  network:
+    - timeMs: 0.00882599875330925
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09417499974370003
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 2.1740770004689693
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 2.19717999920249
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 2.200027998536825
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "supportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:25 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-257c8e3091655a8b59a2e6d5fbc75b86-640801ca6f59ca4a-00"}
+    timeMs: 2.209775999188423
+    size: 384
+- id: f9943f08-fc23-43d3-9a6e-2717fe0f8bc5
+  timestamp: 1788936623525
+  envName: development
+  network:
+    - timeMs: 0.010653000324964523
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0961650013923645
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 2.1500460021197796
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 2.169615000486374
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 2.1722539998590946
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "supportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:23 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-633cf24ff63e462a8df7ad17f68c4100-2f841ed3c1b83120-00"}
+    timeMs: 2.1843979991972446
+    size: 384
+- id: b63413e8-6a70-45d2-94c8-5a5c0ad40576
+  timestamp: 1788936604150
+  envName: development
+  network:
+    - timeMs: 0.01650499925017357
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1686049997806549
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 1.3661799989640713
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.3882789984345436
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 1.3903289996087551
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "ipaddress": "192.168.50.52",
+        "name": "HP ENVY Inspire 7200 series",
+        "host": "hpd0ad08c445fe.local",
+        "printerUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "supportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:50:03 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-f996ef203dffdfc110c4f53ac94988ad-c3cdf1356eb42b34-00"}
+    timeMs: 1.4183380007743835
+    size: 384
+- id: 48a71466-17a3-448d-8dae-45555935d53d
+  timestamp: 1788936506598
+  envName: development
+  network:
+    - timeMs: 0.008135002106428146
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08278699964284897
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 3.1309530027210712
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 3.1532320007681847
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 3.156243000179529
+      type: complete
+      message: Completed in 3ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "192.168.50.52",
+        "Name": "HP ENVY Inspire 7200 series",
+        "Host": "hpd0ad08c445fe.local",
+        "PrinterUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "SupportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:48:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-df4f7ee1ecfa73edb754046d0721f82c-8b575473cc718200-00"}
+    timeMs: 3.1659110002219677
+    size: 384
+- id: 6a27d417-d275-4e89-9e2d-c9551aa37fbd
+  timestamp: 1788936505348
+  envName: development
+  network:
+    - timeMs: 0.005607001483440399
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09659900143742561
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 1.9625720009207726
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.9762280024588108
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 1.9776809997856617
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "192.168.50.52",
+        "Name": "HP ENVY Inspire 7200 series",
+        "Host": "hpd0ad08c445fe.local",
+        "PrinterUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "SupportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:48:25 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-d570051676b8442808aaeda6a88c8839-2803253026af2891-00"}
+    timeMs: 1.983729999512434
+    size: 384
+- id: 47369907-f547-4f8e-8c87-ec55a7c8fd79
+  timestamp: 1788936423775
+  envName: development
+  network:
+    - timeMs: 0.009750999510288239
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09083099663257599
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 1.568588998168707
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.5909039974212646
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 1.5929469987750053
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "192.168.50.52",
+        "Name": "HP ENVY Inspire 7200 series",
+        "Host": "hpd0ad08c445fe.local",
+        "PrinterUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "SupportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:03 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-3a745e1d9efc1d71b996674c9d472fd1-2669435b9cd8d615-00"}
+    timeMs: 1.601087998598814
+    size: 384
+- id: 464a1069-3bad-48fc-bef7-78252a4cd4ce
+  timestamp: 1788936391137
+  envName: development
+  network:
+    - timeMs: 0.01796799898147583
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.17852799966931343
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 1.4149459972977638
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.439631998538971
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 1.4420539997518063
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "192.168.50.52",
+        "Name": "HP ENVY Inspire 7200 series",
+        "Host": "hpd0ad08c445fe.local",
+        "PrinterUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+        "SupportedContentType": "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:46:30 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 29."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-48a427711c596a4a1e84ef470a1a9568-d7888458b8781b16-00"}
+    timeMs: 1.467281997203827
+    size: 384
+- id: 10fd8b2f-fc8b-4c7e-95ea-c08d975fe015
+  timestamp: 1788936354121
+  envName: development
+  network:
+    - timeMs: 0.007318999618291855
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07002300024032593
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 18.71475899964571
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 18.755814999341965
+      type: body
+      message: Body received - 384 bytes
+    - timeMs: 18.758956000208855
+      type: complete
+      message: Completed in 19ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: >-
+      {
+        "Ipaddress": "192.168.50.52",
+        "Name": "HP ENVY Inspire 7200 series",
+        "Host": "hpd0ad08c445fe.local",
+        "PrinterUuid": "cbe8f109-94c3-462f-9b0d-648cd5d528b7",
+      "SupportedContentType":
+      "["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"]"
+
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:45:53 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"$":["'a' is
+      invalid after a value. Expected either ',', '}', or ']'. Path: $ |
+      LineNumber: 5 | BytePositionInLine: 27."],"printerRequest":["The
+      printerRequest field is
+      required."]},"traceId":"00-32b5f616996628dd84481685548d029f-588aeae24d4a162d-00"}
+    timeMs: 18.76902500167489
+    size: 384
+- id: fc480c23-64ac-4053-a4a0-42242e097f00
+  timestamp: 1788936017205
+  envName: development
+  network:
+    - timeMs: 0.029382001608610153
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2513820007443428
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 78.63268600031734
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 78.67281600087881
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 78.67701600119472
+      type: complete
+      message: Completed in 79ms
+  request:
+    id: printers/add
+    name: Add
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:40:17 GMT
+      location: http://localhost:5164/Printer?id=1d88bd2c-dd88-4964-8e3b-4a332abf5c7b
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"1d88bd2c-dd88-4964-8e3b-4a332abf5c7b","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 78.7219110019505
+    size: 235

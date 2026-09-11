@@ -1,0 +1,147 @@
+- id: cdf82fa4-7606-44e7-ba92-46cd2229de46
+  timestamp: 1788908303364
+  envName: development
+  network:
+    - timeMs: 0.01721199997700751
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1762909998651594
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 30.621297999983653
+      type: response
+      message: 409 Conflict - 4 headers
+    - timeMs: 30.668119999812916
+      type: body
+      message: Body received - 277 bytes
+    - timeMs: 30.670663999859244
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printer
+    name: Printer
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 409
+    statusText: Conflict
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:58:22 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.10","title":"Conflict","status":409,"detail":"Printer
+      already exist with name TEST DUP or ipAddress
+      ipp://HPD0AD08C445FE.local:631/ipp/print or host
+      ","traceId":"00-c7e69174a37f30bde9dd798af1fb76cf-ea95edb4e57a72b8-00"}
+    timeMs: 30.701016000006348
+    size: 277
+- id: 54f30055-7eef-42f4-bc8c-6c461e40c794
+  timestamp: 1788908268041
+  envName: development
+  network:
+    - timeMs: 0.016174999997019768
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15635900013148785
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 141.19645899999887
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 141.24292500014417
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 141.24560300004669
+      type: complete
+      message: Completed in 141ms
+  request:
+    id: printer
+    name: Printer
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:57:47 GMT
+      location: http://localhost:5164/Printer?id=d322b0b7-8b8e-4e52-a946-1a6bae4f2ea3
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"d322b0b7-8b8e-4e52-a946-1a6bae4f2ea3","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 141.25752800004557
+    size: 235
+- id: 1cc3f59c-5819-4e91-a6ec-4d0c32274e26
+  timestamp: 1788908239737
+  envName: development
+  network:
+    - timeMs: 0.014485999941825867
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15168499993160367
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 7.127988999942318
+      type: response
+      message: 415 Unsupported Media Type - 4 headers
+    - timeMs: 7.167708999942988
+      type: body
+      message: Body received - 176 bytes
+    - timeMs: 7.1700679999776185
+      type: complete
+      message: Completed in 7ms
+  request:
+    id: printer
+    name: Printer
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    auth:
+      type: none
+  response:
+    status: 415
+    statusText: Unsupported Media Type
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:57:18 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.16","title":"Unsupported
+      Media
+      Type","status":415,"traceId":"00-b530a94e0dc80bffdc978ac10734b4d2-8e3b3f33055d895d-00"}
+    timeMs: 7.197095999959856
+    size: 176

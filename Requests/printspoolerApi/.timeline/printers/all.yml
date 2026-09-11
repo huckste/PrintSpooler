@@ -1,0 +1,317 @@
+- id: ece7d810-af5a-4f72-8fe7-6e212862aff3
+  timestamp: 1788912780727
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.006714999675750732
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05836400017142296
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 32.71388399973512
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.73696199990809
+      type: body
+      message: Body received - 390 bytes
+    - timeMs: 32.73846600018442
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: printers/all
+    name: All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:13:00 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:12:57.056552","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 32.746253999881446
+    size: 390
+- id: fbdac098-0a92-4d55-ba02-935992398afc
+  timestamp: 1788912704096
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.009610999375581741
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06267100013792515
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 28.911538999527693
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 28.93245999980718
+      type: body
+      message: Body received - 627 bytes
+    - timeMs: 28.93396299984306
+      type: complete
+      message: Completed in 29ms
+  request:
+    id: printers/all
+    name: All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:11:43 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"b3bb9e87-f092-48f2-a839-47db2e0a9c37","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:11:27.1440586","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 28.941639999859035
+    size: 627
+- id: 7b8a883e-5a6c-48b4-9f9e-18eee6a38bc4
+  timestamp: 1788912131576
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.01311499997973442
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06842399947345257
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 33.10318399965763
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.12307500001043
+      type: body
+      message: Body received - 390 bytes
+    - timeMs: 33.1244989996776
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: printers/all
+    name: All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:02:11 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:01:57.075289","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 33.13188499957323
+    size: 390
+- id: bc6f3999-7f64-43aa-8767-88d97b4d9cde
+  timestamp: 1788912055688
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.019140999764204025
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11565000005066395
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 29.480910999700427
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 29.511928000487387
+      type: body
+      message: Body received - 626 bytes
+    - timeMs: 29.514731000177562
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: printers/all
+    name: All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:00:55 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:00:27.073638","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},{"id":"b1802ca3-06f5-4a35-92f9-f00534756de8","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 29.531573000364006
+    size: 626
+- id: 72d2ba7a-f38a-432d-8f63-258242143243
+  timestamp: 1788911753256
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.01734600029885769
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11125500034540892
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.422724000178277
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.483551000244915
+      type: body
+      message: Body received - 390 bytes
+    - timeMs: 31.489346000365913
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/all
+    name: All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:55:53 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:55:27.219409","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 31.507571999914944
+    size: 390
+- id: a317d6c7-4fb4-41ec-9f8d-1cdcfb307bd3
+  timestamp: 1788911370672
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.011396999470889568
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0666119996458292
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.250575999729335
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.270636999979615
+      type: body
+      message: Body received - 627 bytes
+    - timeMs: 31.27198199927807
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/all
+    name: All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:49:30 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"ae840dc4-af60-4c32-b091-0eb9f13c6a8d","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:49:27.0436003","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 31.278767999261618
+    size: 627

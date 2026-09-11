@@ -1,0 +1,222 @@
+- id: e1f8e124-1ad9-451d-b1d5-be050eff4924
+  timestamp: 1788908125345
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.007166000083088875
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0579220000654459
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 35.10272800014354
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 35.14066300005652
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 35.14385599992238
+      type: complete
+      message: Completed in 35ms
+  request:
+    id: jobswithinvalidprinter
+    name: JobsWithInvalidPrinter
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params: []
+    pathParams:
+      - name: printerId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:55:24 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-043842da427b5a8e4d73c7a0d3f8bef8-6ef45e725e527d06-00"}
+    timeMs: 35.15422499994747
+    size: 231
+- id: 3993af85-4909-4c84-be2c-ce88d78e8839
+  timestamp: 1788908080960
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.018697999883443117
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13420700002461672
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 31.4609819999896
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 31.50373400002718
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 31.50772999995388
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobswithinvalidprinter
+    name: JobsWithInvalidPrinter
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params: []
+    pathParams:
+      - name: path
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:54:40 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-05fff55f7bc877ced239ee4a93ef493a-3fb9d54942c86707-00"}
+    timeMs: 31.522670000093058
+    size: 231
+- id: 5b4bd387-13c3-435d-8cca-0ff8f05b8f62
+  timestamp: 1788908073908
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.023286999901756644
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.3524380000308156
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 32.33282699994743
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 32.36400799988769
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 32.36609699996188
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobswithinvalidprinter
+    name: JobsWithInvalidPrinter
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params: []
+    pathParams:
+      - name: path
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:54:33 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-64e9b63faacee5e4a98d20df4a78c605-6fb31e2a201a15b5-00"}
+    timeMs: 32.38366899988614
+    size: 231
+- id: db311352-4bb4-43b4-8281-5b3ac737da7b
+  timestamp: 1788907944888
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.01412700000219047
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13844599993899465
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 32.21934300009161
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 32.26123999990523
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 32.26378199993633
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobswithinvalidprinter
+    name: JobsWithInvalidPrinter
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:52:24 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-0055af64b525993f6f4341af3ba84c25-22bad81517806fdf-00"}
+    timeMs: 32.284300999948755
+    size: 231

@@ -1,0 +1,11 @@
+name: Get All
+method: GET
+url: $localhost/Printer/
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+body_type: none
+capture:
+  printerId:
+    value: body[0].id
+    persist: environment

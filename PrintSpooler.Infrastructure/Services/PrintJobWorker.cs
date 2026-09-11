@@ -19,7 +19,7 @@ public class PrintJobWorker(
   protected override async Task ExecuteAsync(CancellationToken ct)
   {
 
-    await Init();
+    await Init(ct);
 
     await foreach (var jobId in jobChannel.Reader.ReadAllAsync(ct))
     {
@@ -35,7 +35,7 @@ public class PrintJobWorker(
     }
   }
 
-  private async Task Init()
+  private async Task Init(CancellationToken ct)
   {
     using var scope = scopeFactory.CreateScope();
     var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
@@ -44,21 +44,29 @@ public class PrintJobWorker(
     List<Job> pendingJobs = await jobService.GetPendingJobs();
 
     foreach (var j in pendingJobs)
-      await jobChannel.Writer.WriteAsync(j.Id);
+      await jobChannel.Writer.WriteAsync(j.Id, ct);
 
     // Set any in flight jobs to failed as the status is unknown
     List<Job> inFlightJobs = await jobService.GetInFlightJobs();
 
     foreach (var j in inFlightJobs)
     {
-      var res = await jobService.UpdateJob(
-        new JobUpdate(j.Id, JobStatus.Failed)
+
+      if (j.IppJobId is { } ippJobId)
+      {
+        await ippJobChannel.Writer.WriteAsync(new IppJobRef(j.PrinterId, j.Id, ippJobId), ct);
+        continue;
+      }
+
+      var res = await jobService.UpdateJob(new JobUpdate(j.Id, JobStatus.Failed)
         .Log(JobAction.Failed, ByWho.System, $"Job {j.Id} was in flight during API shutdown")
-        .NotifyDashboard()
+        .NotifyDashboard(), ct
       );
 
       if (res.IsError)
         HandleErrors(res.Errors);
+
+      continue;
     }
   }
 

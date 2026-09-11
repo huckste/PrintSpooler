@@ -1,0 +1,46 @@
+- id: 51b6c978-ec83-457a-99b2-d3a44c167dc7
+  timestamp: 1788908710122
+  envName: development
+  network:
+    - timeMs: 0.016567000187933445
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.14132599998265505
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/d322b0b7-8b8e-4e52-a946-1a6bae4f2ea3
+    - timeMs: 166.793448000215
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 166.82984300004318
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 166.8324919999577
+      type: complete
+      message: Completed in 167ms
+  request:
+    id: printerbyid
+    name: PrinterById
+    method: DELETE
+    url: http://localhost:5164/Printer/d322b0b7-8b8e-4e52-a946-1a6bae4f2ea3
+    headers: {}
+    params: []
+    pathParams:
+      - name: printerId
+        value: d322b0b7-8b8e-4e52-a946-1a6bae4f2ea3
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:05:09 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 166.84501500008628
+    size: 2

@@ -1,0 +1,319 @@
+- id: 8f0a61ab-2ecc-4871-bbc3-c5df446ef879
+  timestamp: 1788912401232
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 201
+        actual: 201
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.015828999690711498
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15509399957954884
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 69.20532099995762
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 69.24891799967736
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 69.25101799983531
+      type: complete
+      message: Completed in 69ms
+  request:
+    id: printers/new
+    name: New
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:06:40 GMT
+      location: http://localhost:5164/Printer?id=b3bb9e87-f092-48f2-a839-47db2e0a9c37
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"b3bb9e87-f092-48f2-a839-47db2e0a9c37","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 69.28075099922717
+    size: 235
+- id: 307b123a-4c70-4e72-877d-1f1abc7f0425
+  timestamp: 1788911852664
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: body.id
+        operator: equals
+        expected: '{}'
+        actual: b1802ca3-06f5-4a35-92f9-f00534756de8
+        passed: false
+        message: Expected values to be equal
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 201
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.01565500069409609
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1546280002221465
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 64.12350200023502
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 64.15975800063461
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 64.16186000034213
+      type: complete
+      message: Completed in 64ms
+  request:
+    id: printers/new
+    name: New
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:57:32 GMT
+      location: http://localhost:5164/Printer?id=b1802ca3-06f5-4a35-92f9-f00534756de8
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"b1802ca3-06f5-4a35-92f9-f00534756de8","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 64.18576200027019
+    size: 235
+- id: 8b67a2c3-33e2-4510-be36-3d6e9e989784
+  timestamp: 1788911511585
+  envName: development
+  network:
+    - timeMs: 0.014325999654829502
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1572920000180602
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 71.07419000007212
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 71.11477799993008
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 71.11705699935555
+      type: complete
+      message: Completed in 71ms
+  request:
+    id: printers/new
+    name: New
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:51:51 GMT
+      location: http://localhost:5164/Printer?id=f535d242-ee54-4dda-80ab-9e162cd505d4
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"f535d242-ee54-4dda-80ab-9e162cd505d4","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 71.15409399941564
+    size: 235
+- id: 29018a0d-d1b0-4d8a-8235-74767af23c1a
+  timestamp: 1788911428369
+  envName: development
+  network:
+    - timeMs: 0.01605300046503544
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.19300600048154593
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 73.94432900007814
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 73.9820499997586
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 73.98552899993956
+      type: complete
+      message: Completed in 74ms
+  request:
+    id: printers/new
+    name: New
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:50:28 GMT
+      location: http://localhost:5164/Printer?id=f93cc873-8820-4d9e-bbb8-d29b8251c3a9
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"f93cc873-8820-4d9e-bbb8-d29b8251c3a9","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 74.00380400009453
+    size: 235
+- id: cfb87946-6f17-4259-a870-f46d1c54c665
+  timestamp: 1788911302981
+  envName: development
+  network:
+    - timeMs: 0.02869000006467104
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.16081300005316734
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 32.02638400066644
+      type: response
+      message: 409 Conflict - 4 headers
+    - timeMs: 32.07773800007999
+      type: body
+      message: Body received - 277 bytes
+    - timeMs: 32.08361600060016
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: printers/new
+    name: New
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 409
+    statusText: Conflict
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:48:22 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.10","title":"Conflict","status":409,"detail":"Printer
+      already exist with name TEST DUP or ipAddress
+      ipp://HPD0AD08C445FE.local:631/ipp/print or host
+      ","traceId":"00-a0194b5b66e5be94625901b7d30aa81b-6139aceaed90cc12-00"}
+    timeMs: 32.10746000055224
+    size: 277
+- id: 9f53870f-2624-4c21-a29b-515a11c1d06d
+  timestamp: 1788911273315
+  envName: development
+  network:
+    - timeMs: 0.014741000719368458
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1588160004466772
+      type: request
+      message: POST http://localhost:5164/Printer
+    - timeMs: 79.59190500061959
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 81.01844500005245
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 81.02391900029033
+      type: complete
+      message: Completed in 81ms
+  request:
+    id: printers/new
+    name: New
+    method: POST
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:47:53 GMT
+      location: http://localhost:5164/Printer?id=ae840dc4-af60-4c32-b091-0eb9f13c6a8d
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"ae840dc4-af60-4c32-b091-0eb9f13c6a8d","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 81.04419900011271
+    size: 235

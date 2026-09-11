@@ -1,0 +1,438 @@
+- id: 96318710-f550-434f-96c6-deaba7288db9
+  timestamp: 1788909936945
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 200
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.01032199990004301
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07613399997353554
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 30.113161999732256
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.140017000027
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 30.142740999814123
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:25:36 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 30.152458999771625
+    size: 2
+- id: d04b4047-97c1-4354-ba1a-88af014f7632
+  timestamp: 1788909903993
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.00648800004273653
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05461100023239851
+      type: request
+      message: GET http://localhost:5164/PrintJob/98e92491-8ee4-472d-8629-a8b854e184f8
+    - timeMs: 30.080852000042796
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 30.099654000252485
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 30.101186000276357
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/98e92491-8ee4-472d-8629-a8b854e184f8
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:25:03 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      98e92491-8ee4-472d-8629-a8b854e184f8","traceId":"00-19ec1e456b27693af3445ac31da6d2ad-83a968a9327f12d0-00"}
+    timeMs: 30.10906000016257
+    size: 231
+- id: cb9954c0-91f5-4b32-8d2a-856069397fa9
+  timestamp: 1788909890233
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.005020999815315008
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0523870000615716
+      type: request
+      message: GET http://localhost:5164/PrintJob/98e92491-8ee4-472d-8629-a8b854e184f8
+    - timeMs: 32.49955999990925
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 32.518094999715686
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 32.52220099978149
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/98e92491-8ee4-472d-8629-a8b854e184f8
+    headers: {}
+    params: []
+    pathParams:
+      - name: printerId
+        value: 98e92491-8ee4-472d-8629-a8b854e184f8
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:24:50 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      98e92491-8ee4-472d-8629-a8b854e184f8","traceId":"00-cca6567ef865d3a67176cb191e809ee2-c220f70df86abc31-00"}
+    timeMs: 32.529041999951005
+    size: 231
+- id: 1a8d5e72-762e-4edb-b2c6-1c5ce6cc0487
+  timestamp: 1788909831898
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.005477000027894974
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.053631999995559454
+      type: request
+      message: GET http://localhost:5164/PrintJob/PrinterId
+    - timeMs: 0.9254499999806285
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 0.9405809999443591
+      type: body
+      message: Body received - 248 bytes
+    - timeMs: 0.941722999792546
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/PrinterId
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:23:50 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value 'PrinterId' is not
+      valid."]},"traceId":"00-f1885092231de2861cdfe9097fd484a6-6b010856b06472d8-00"}
+    timeMs: 0.9480619998648763
+    size: 248
+- id: 1c67702b-b666-4e8b-9888-2cbc91a1d1a3
+  timestamp: 1788909831320
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.007387999910861254
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07298499997705221
+      type: request
+      message: GET http://localhost:5164/PrintJob/PrinterId
+    - timeMs: 1.4909660001285374
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.5098099997267127
+      type: body
+      message: Body received - 248 bytes
+    - timeMs: 1.5125409997999668
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/PrinterId
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:23:50 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value 'PrinterId' is not
+      valid."]},"traceId":"00-491752b5aa779b01fcc96e7a3f804f78-9236931487e39853-00"}
+    timeMs: 1.5229059997946024
+    size: 248
+- id: 269fa548-08b5-4695-809c-323da2ad4b85
+  timestamp: 1788909818637
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.018176999874413013
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11082000005990267
+      type: request
+      message: GET http://localhost:5164/PrintJob/PrinterId
+    - timeMs: 1.101956999860704
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.1258559999987483
+      type: body
+      message: Body received - 248 bytes
+    - timeMs: 1.1288189999759197
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/PrinterId
+    headers: {}
+    params: []
+    pathParams:
+      - name: printerId
+        value: PrinterId
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:23:37 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value 'PrinterId' is not
+      valid."]},"traceId":"00-2854616cc332826c5a5f4bb21747f1f9-3f0677c97781b7ca-00"}
+    timeMs: 1.1400319999083877
+    size: 248
+- id: 47e16b24-db29-472b-9790-3c0537acfe9f
+  timestamp: 1788909817945
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.020831999834626913
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.16492999996989965
+      type: request
+      message: GET http://localhost:5164/PrintJob/PrinterId
+    - timeMs: 1.3107829997316003
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.332367000170052
+      type: body
+      message: Body received - 248 bytes
+    - timeMs: 1.3344199997372925
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/PrinterId
+    headers: {}
+    params: []
+    pathParams:
+      - name: printerId
+        value: PrinterId
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:23:36 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value 'PrinterId' is not
+      valid."]},"traceId":"00-ea5a71bc6a20305af21c63750746d011-1089219329e491e1-00"}
+    timeMs: 1.3489379999227822
+    size: 248
+- id: 21588ce1-1ab0-4973-9cfc-e9e78972e6b7
+  timestamp: 1788909772960
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.01593200024217367
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15721100009977818
+      type: request
+      message: GET http://localhost:5164/PrintJob/printerId
+    - timeMs: 4.2787430002354085
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 4.308215000201017
+      type: body
+      message: Body received - 248 bytes
+    - timeMs: 4.310080999974161
+      type: complete
+      message: Completed in 4ms
+  request:
+    id: jobsbyprinterid
+    name: JobsByPrinterId
+    method: GET
+    url: http://localhost:5164/PrintJob/printerId
+    headers: {}
+    params: []
+    pathParams:
+      - name: printerId
+        value: printerId
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:22:51 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value 'printerId' is not
+      valid."]},"traceId":"00-fab6becc750fdd5944487a1a184f7d7e-81fbc3850e96acfc-00"}
+    timeMs: 4.332032000180334
+    size: 248

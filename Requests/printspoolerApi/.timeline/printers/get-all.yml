@@ -1,0 +1,770 @@
+- id: e482aad6-22da-46b3-a136-9d459dc3f1fb
+  timestamp: 1788936923572
+  envName: development
+  network:
+    - timeMs: 0.028793998062610626
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.17539500072598457
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 34.642613001167774
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 34.70779199898243
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 34.71975800022483
+      type: complete
+      message: Completed in 35ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:55:23 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"5b95f99e-f79f-4c39-864e-aacb4f7b2658","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 34.741468001157045
+    size: 366
+- id: 678d9ebe-317c-4b0b-bd23-806790d7a3fd
+  timestamp: 1788936907002
+  envName: development
+  network:
+    - timeMs: 0.006041999906301498
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07070600241422653
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.107703000307083
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.15598300099373
+      type: body
+      message: Body received - 602 bytes
+    - timeMs: 31.158061001449823
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:55:06 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"951b2010-a012-419c-85b8-585d8837e8ea","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},{"id":"5b95f99e-f79f-4c39-864e-aacb4f7b2658","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 31.167646002024412
+    size: 602
+- id: b095d55e-6345-48fb-85be-f669ab74be9e
+  timestamp: 1788936888014
+  envName: development
+  network:
+    - timeMs: 0.005579996854066849
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0726659968495369
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.15827799960971
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 37.42747199907899
+      type: body
+      message: Body received - 366 bytes
+    - timeMs: 37.440091997385025
+      type: complete
+      message: Completed in 37ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:54:47 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"5b95f99e-f79f-4c39-864e-aacb4f7b2658","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 37.45950399711728
+    size: 366
+- id: 45abdda9-774b-41ec-a937-12b4c87062c3
+  timestamp: 1788936742031
+  envName: development
+  network:
+    - timeMs: 0.021802999079227448
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.19115599989891052
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.39224199950695
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.44124399870634
+      type: body
+      message: Body received - 229 bytes
+    - timeMs: 31.443760000169277
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:52:21 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"c366c3a4-3629-47aa-9040-3342169a7e45","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 31.503463000059128
+    size: 229
+- id: c5b69c02-3e08-4c34-ac82-998dbc58c7fa
+  timestamp: 1788936576900
+  envName: development
+  network:
+    - timeMs: 0.00511300191283226
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06572700291872025
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 406.33611800149083
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 406.3795020021498
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 406.38270600140095
+      type: complete
+      message: Completed in 406ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:49:36 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 406.39460000023246
+    size: 2
+- id: 722fdef4-818e-4136-a742-00d25a96f1af
+  timestamp: 1788936436575
+  envName: development
+  network:
+    - timeMs: 0.005758002400398254
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06254300102591515
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 30.4370039999485
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.468382000923157
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 30.470346000045538
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:16 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 30.480450000613928
+    size: 2
+- id: 3c692e12-a570-4055-b706-88516ceecb43
+  timestamp: 1788936431426
+  envName: development
+  network:
+    - timeMs: 0.00622200220823288
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07185300067067146
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 30.20957100018859
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.24100000038743
+      type: body
+      message: Body received - 237 bytes
+    - timeMs: 30.24286999925971
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:11 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"1d88bd2c-dd88-4964-8e3b-4a332abf5c7b","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 30.251822002232075
+    size: 237
+- id: 6a2815ce-1acd-481b-ba19-8221d320bc27
+  timestamp: 1788936430655
+  envName: development
+  network:
+    - timeMs: 0.008489999920129776
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08871100097894669
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 30.311358999460936
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.36023199930787
+      type: body
+      message: Body received - 237 bytes
+    - timeMs: 30.363223999738693
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:10 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"1d88bd2c-dd88-4964-8e3b-4a332abf5c7b","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 30.375038001686335
+    size: 237
+- id: f5f8ed0a-8a68-4d28-bdd0-d82650d41cde
+  timestamp: 1788936429923
+  envName: development
+  network:
+    - timeMs: 0.007833998650312424
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08872000128030777
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 33.928546000272036
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.97676299884915
+      type: body
+      message: Body received - 237 bytes
+    - timeMs: 33.980250000953674
+      type: complete
+      message: Completed in 34ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:09 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"1d88bd2c-dd88-4964-8e3b-4a332abf5c7b","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 33.99424299970269
+    size: 237
+- id: 57b18edf-2a4f-41ba-ab3d-aba126ae508e
+  timestamp: 1788936428423
+  envName: development
+  network:
+    - timeMs: 0.005653001368045807
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07045400142669678
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 30.671238999813795
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.736682001501322
+      type: body
+      message: Body received - 237 bytes
+    - timeMs: 30.74021999910474
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:08 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"1d88bd2c-dd88-4964-8e3b-4a332abf5c7b","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 30.76196900010109
+    size: 237
+- id: 60e1d8de-5627-47bf-abc9-fea79893009b
+  timestamp: 1788935627093
+  envName: development
+  network:
+    - timeMs: 0.018317997455596924
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1718450002372265
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 33.04969799891114
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.121314998716116
+      type: body
+      message: Body received - 237 bytes
+    - timeMs: 33.12619699910283
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:33:46 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"01666c0b-2092-4096-84f3-37a0a0d09914","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 33.17603899911046
+    size: 237
+- id: ad4e9ab5-3fa1-43a2-b494-41b539fee799
+  timestamp: 1788935412069
+  envName: development
+  network:
+    - timeMs: 0.02931799739599228
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2680500000715256
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 378.29711899906397
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 378.36600000038743
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 378.3707019984722
+      type: complete
+      message: Completed in 378ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:30:11 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 378.42070800065994
+    size: 2
+- id: 1ed77ca0-28d4-4e74-9481-53e264408a12
+  timestamp: 1788934827112
+  envName: development
+  network:
+    - timeMs: 0.018644999712705612
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11395099759101868
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 39.2159189991653
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 41.66516999900341
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 41.68186799809337
+      type: complete
+      message: Completed in 42ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:20:27 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 41.711995996534824
+    size: 2
+- id: 282ffe71-79fc-4a6f-a302-d6c41fae3a2f
+  timestamp: 1788934513803
+  envName: development
+  network:
+    - timeMs: 0.020594999194145203
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10559599846601486
+      type: request
+      message: GET http://localhost:5164//Printer/
+    - timeMs: 28.903181001544
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 28.94224999845028
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 28.945291999727488
+      type: complete
+      message: Completed in 29ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164//Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:15:13 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 28.956661999225616
+    size: 2
+- id: 708c8be2-7c86-4cdc-8803-b36a998fc0ad
+  timestamp: 1788934496554
+  envName: development
+  network:
+    - timeMs: 0.01674399897456169
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15992600098252296
+      type: request
+      message: GET http://localhost:5164//Printer/
+    - timeMs: 32.568838000297546
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.632681999355555
+      type: body
+      message: Body received - 237 bytes
+    - timeMs: 32.63672500103712
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164//Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:14:55 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"c7f694a2-8844-4ec9-907f-fa6a01cd1d95","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}]
+    timeMs: 32.67843300104141
+    size: 237
+- id: 92a1d057-2ead-4833-a1d7-f79500c22982
+  timestamp: 1788934272106
+  envName: development
+  network:
+    - timeMs: 0.017978999763727188
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11466800048947334
+      type: request
+      message: GET http://localhost:5164//Printer/
+    - timeMs: 30.95465499907732
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.027464997023344
+      type: body
+      message: Body received - 391 bytes
+    - timeMs: 31.034847997128963
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164//Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:11:11 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T06:10:57.1390367","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 31.05970699712634
+    size: 391
+- id: 5fb5f365-3516-408b-8459-85faf8840629
+  timestamp: 1788933679312
+  envName: development
+  network:
+    - timeMs: 0.011516999453306198
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08261099830269814
+      type: request
+      message: GET http://localhost:5164//Printer/
+    - timeMs: 31.43937699869275
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.47214100137353
+      type: body
+      message: Body received - 626 bytes
+    - timeMs: 31.47401199862361
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164//Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:01:18 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T06:00:57.248779","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 31.483316000550985
+    size: 626
+- id: c37260b7-b7a1-48d0-a04c-4a69bd09095f
+  timestamp: 1788933623723
+  envName: development
+  network:
+    - timeMs: 0.006751000881195068
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05913199856877327
+      type: request
+      message: GET http://localhost:5164//Printer/
+    - timeMs: 43.233493000268936
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 43.27783299982548
+      type: body
+      message: Body received - 627 bytes
+    - timeMs: 43.28108900040388
+      type: complete
+      message: Completed in 43ms
+  request:
+    id: printers/get-all
+    name: Get All
+    method: GET
+    url: http://localhost:5164//Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:00:23 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T05:59:57.0517321","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 43.30212499946356
+    size: 627

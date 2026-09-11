@@ -1,0 +1,22 @@
+- id: 21e7046c-2ee9-4432-8bf4-71f5986697ee
+  timestamp: 1788910015894
+  envName: development
+  assertions:
+    evaluated: false
+    results: []
+  request:
+    id: jobsbyid
+    name: JobsById
+    method: GET
+    url: http://localhost:5164/PrintJob/:JobId
+    headers: {}
+    params: []
+    pathParams:
+      - name: JobId
+        value: ''
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: path parameter ":JobId" has no value'

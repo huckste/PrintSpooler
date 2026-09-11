@@ -1,0 +1,46 @@
+- id: eb3c156a-91f6-444d-8b69-19e9d16ea882
+  timestamp: 1788933945119
+  envName: development
+  network:
+    - timeMs: 0.027813997119665146
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2814069986343384
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/retry
+    - timeMs: 175.51983099803329
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 175.58610799908638
+      type: body
+      message: Body received - 590 bytes
+    - timeMs: 175.59034799784422
+      type: complete
+      message: Completed in 176ms
+  request:
+    id: jobs/retry
+    name: Retry
+    method: POST
+    url: http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/retry
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:05:44 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":0,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":1,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":null}
+    timeMs: 175.63735999912024
+    size: 590

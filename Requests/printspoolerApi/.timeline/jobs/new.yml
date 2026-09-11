@@ -1,0 +1,598 @@
+- id: f0909d84-8fad-4f87-876c-60652aa829ec
+  timestamp: 1788912766143
+  envName: development
+  network:
+    - timeMs: 0.006120999343693256
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06525599956512451
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.225806999951601
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.2395669994875789
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 1.2409419994801283
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"id":["The value '{}' is not valid."]},"traceId":"00-9fa0bc7b7c5a09584ff1626eeaa45f49-3508f57285727277-00"}"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:12:45 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      18."]},"traceId":"00-f9ee91b5720951c23ab2281ae3ba4781-49f64a9fdd010ca5-00"}
+    timeMs: 1.2464169999584556
+    size: 386
+- id: a197a48d-ebce-438c-b2f6-a56acaf07293
+  timestamp: 1788912405563
+  envName: development
+  network:
+    - timeMs: 0.018288999795913696
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11952400021255016
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 201.12409200053662
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 201.16420000046492
+      type: body
+      message: Body received - 654 bytes
+    - timeMs: 201.16806200053543
+      type: complete
+      message: Completed in 201ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "b3bb9e87-f092-48f2-a839-47db2e0a9c37"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:06:45 GMT
+      location: http://localhost:5164/PrintJob?id=255b0431-0717-4123-8ffb-a04224d82692
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"255b0431-0717-4123-8ffb-a04224d82692","status":0,"ippJobId":null,"printer":{"id":"b3bb9e87-f092-48f2-a839-47db2e0a9c37","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"b3bb9e87-f092-48f2-a839-47db2e0a9c37","data":{"bytes":"aGVsbG8=","jobId":"255b0431-0717-4123-8ffb-a04224d82692"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:06:45.3929468Z","completedAt":null,"failureReason":null}
+    timeMs: 201.18330899998546
+    size: 654
+- id: e999ee03-af19-4222-adbf-d259dce655fd
+  timestamp: 1788912378202
+  envName: development
+  network:
+    - timeMs: 0.005720000714063644
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0608500000089407
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.1513350000604987
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.1648790007457137
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 1.1663390006870031
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "{}"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:06:17 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      19."]},"traceId":"00-3d2928637518935ecc78f9a2f9bc1b2f-1d00f75e617ab673-00"}
+    timeMs: 1.1720250006765127
+    size: 386
+- id: cf832094-a0bf-422c-952f-6468525e03e9
+  timestamp: 1788912377486
+  envName: development
+  network:
+    - timeMs: 0.004673999734222889
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06471299938857555
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.166588000021875
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.1797660002484918
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 1.1809869995340705
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "{}"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:06:17 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      19."]},"traceId":"00-7a947958a18d164692b4d5a2daa5e0bb-4a01e2f67e6e6111-00"}
+    timeMs: 1.1876520002260804
+    size: 386
+- id: 7c8a8f52-49aa-4544-bced-6300e2dde0a7
+  timestamp: 1788912370086
+  envName: development
+  network:
+    - timeMs: 0.032343000173568726
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.190871000289917
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 2.1094190003350377
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 2.1443250002339482
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 2.1499079996719956
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "{{}}"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:06:09 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      21."]},"traceId":"00-abdb4223ce01f9b6e192f569a0ac0df0-0170c81268bdf4e9-00"}
+    timeMs: 2.165675999596715
+    size: 386
+- id: 043f355b-bd89-40c1-ba89-a3b01fc4b5e1
+  timestamp: 1788912337919
+  envName: development
+  network:
+    - timeMs: 0.016638999804854393
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.16509500052779913
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 188.02989500015974
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 188.06629400048405
+      type: body
+      message: Body received - 808 bytes
+    - timeMs: 188.06871800031513
+      type: complete
+      message: Completed in 188ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "98e92491-8ee4-472d-8629-a8b854e184f8"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:05:37 GMT
+      location: http://localhost:5164/PrintJob?id=bd30baa6-8dce-43ec-a9ed-02d2eedd3f98
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"bd30baa6-8dce-43ec-a9ed-02d2eedd3f98","status":0,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:05:27.1435769","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":{"bytes":"aGVsbG8=","jobId":"bd30baa6-8dce-43ec-a9ed-02d2eedd3f98"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:05:37.7596462Z","completedAt":null,"failureReason":null}
+    timeMs: 188.100155999884
+    size: 808
+- id: 3329829c-f80a-40f6-a5ed-661142fad9d8
+  timestamp: 1788912319518
+  envName: development
+  network:
+    - timeMs: 0.006227000616490841
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05853100027889013
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.7127029998227954
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.7383260000497103
+      type: body
+      message: Body received - 389 bytes
+    - timeMs: 1.7395780002698302
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": 98e92491-8ee4-472d-8629-a8b854e184f8,
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:05:19 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["'-' is an invalid end of a number. Expected a
+      delimiter. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      23."]},"traceId":"00-217f5fb2dd9ca92c05195f6c9ee078d5-b41d09688d57c4c9-00"}
+    timeMs: 1.7459190003573895
+    size: 389
+- id: be592a31-383f-4233-a742-ee7c3034a003
+  timestamp: 1788912279312
+  envName: development
+  network:
+    - timeMs: 0.00774300005286932
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06869599968194962
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.3318250002339482
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.3452329998835921
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 1.3466720003634691
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "{}"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:04:39 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      19."]},"traceId":"00-27e3ee60a6cdaef1ef8617a104ab275b-499832b4abea99f2-00"}
+    timeMs: 1.3534030001610518
+    size: 386
+- id: 1e2cfa73-2fcd-467c-b7fc-fcd15383f21a
+  timestamp: 1788912255936
+  envName: development
+  network:
+    - timeMs: 0.008814000524580479
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07162499986588955
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.3022340005263686
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.3156059999018908
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 1.3169180005788803
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "{}"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:04:15 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      19."]},"traceId":"00-c733046c797c8b5f5d6e092e6235aae5-227f08d7c6580105-00"}
+    timeMs: 1.324605000205338
+    size: 386
+- id: db6706a7-034d-4314-8430-f8fc27919b25
+  timestamp: 1788912221364
+  envName: development
+  network:
+    - timeMs: 0.00913000013679266
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06723800022155046
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 1.6401599999517202
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.6537260003387928
+      type: body
+      message: Body received - 386 bytes
+    - timeMs: 1.6551829995587468
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": {}
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:03:41 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors
+      occurred.","status":400,"errors":{"jobRequest":["The jobRequest field is
+      required."],"$.printerId":["The JSON value could not be converted to
+      System.Guid. Path: $.printerId | LineNumber: 5 | BytePositionInLine:
+      16."]},"traceId":"00-7ea872797b77497aab407bec7b67175d-20a27a1ce4b6aea9-00"}
+    timeMs: 1.66143099963665
+    size: 386
+- id: 16df7145-4f0c-4f6a-b733-479a1516cecb
+  timestamp: 1788912181353
+  envName: development
+  network:
+    - timeMs: 0.00853000022470951
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06755600031465292
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 196.9200259996578
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 196.94146400038153
+      type: body
+      message: Body received - 808 bytes
+    - timeMs: 196.94444699957967
+      type: complete
+      message: Completed in 197ms
+  request:
+    id: jobs/new
+    name: New
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "98e92491-8ee4-472d-8629-a8b854e184f8"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:03:01 GMT
+      location: http://localhost:5164/PrintJob?id=168193cf-1516-4fbb-92e2-35f80790f99e
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"168193cf-1516-4fbb-92e2-35f80790f99e","status":0,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:02:57.0751654","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":{"bytes":"aGVsbG8=","jobId":"168193cf-1516-4fbb-92e2-35f80790f99e"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:03:01.1831608Z","completedAt":null,"failureReason":null}
+    timeMs: 196.95422099996358
+    size: 808

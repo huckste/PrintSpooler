@@ -1,0 +1,848 @@
+- id: b3eeac52-b3c8-4e6c-884f-2febc107870a
+  timestamp: 1788907535588
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.014847000013105571
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08764499996323138
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 30.884892000001855
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 30.921922000008635
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 30.9247289999621
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:45:34 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-d445d01bf1c3b9d256f1e8767c0796e9-5e8c3038941d9256-00"}
+    timeMs: 30.939552000025287
+    size: 231
+- id: 5ddbb697-c3ff-44d6-bacc-b68b0fd859e8
+  timestamp: 1788907503909
+  envName: development
+  assertions:
+    evaluated: false
+    results: []
+  network:
+    - timeMs: 0.016712000011466444
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1476130000082776
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 0.1946640000678599
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: false
+    pathParams: []
+    body: |-
+      {
+      PrinterId: "00000000-0000-0000-0000-000000000000"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: b0a2c750-3df9-4956-91a2-21f72f30136a
+  timestamp: 1788907481509
+  envName: development
+  assertions:
+    evaluated: false
+    results: []
+  network:
+    - timeMs: 0.013082000077702105
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08067499997559935
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 0.12782100006006658
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: false
+    pathParams: []
+    body: |-
+      {
+      PrinterId = "00000000-0000-0000-0000-000000000000"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 3f05db62-2ecb-4d91-b305-e344c77cd312
+  timestamp: 1788907473204
+  envName: development
+  assertions:
+    evaluated: false
+    results: []
+  network:
+    - timeMs: 0.014933000085875392
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.14512300002388656
+      type: request
+      message: GET http://localhost:5164/PrintJob/
+    - timeMs: 0.3163969999877736
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob/
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: false
+    pathParams: []
+    body: |-
+      {
+      PrinterId = "00000000-0000-0000-0000-000000000000"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: c621a885-b3e0-45e5-8fb4-3b38799195cf
+  timestamp: 1788907392153
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 404
+        actual: 404
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.00642999995034188
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06205900001805276
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 32.276182999950834
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 32.322903999942355
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 32.32648199994583
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: false
+    pathParams: []
+    body: ''
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:43:11 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-5e776cb4057bad539b20e41d48792942-5375cbf754435137-00"}
+    timeMs: 32.33830800000578
+    size: 231
+- id: 8c8da967-540f-468a-8d62-26b15b155bd3
+  timestamp: 1788907253667
+  envName: development
+  network:
+    - timeMs: 0.00589400005992502
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05852500000037253
+      type: request
+      message: GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    - timeMs: 59.129879000014625
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 59.166889000101946
+      type: body
+      message: Body received - 231 bytes
+    - timeMs: 59.16839200002141
+      type: complete
+      message: Completed in 59ms
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: false
+    pathParams: []
+    body: ''
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:40:52 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No job found with ID
+      00000000-0000-0000-0000-000000000000","traceId":"00-bf4c0b25c4a18a86c33cf50f1092696a-3348e00a200af58f-00"}
+    timeMs: 59.17830300005153
+    size: 231
+- id: b245c0e4-e556-40cc-87d0-2cec18dddfe7
+  timestamp: 1788907181038
+  envName: development
+  network:
+    - timeMs: 0.015381000004708767
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08336899999994785
+      type: request
+      message: GET http://localhost:5164/PrintJob?...
+    - timeMs: 35.66783499997109
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 35.718218000023626
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 35.72217800002545
+      type: complete
+      message: Completed in 36ms
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: true
+    pathParams: []
+    body: ''
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:39:40 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 35.74203800002579
+    size: 2
+- id: 850d0fad-777d-427b-abf1-ee1b5d825330
+  timestamp: 1788907126079
+  envName: development
+  network:
+    - timeMs: 0.014543999917805195
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13915099995210767
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 31.56293499993626
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.60128199995961
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 31.604924999992363
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: example
+    name: Example
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: PrinterId
+        value: 00000000-0000-0000-0000-000000000000
+        enabled: false
+    pathParams: []
+    body: ''
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:38:45 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 31.62384999997448
+    size: 2
+- id: 5c5649c8-ef92-43c2-9e48-e7349a607ff5
+  timestamp: 1788907001396
+  envName: development
+  network:
+    - timeMs: 0.010173999995458871
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1052289999788627
+      type: request
+      message: POST http://localhost:5164/PrintJob?...
+    - timeMs: 1.8907449999824166
+      type: response
+      message: 415 Unsupported Media Type - 4 headers
+    - timeMs: 1.9205259999725968
+      type: body
+      message: Body received - 176 bytes
+    - timeMs: 1.9359979999717325
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: true
+      - name: fileName
+        value: test.pdf
+        enabled: true
+      - name: rawData
+        value: aGVsbG8=
+        enabled: true
+      - name: contentType
+        value: application/pdf
+        enabled: true
+      - name: printerId
+        value: '0'
+        enabled: true
+    pathParams: []
+    body: ''
+    auth:
+      type: none
+  response:
+    status: 415
+    statusText: Unsupported Media Type
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:36:40 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.16","title":"Unsupported
+      Media
+      Type","status":415,"traceId":"00-45bf292e0f65470d117573bc23e8060b-693f5aa75c78241c-00"}
+    timeMs: 1.9467449999647215
+    size: 176
+- id: 3f98298b-619a-43c0-bcfc-2eb999a0cb52
+  timestamp: 1788906998599
+  envName: development
+  network:
+    - timeMs: 0.01600300002610311
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11226500000339001
+      type: request
+      message: POST http://localhost:5164/PrintJob?...
+    - timeMs: 2.0566840000101365
+      type: response
+      message: 415 Unsupported Media Type - 4 headers
+    - timeMs: 2.105143000022508
+      type: body
+      message: Body received - 176 bytes
+    - timeMs: 2.1142739999922924
+      type: complete
+      message: Completed in 2ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: true
+      - name: fileName
+        value: test.pdf
+        enabled: true
+      - name: rawData
+        value: aGVsbG8=
+        enabled: true
+      - name: contentType
+        value: application/pdf
+        enabled: true
+      - name: printerId
+        value: '0'
+        enabled: true
+    pathParams: []
+    body: ''
+    auth:
+      type: none
+  response:
+    status: 415
+    statusText: Unsupported Media Type
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:36:37 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.16","title":"Unsupported
+      Media
+      Type","status":415,"traceId":"00-ef60cebc56679cf8ef92016768ec07f3-8ecc9fe7d202be18-00"}
+    timeMs: 2.1314170000259764
+    size: 176
+- id: 9023df33-8901-4e3b-822d-6ea56f9a82e8
+  timestamp: 1788906947732
+  envName: development
+  network:
+    - timeMs: 0.006951999966986477
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05613400001311675
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 28.902407999965362
+      type: response
+      message: 415 Unsupported Media Type - 4 headers
+    - timeMs: 28.94524899998214
+      type: body
+      message: Body received - 176 bytes
+    - timeMs: 28.948134000005666
+      type: complete
+      message: Completed in 29ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: false
+      - name: fileName
+        value: test.pdf
+        enabled: false
+      - name: rawData
+        value: aGVsbG8=
+        enabled: false
+      - name: contentType
+        value: application/pdf
+        enabled: false
+      - name: printerId
+        value: '0'
+        enabled: false
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "test",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "00000000-0000-0000-0000-000000000000"
+      }
+    auth:
+      type: none
+  response:
+    status: 415
+    statusText: Unsupported Media Type
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 22:35:47 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.16","title":"Unsupported
+      Media
+      Type","status":415,"traceId":"00-97a11b768aaf55351f9d7abb6e0107e8-f5c384cd119ac8b6-00"}
+    timeMs: 28.963063000002876
+    size: 176
+- id: 4f706bd8-5155-44bd-ae2f-77edd309ca8b
+  timestamp: 1788906926976
+  envName: development
+  network:
+    - timeMs: 0.007052999979350716
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0636229999945499
+      type: request
+      message: POST http://localhost:5045/PrintJob
+    - timeMs: 1.3745839999755844
+      type: response
+      message: 400 Bad Request - 6 headers
+    - timeMs: 1.3944079999928363
+      type: body
+      message: Body received - 139 bytes
+    - timeMs: 1.3971480000182055
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5045/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: false
+      - name: fileName
+        value: test.pdf
+        enabled: false
+      - name: rawData
+        value: aGVsbG8=
+        enabled: false
+      - name: contentType
+        value: application/pdf
+        enabled: false
+      - name: printerId
+        value: '0'
+        enabled: false
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "test",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "00000000-0000-0000-0000-000000000000"
+      }
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      allow: GET, HEAD
+      content-security-policy: frame-ancestors 'self'
+      content-type: text/html; charset=utf-8
+      date: Tue, 08 Sep 2026 22:35:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      A valid antiforgery token was not provided with the request. Add an
+      antiforgery token, or disable antiforgery validation for this endpoint.
+    timeMs: 1.4048750000074506
+    size: 139
+- id: 331e244b-ae0d-46ef-ab47-b1f518237d8a
+  timestamp: 1788906923520
+  envName: development
+  network:
+    - timeMs: 0.006418999982997775
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06875099998433143
+      type: request
+      message: POST http://localhost:5045/PrintJob
+    - timeMs: 1.374422000022605
+      type: response
+      message: 400 Bad Request - 6 headers
+    - timeMs: 1.3900630000280216
+      type: body
+      message: Body received - 139 bytes
+    - timeMs: 1.391875000030268
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5045/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: false
+      - name: fileName
+        value: test.pdf
+        enabled: false
+      - name: rawData
+        value: aGVsbG8=
+        enabled: false
+      - name: contentType
+        value: application/pdf
+        enabled: false
+      - name: printerId
+        value: '0'
+        enabled: false
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "test",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "00000000-0000-0000-0000-000000000000"
+      }
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      allow: GET, HEAD
+      content-security-policy: frame-ancestors 'self'
+      content-type: text/html; charset=utf-8
+      date: Tue, 08 Sep 2026 22:35:22 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      A valid antiforgery token was not provided with the request. Add an
+      antiforgery token, or disable antiforgery validation for this endpoint.
+    timeMs: 1.400777000002563
+    size: 139
+- id: 527e4cb1-9b48-4d9b-8696-75976dc7ddfa
+  timestamp: 1788906885967
+  envName: development
+  network:
+    - timeMs: 0.007339000003412366
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07818299997597933
+      type: request
+      message: POST http://localhost:5045/PrintJob?...
+    - timeMs: 1.281036000000313
+      type: response
+      message: 400 Bad Request - 6 headers
+    - timeMs: 1.312569000001531
+      type: body
+      message: Body received - 139 bytes
+    - timeMs: 1.3151399999624118
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5045/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: true
+      - name: fileName
+        value: test.pdf
+        enabled: true
+      - name: rawData
+        value: aGVsbG8=
+        enabled: true
+      - name: contentType
+        value: application/pdf
+        enabled: true
+      - name: printerId
+        value: '0'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      allow: GET, HEAD
+      content-security-policy: frame-ancestors 'self'
+      content-type: text/html; charset=utf-8
+      date: Tue, 08 Sep 2026 22:34:45 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      A valid antiforgery token was not provided with the request. Add an
+      antiforgery token, or disable antiforgery validation for this endpoint.
+    timeMs: 1.322450999985449
+    size: 139
+- id: 5bb24141-88b2-4331-929e-4d5b5128d077
+  timestamp: 1788906813262
+  envName: development
+  network:
+    - timeMs: 0.013497999985702336
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13833600000361912
+      type: request
+      message: POST http://localhost:5045/PrintJob?...
+    - timeMs: 1.2007569999841508
+      type: response
+      message: 400 Bad Request - 6 headers
+    - timeMs: 1.2224869999918155
+      type: body
+      message: Body received - 139 bytes
+    - timeMs: 1.224843999982113
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5045/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: true
+      - name: fileName
+        value: test.pdf
+        enabled: true
+      - name: rawData
+        value: aGVsbG8=
+        enabled: true
+      - name: contentType
+        value: applicatoin/pdf
+        enabled: true
+      - name: printerId
+        value: '0'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      allow: GET, HEAD
+      content-security-policy: frame-ancestors 'self'
+      content-type: text/html; charset=utf-8
+      date: Tue, 08 Sep 2026 22:33:32 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      A valid antiforgery token was not provided with the request. Add an
+      antiforgery token, or disable antiforgery validation for this endpoint.
+    timeMs: 1.2338569999847095
+    size: 139
+- id: 54a3aeb2-5d99-4793-9610-61b5dc0195b2
+  timestamp: 1788906795385
+  envName: development
+  network:
+    - timeMs: 0.028828000009525567
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 1.0668290000176057
+      type: request
+      message: POST http://localhost:5045/PrintJob?...
+    - timeMs: 10.03892300001462
+      type: response
+      message: 400 Bad Request - 6 headers
+    - timeMs: 10.130095000000438
+      type: body
+      message: Body received - 139 bytes
+    - timeMs: 10.133577000000514
+      type: complete
+      message: Completed in 10ms
+  request:
+    id: example
+    name: Example
+    method: POST
+    url: http://localhost:5045/PrintJob
+    headers: {}
+    params:
+      - name: submittedBy
+        value: test
+        enabled: true
+      - name: fileName
+        value: test.pdf
+        enabled: true
+      - name: rawData
+        value: aGVsbG8=
+        enabled: true
+      - name: contentType
+        value: applicatoin/pdf
+        enabled: true
+      - name: printerId
+        value: '0'
+        enabled: true
+    pathParams: []
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      allow: GET, HEAD
+      content-security-policy: frame-ancestors 'self'
+      content-type: text/html; charset=utf-8
+      date: Tue, 08 Sep 2026 22:33:14 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      A valid antiforgery token was not provided with the request. Add an
+      antiforgery token, or disable antiforgery validation for this endpoint.
+    timeMs: 10.153828000009526
+    size: 139

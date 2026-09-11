@@ -1,0 +1,53 @@
+- id: 92c34c4e-2ca4-4206-888d-b9f82da2c269
+  timestamp: 1788937001845
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.009043000638484955
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09569300338625908
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+    - timeMs: 96.29596900194883
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 96.33896700292826
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 96.34248800203204
+      type: complete
+      message: Completed in 96ms
+  request:
+    id: jobtest/f-delete-printer
+    name: F delete printer
+    method: DELETE
+    url: http://localhost:5164/Printer/31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:56:41 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 96.35441400110722
+    size: 2

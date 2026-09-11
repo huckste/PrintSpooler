@@ -1,0 +1,171 @@
+- id: def089be-7877-429b-a2f3-7bc4c699b01e
+  timestamp: 1788910503813
+  envName: development
+  network:
+    - timeMs: 0.01434500003233552
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15653100004419684
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 32.04090500017628
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.07930500013754
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 32.08185900002718
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: activejobs
+    name: ActiveJobs
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:35:03 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 32.133263000287116
+    size: 2
+- id: 2fc2d06d-7f71-4dd8-9a2c-c43fb38abacd
+  timestamp: 1788910362636
+  envName: development
+  network:
+    - timeMs: 0.016493999864906073
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.16707099974155426
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 32.78719999967143
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.816458999644965
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 32.818314999807626
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: activejobs
+    name: ActiveJobs
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:32:42 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 32.8370059998706
+    size: 2
+- id: aae1ac8f-ca99-4c61-bc85-ba9ecebc6699
+  timestamp: 1788910345096
+  envName: development
+  request:
+    id: activejobs
+    name: ActiveJobs
+    method: GET
+    url: http://$localhost/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.substitute: unresolved variable "localhost" in url'
+- id: 57e12b4b-8799-4621-9efe-8c6b4e3698d0
+  timestamp: 1788910344022
+  envName: development
+  request:
+    id: activejobs
+    name: ActiveJobs
+    method: GET
+    url: http://$localhost/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.substitute: unresolved variable "localhost" in url'
+- id: 1e212552-192f-497c-bc0d-9bd1d4ad7949
+  timestamp: 1788910320412
+  envName: development
+  request:
+    id: activejobs
+    name: ActiveJobs
+    method: GET
+    url: http://$localhost/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.substitute: unresolved variable "localhost" in url'
+- id: e690f3de-976b-48ba-9a93-c2382e6f689a
+  timestamp: 1788909371104
+  envName: development
+  network:
+    - timeMs: 0.014409000054001808
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1560639999806881
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 32.712244000285864
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.77517400030047
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 32.779118000064045
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: activejobs
+    name: ActiveJobs
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:16:10 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 32.80970200011507
+    size: 2
