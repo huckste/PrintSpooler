@@ -1,0 +1,19 @@
+name: Submit
+method: POST
+url: $localhost/PrintJob
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+body: |-
+  {
+    "submittedBy": "noodle",
+    "fileName": "test.pdf",
+    "rawData": "aGVsbG8=",
+    "contentType": "application/pdf",
+    "printerId": "$printerId"
+  }
+body_type: json
+capture:
+  jobId:
+    value: body.id
+    persist: environment

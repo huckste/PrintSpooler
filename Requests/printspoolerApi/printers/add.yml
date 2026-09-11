@@ -1,0 +1,19 @@
+name: Add
+method: POST
+url: $localhost/Printer
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+body: |-
+  {
+    "ipaddress": "$printerIp",
+    "name": "$printerName",
+    "host": "$printerHost",
+    "printerUuid": "$printerUuid",
+  "supportedContentTypes": $printerContentTypes
+  }
+body_type: json
+capture:
+  printerId:
+    value: body.id
+    persist: environment

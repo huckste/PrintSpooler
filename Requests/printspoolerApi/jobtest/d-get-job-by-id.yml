@@ -1,0 +1,18 @@
+name: D get job by id
+method: GET
+url: $localhost/PrintJob/$jobId
+timeout: 0
+followRedirects: true
+maxRedirects: 5
+body: ''
+body_type: none
+assert:
+  - expression: status
+    operator: equals
+    value: 200
+  - expression: body.id
+    operator: equals
+    value: $jobId
+  - expression: body.printerId
+    operator: equals
+    value: $printerId

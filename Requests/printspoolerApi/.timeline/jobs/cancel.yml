@@ -1,0 +1,596 @@
+- id: 4f69f6e3-a04d-429a-bd98-660745aaea67
+  timestamp: 1788936566340
+  envName: development
+  network:
+    - timeMs: 0.010299000889062881
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11729000136256218
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/70649283-f5e0-41df-b4f7-510ff3adc6af/cancel
+    - timeMs: 195.91579299792647
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 195.99284100160003
+      type: body
+      message: Body received - 590 bytes
+    - timeMs: 195.9964159987867
+      type: complete
+      message: Completed in 196ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164/PrintJob/70649283-f5e0-41df-b4f7-510ff3adc6af/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:49:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"70649283-f5e0-41df-b4f7-510ff3adc6af","status":5,"ippJobId":null,"printer":{"id":"cffec806-d304-43ff-ba53-a46a7decad48","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"cffec806-d304-43ff-ba53-a46a7decad48","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:49:19.1353046","completedAt":null,"failureReason":null}
+    timeMs: 196.00924099981785
+    size: 590
+- id: 0ca62765-86c1-4b48-968f-cb3f597468d9
+  timestamp: 1788934381079
+  envName: development
+  network:
+    - timeMs: 0.029371000826358795
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1857060007750988
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/8ae58b61-3244-4e83-b4c3-62dbeeebba5a/cancel
+    - timeMs: 186.68965199962258
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 186.753327999264
+      type: body
+      message: Body received - 590 bytes
+    - timeMs: 186.75961999967694
+      type: complete
+      message: Completed in 187ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/8ae58b61-3244-4e83-b4c3-62dbeeebba5a/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:13:00 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"8ae58b61-3244-4e83-b4c3-62dbeeebba5a","status":5,"ippJobId":null,"printer":{"id":"c7f694a2-8844-4ec9-907f-fa6a01cd1d95","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"c7f694a2-8844-4ec9-907f-fa6a01cd1d95","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:11:38.0586861","completedAt":null,"failureReason":null}
+    timeMs: 186.77781400084496
+    size: 590
+- id: e2e99741-8f66-499f-8eb8-fb5c796bf090
+  timestamp: 1788934021095
+  envName: development
+  network:
+    - timeMs: 0.0056569986045360565
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06647099927067757
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    - timeMs: 96.04441599920392
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 96.07488900050521
+      type: body
+      message: Body received - 246 bytes
+    - timeMs: 96.07637000083923
+      type: complete
+      message: Completed in 96ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:07:00 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Bad
+      Request","status":400,"detail":"Failed to delete job data for id:
+      3e839eff-dedf-4911-a928-9de2830d6ed5","traceId":"00-9d813992a3fbfe7a026a4826d0474547-e2d84950c804228e-00"}
+    timeMs: 96.08528999984264
+    size: 246
+- id: 4c4bba1f-24bc-40cf-aa36-34a7ffd156ed
+  timestamp: 1788934006912
+  envName: development
+  network:
+    - timeMs: 0.010340001434087753
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0728210024535656
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/8a0a8e59-71a8-4ea5-bafb-5a730435ee87/cancel
+    - timeMs: 190.03442500159144
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 190.0985630005598
+      type: body
+      message: Body received - 590 bytes
+    - timeMs: 190.10201500356197
+      type: complete
+      message: Completed in 190ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/8a0a8e59-71a8-4ea5-bafb-5a730435ee87/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:06:46 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"8a0a8e59-71a8-4ea5-bafb-5a730435ee87","status":5,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:06:35.0193877","completedAt":null,"failureReason":null}
+    timeMs: 190.11382200196385
+    size: 590
+- id: cae943eb-f64f-40ad-941a-2ef3a9527523
+  timestamp: 1788933963608
+  envName: development
+  network:
+    - timeMs: 0.030452001839876175
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1964999996125698
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    - timeMs: 95.9677340015769
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 96.04163200035691
+      type: body
+      message: Body received - 246 bytes
+    - timeMs: 96.04862600192428
+      type: complete
+      message: Completed in 96ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:06:02 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Bad
+      Request","status":400,"detail":"Failed to delete job data for id:
+      3e839eff-dedf-4911-a928-9de2830d6ed5","traceId":"00-70529e95743e9e6307453246153e7880-30f04fd7454e2a40-00"}
+    timeMs: 96.07079900056124
+    size: 246
+- id: 098bed16-0c38-4b9c-a06c-f3570c36d01d
+  timestamp: 1788933910925
+  envName: development
+  network:
+    - timeMs: 0.016173001378774643
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07599600031971931
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    - timeMs: 91.24439600110054
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 91.27935500070453
+      type: body
+      message: Body received - 246 bytes
+    - timeMs: 91.28132000193
+      type: complete
+      message: Completed in 91ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:05:10 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Bad
+      Request","status":400,"detail":"Failed to delete job data for id:
+      3e839eff-dedf-4911-a928-9de2830d6ed5","traceId":"00-825318bd11e1be36c48d1d9957a9dc7b-24a53d50b502d89b-00"}
+    timeMs: 91.29143499955535
+    size: 246
+- id: fe971fcf-ff15-4f22-963e-a46dcb46d3b6
+  timestamp: 1788933888256
+  envName: development
+  network:
+    - timeMs: 0.014322999864816666
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09330499917268753
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    - timeMs: 95.03346600010991
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 95.07230199873447
+      type: body
+      message: Body received - 246 bytes
+    - timeMs: 95.07581599801779
+      type: complete
+      message: Completed in 95ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:04:47 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Bad
+      Request","status":400,"detail":"Failed to delete job data for id:
+      3e839eff-dedf-4911-a928-9de2830d6ed5","traceId":"00-5ec2e09e82f56a64c43cc5bf513bf7f6-36290c1e3195add9-00"}
+    timeMs: 95.08576700091362
+    size: 246
+- id: 4d694c4a-a194-4b7e-9d74-eb3311028250
+  timestamp: 1788933839913
+  envName: development
+  network:
+    - timeMs: 0.011644002050161362
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07526399940252304
+      type: request
+      message: >-
+        POST
+        http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    - timeMs: 91.55460800230503
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 91.59831900149584
+      type: body
+      message: Body received - 246 bytes
+    - timeMs: 91.60358300060034
+      type: complete
+      message: Completed in 92ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164//PrintJob/3e839eff-dedf-4911-a928-9de2830d6ed5/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:03:59 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Bad
+      Request","status":400,"detail":"Failed to delete job data for id:
+      3e839eff-dedf-4911-a928-9de2830d6ed5","traceId":"00-1c8bc5253a6f64558d355668e81a5279-176e202ffea542cf-00"}
+    timeMs: 91.6164540015161
+    size: 246
+- id: a04a61c1-f29b-402f-ac0a-70f7c8cd740a
+  timestamp: 1788912690732
+  envName: development
+  network:
+    - timeMs: 0.03382800053805113
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.18864400032907724
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/168193cf-1516-4fbb-92e2-35f80790f99e/cancel
+    - timeMs: 31.04652800038457
+      type: response
+      message: 409 Conflict - 4 headers
+    - timeMs: 31.132656999863684
+      type: body
+      message: Body received - 265 bytes
+    - timeMs: 31.13966100011021
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164/PrintJob/168193cf-1516-4fbb-92e2-35f80790f99e/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 409
+    statusText: Conflict
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:11:30 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.10","title":"Conflict","status":409,"detail":"Job
+      168193cf-1516-4fbb-92e2-35f80790f99e cannot be cancelled with current
+      status:
+      Cancelled","traceId":"00-984304d80b3188c027e8c25552a61e50-c56c1fd66952a830-00"}
+    timeMs: 31.183165000751615
+    size: 265
+- id: d0f08bde-e762-4934-8881-334b8adeea17
+  timestamp: 1788912651051
+  envName: development
+  network:
+    - timeMs: 0.005517999641597271
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.061880999244749546
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/168193cf-1516-4fbb-92e2-35f80790f99e/cancel
+    - timeMs: 192.58459999971092
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 192.62053999956697
+      type: body
+      message: Body received - 743 bytes
+    - timeMs: 192.62237299978733
+      type: complete
+      message: Completed in 193ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164/PrintJob/168193cf-1516-4fbb-92e2-35f80790f99e/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:10:50 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"168193cf-1516-4fbb-92e2-35f80790f99e","status":5,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:10:27.137093","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:03:01.1831608","completedAt":null,"failureReason":null}
+    timeMs: 192.63260099943727
+    size: 743
+- id: 262e08e5-493b-4074-ac3d-919877324c9b
+  timestamp: 1788912642187
+  envName: development
+  network:
+    - timeMs: 0.018333999440073967
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11510099936276674
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/bd30baa6-8dce-43ec-a9ed-02d2eedd3f98/cancel
+    - timeMs: 201.74431800004095
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 201.78409399930388
+      type: body
+      message: Body received - 743 bytes
+    - timeMs: 201.7881950000301
+      type: complete
+      message: Completed in 202ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164/PrintJob/bd30baa6-8dce-43ec-a9ed-02d2eedd3f98/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:10:41 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"bd30baa6-8dce-43ec-a9ed-02d2eedd3f98","status":5,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:10:27.137093","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:05:37.7596462","completedAt":null,"failureReason":null}
+    timeMs: 201.80445399973541
+    size: 743
+- id: b10e5b77-7b07-4c64-947a-d11ee19f4f5b
+  timestamp: 1788912433833
+  envName: development
+  network:
+    - timeMs: 0.00568000040948391
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.060527000576257706
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/255b0431-0717-4123-8ffb-a04224d82692/cancel
+    - timeMs: 33.58694300055504
+      type: response
+      message: 409 Conflict - 4 headers
+    - timeMs: 33.6295610005036
+      type: body
+      message: Body received - 265 bytes
+    - timeMs: 33.63256200030446
+      type: complete
+      message: Completed in 34ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164/PrintJob/255b0431-0717-4123-8ffb-a04224d82692/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 409
+    statusText: Conflict
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:07:13 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.10","title":"Conflict","status":409,"detail":"Job
+      255b0431-0717-4123-8ffb-a04224d82692 cannot be cancelled with current
+      status:
+      Cancelled","traceId":"00-2b0dd49309fd30972d9c0484f3526fad-18a7ca8400a8df25-00"}
+    timeMs: 33.642150999978185
+    size: 265
+- id: 0c101629-defb-4708-9f0a-88409bbb651a
+  timestamp: 1788912430131
+  envName: development
+  network:
+    - timeMs: 0.006641000509262085
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0665690004825592
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/255b0431-0717-4123-8ffb-a04224d82692/cancel
+    - timeMs: 191.3359219999984
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 191.36617700010538
+      type: body
+      message: Body received - 590 bytes
+    - timeMs: 191.36791800055653
+      type: complete
+      message: Completed in 191ms
+  request:
+    id: jobs/cancel
+    name: Cancel
+    method: POST
+    url: http://localhost:5164/PrintJob/255b0431-0717-4123-8ffb-a04224d82692/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:07:09 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"255b0431-0717-4123-8ffb-a04224d82692","status":5,"ippJobId":null,"printer":{"id":"b3bb9e87-f092-48f2-a839-47db2e0a9c37","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"b3bb9e87-f092-48f2-a839-47db2e0a9c37","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:06:45.3929468","completedAt":null,"failureReason":null}
+    timeMs: 191.37569100037217
+    size: 590

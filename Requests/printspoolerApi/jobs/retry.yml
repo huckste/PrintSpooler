@@ -1,0 +1,8 @@
+name: Retry
+method: POST
+url: $localhost/PrintJob/$jobId/retry
+timeout: 0
+followRedirects: true
+maxRedirects: 5
+body: ''
+body_type: none

@@ -1,0 +1,12 @@
+name: F delete printer
+method: DELETE
+url: $localhost/Printer/$printerId
+timeout: 0
+followRedirects: true
+maxRedirects: 5
+body: ''
+body_type: none
+assert:
+  - expression: status
+    operator: equals
+    value: 200

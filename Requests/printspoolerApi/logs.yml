@@ -1,0 +1,15 @@
+name: Logs
+method: GET
+url: http://$localhost/Logs
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+params:
+  - name: actionFilter
+    value: Created
+  - name: performedBy
+    value: User
+  - name: page
+    value: '2'
+  - name: pageSize
+    value: '5'

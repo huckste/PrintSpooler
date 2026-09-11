@@ -25,6 +25,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 
+builder.Services.AddSingleton<IPrinterMonitorFactory, PrinterMonitorFactory>();
 builder.Services.AddSingleton<IPrinterDispatcher, PrinterDispatcher>();
 builder.Services.AddSingleton<SharpIppClient>();
 builder.Services.AddSingleton<IPrinterDiscoveryService, PrinterDiscoveryService>();
@@ -34,9 +35,10 @@ builder.Services.AddSingleton<IJobNotifier, JobNotifier>();
 builder.Services.AddSingleton<IPrinterNotifier, PrinterNotifier>();
 builder.Services.AddScoped<ILogsService, LogsService>();
 builder.Services.AddHostedService<PrintJobWorker>();
-builder.Services.AddHostedService<PrinterPoller>();
+builder.Services.AddHostedService<PrinterManager>();
 builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Guid>());
 builder.Services.AddSingleton(_ => Channel.CreateUnbounded<IppJobRef>());
+builder.Services.AddSingleton(_ => Channel.CreateUnbounded<PrinterEvent>());
 builder.Services.AddSignalR();
 
 var app = builder.Build();

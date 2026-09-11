@@ -1,0 +1,266 @@
+- id: dfc603f1-b5df-4904-8d94-40b307728217
+  timestamp: 1788912693140
+  envName: development
+  network:
+    - timeMs: 0.009417999535799026
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06536499969661236
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 33.286660999991
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.31238199956715
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 33.31395700015128
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/active
+    name: Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:11:32 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 33.32215499971062
+    size: 2
+- id: 726e7699-04a3-4e86-95d9-c85913714e07
+  timestamp: 1788912653049
+  envName: development
+  network:
+    - timeMs: 0.00815499946475029
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08868699986487627
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 35.20517500024289
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 35.305980999954045
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 35.31381299998611
+      type: complete
+      message: Completed in 35ms
+  request:
+    id: jobs/active
+    name: Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:10:52 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 35.3292469996959
+    size: 2
+- id: 6ecd7a5c-c386-4215-88b2-bfcc2c2f1574
+  timestamp: 1788912647309
+  envName: development
+  network:
+    - timeMs: 0.006885000504553318
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.16441799979656935
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 31.632234999909997
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.660710000433028
+      type: body
+      message: Body received - 781 bytes
+    - timeMs: 31.662188000045717
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobs/active
+    name: Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:10:46 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"168193cf-1516-4fbb-92e2-35f80790f99e","status":6,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:10:27.137093","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:03:01.1831608","completedAt":null,"failureReason":"IPP
+      error: Printer returned error code"}]
+    timeMs: 31.67064500041306
+    size: 781
+- id: b549dc0a-4dbd-4799-9c0d-d1e24ce4a257
+  timestamp: 1788912628471
+  envName: development
+  network:
+    - timeMs: 0.018859999254345894
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.15839499980211258
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 32.62177399918437
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.66382999997586
+      type: body
+      message: Body received - 1561 bytes
+    - timeMs: 32.66755999997258
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/active
+    name: Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:10:28 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"bd30baa6-8dce-43ec-a9ed-02d2eedd3f98","status":6,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:10:27.137093","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:05:37.7596462","completedAt":null,"failureReason":"IPP
+      error: Printer returned error
+      code"},{"id":"168193cf-1516-4fbb-92e2-35f80790f99e","status":6,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:10:27.137093","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:03:01.1831608","completedAt":null,"failureReason":"IPP
+      error: Printer returned error code"}]
+    timeMs: 32.692569999955595
+    size: 1561
+- id: 34b9a6d9-5d6a-4c57-bc63-18669dfec1a5
+  timestamp: 1788912457667
+  envName: development
+  network:
+    - timeMs: 0.007756000384688377
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06110099982470274
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 32.312494000419974
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.34097000025213
+      type: body
+      message: Body received - 1563 bytes
+    - timeMs: 32.34366900008172
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobs/active
+    name: Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:07:37 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"bd30baa6-8dce-43ec-a9ed-02d2eedd3f98","status":6,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:07:28.1654119","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:05:37.7596462","completedAt":null,"failureReason":"IPP
+      error: Printer returned error
+      code"},{"id":"168193cf-1516-4fbb-92e2-35f80790f99e","status":6,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-09T00:07:28.1654119","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T00:03:01.1831608","completedAt":null,"failureReason":"IPP
+      error: Printer returned error code"}]
+    timeMs: 32.353066000156105
+    size: 1563
+- id: e98d8aa0-0341-4fc8-b71a-47c9af02a62b
+  timestamp: 1788912151461
+  envName: development
+  network:
+    - timeMs: 0.007965999655425549
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05829599965363741
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 34.751848000101745
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 34.769811999984086
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 34.77136899996549
+      type: complete
+      message: Completed in 35ms
+  request:
+    id: jobs/active
+    name: Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:02:31 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 34.77896500006318
+    size: 2

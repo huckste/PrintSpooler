@@ -16,7 +16,7 @@ public class PrinterMonitor : IAsyncDisposable
   private readonly CancellationTokenSource _cts;
   private readonly ILogger<PrinterMonitor> _logger;
   private readonly Task _loop;
-  public readonly Guid printerId;
+  public readonly Printer Printer;
 
   public PrinterMonitor(
     Printer printer,
@@ -25,7 +25,7 @@ public class PrinterMonitor : IAsyncDisposable
     IPrinterDispatcher printerDispatcher,
     ILogger<PrinterMonitor> logger)
   {
-    printerId = printer.Id;
+    Printer = printer;
     _scopeFactory = scopeFactory;
     _printerDispatcher = printerDispatcher;
     _logger = logger;
@@ -39,14 +39,14 @@ public class PrinterMonitor : IAsyncDisposable
 
   private async Task<ErrorOr<Success>> UpdatePrinterStatus(AsyncServiceScope scope, CancellationToken ct)
   {
-    var printerStatus = await printerDispatcher.GetPrinterStatusAsync(printer, ct);
+    var printerStatus = await _printerDispatcher.GetPrinterStatusAsync(Printer, ct);
 
     if (printerStatus.IsError)
-      return Error.NotFound("PrinterStatus.NotFound", $"No status was returned for printer: {printer.Name}");
+      return Error.NotFound("PrinterStatus.NotFound", $"No status was returned for printer: {Printer.Name}");
 
     var printerService = scope.ServiceProvider.GetRequiredService<IPrinterService>();
 
-    var result = await printerService.UpdatePrinterStatus(printer.Id, printerStatus.Value);
+    var result = await printerService.UpdatePrinterStatus(Printer.Id, printerStatus.Value);
 
     return result.IsError ? result.Errors : Result.Success;
   }
@@ -54,34 +54,38 @@ public class PrinterMonitor : IAsyncDisposable
   private async Task<ErrorOr<Success>> UpdateJobStatus(AsyncServiceScope scope, CancellationToken ct)
   {
     List<Error> errors = [];
-    var ippJobs = await printerDispatcher.GetPrinterJobsAsync(printer, [.. _cache.Keys], ct);
+    var ippJobs = await _printerDispatcher.GetPrinterJobsAsync(Printer, [.. _cache.Keys], ct);
 
     if (ippJobs.IsError)
       return ippJobs.Errors;
 
     var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-    var activeJobs = await jobService.GetActiveJobsByPrinter(printer.Id);
+    var activeJobs = await jobService.GetActiveJobsByPrinter(Printer.Id);
 
     foreach (var ippJob in ippJobs.Value)
     {
+      // Printer unable to find ippJobId : which job has this ippJobId?
       if (ippJob.Id is not { } ippJobId)
       {
         errors.Add(Error.NotFound("IppJobId.NotFound", "IppJob came back as null"));
         continue;
       }
 
+      // Printer returned unknown ippJobId
       if (!_cache.TryGetValue(ippJobId, out var jobId))
       {
         errors.Add(Error.NotFound("IppJobId.NotFound", $"No key was found matching ippId: {ippJobId}"));
         continue;
       }
 
+      // Printer returned unknown ippJob status
       if (ippJob.State is not { } ippJobStatus)
       {
         errors.Add(Error.Failure("HandleStateUpdate.JobStatus", $"Unmodelled IPP state for ipp id: {ippJobId}"));
         continue;
       }
 
+      // no active job contains ippJobId returned by printer
       if (activeJobs.FirstOrDefault(aj => aj.Id == jobId) is not { } job)
       {
         _cache.TryRemove(ippJobId, out _);
@@ -125,22 +129,41 @@ public class PrinterMonitor : IAsyncDisposable
 
   private async Task RunAsync(CancellationToken ct)
   {
-    using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+    var idle = TimeSpan.FromSeconds(30);
+    var active = TimeSpan.FromSeconds(5);
+    var extendedIdle = TimeSpan.FromSeconds(60);
+
+    using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
 
     while (await timer.WaitForNextTickAsync(ct))
     {
-      await using var scope = scopeFactory.CreateAsyncScope();
+      await using var scope = _scopeFactory.CreateAsyncScope();
       var printerResult = await UpdatePrinterStatus(scope, ct);
 
-      if (printerResult.IsError)
+      if (!printerResult.IsError)
+      {
+
+        if (!_cache.IsEmpty)
+        {
+          timer.Period = active;
+
+          var jobResult = await UpdateJobStatus(scope, ct);
+
+          if (jobResult.IsError)
+            HandleErrors(jobResult.Errors);
+        }
+        else
+        {
+          timer.Period = idle;
+        }
+
+      }
+      else
+      {
         HandleErrors(printerResult.Errors);
 
-      if (!_cache.IsEmpty)
-      {
-        var jobResult = await UpdateJobStatus(scope, ct);
-
-        if (jobResult.IsError)
-          HandleErrors(jobResult.Errors);
+        if (printerResult.FirstError.Code == "PrinterStatus.NotFound")
+          timer.Period = extendedIdle;
       }
 
     }
@@ -149,12 +172,29 @@ public class PrinterMonitor : IAsyncDisposable
   private void HandleErrors(List<Error> errors)
   {
     foreach (var e in errors)
-      logger.LogError("{Printer}: {Code} - {Desription}", printer.Name, e.Code, e.Description);
+      _logger.LogError("{Printer}: {Code} - {Desription}", Printer.Name, e.Code, e.Description);
   }
 
-  public ValueTask DisposeAsync()
+  public async ValueTask DisposeAsync()
   {
-    throw new NotImplementedException();
+    _cts.Cancel();
+
+    try
+    {
+      await _loop;
+    }
+    catch (OperationCanceledException ex)
+    {
+      _logger.LogError(ex.Message);
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError($"Error during printer monitor disposal: {ex.Message}");
+    }
+    finally
+    {
+      _cts.Dispose();
+    }
   }
 }
 

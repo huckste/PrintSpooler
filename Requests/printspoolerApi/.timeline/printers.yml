@@ -1,0 +1,378 @@
+- id: 9cd8a76e-a9a6-4227-96cc-a1e508a2f437
+  timestamp: 1788909395564
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.018327999860048294
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11292200023308396
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.56625400017947
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.605781000107527
+      type: body
+      message: Body received - 391 bytes
+    - timeMs: 31.60968100000173
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:16:34 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:16:28.1850815","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 31.62827999982983
+    size: 391
+- id: e510a2c3-66ea-4915-a0b3-0e352260ec3c
+  timestamp: 1788908737428
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.014035000000149012
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07489799987524748
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 29.154272000305355
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 29.18635299988091
+      type: body
+      message: Body received - 391 bytes
+    - timeMs: 29.187758000101894
+      type: complete
+      message: Completed in 29ms
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:05:36 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:05:27.0075607","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 29.195917000062764
+    size: 391
+- id: 9322ec7a-a349-4fd2-8243-6bebe6fb3ba6
+  timestamp: 1788908718160
+  envName: development
+  network:
+    - timeMs: 0.020570000167936087
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.19207700015977025
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 31.945311000104994
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.0020440001972
+      type: body
+      message: Body received - 391 bytes
+    - timeMs: 32.00810500001535
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:05:17 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":1,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:05:04.3971768","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 32.028266000095755
+    size: 391
+- id: de237394-11b1-4c89-a8fe-afba84f860a7
+  timestamp: 1788908538716
+  envName: development
+  network:
+    - timeMs: 0.016125000081956387
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1615379999857396
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 32.262685999972746
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.30342800007202
+      type: body
+      message: Body received - 627 bytes
+    - timeMs: 32.3055390000809
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:02:17 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"d322b0b7-8b8e-4e52-a946-1a6bae4f2ea3","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:02:00.7166313","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}]
+    timeMs: 32.330254999920726
+    size: 627
+- id: 25e66188-e95f-49c7-929d-b35ab55e916f
+  timestamp: 1788908515951
+  envName: development
+  network:
+    - timeMs: 0.00848799990490079
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06561199994757771
+      type: request
+      message: GET http://localhost:5164/Printer/
+    - timeMs: 0.10169699997641146
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer/
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 1edf0ffe-d36f-4199-ac82-5edac55c3c4f
+  timestamp: 1788908505593
+  envName: development
+  network:
+    - timeMs: 0.008248000172898173
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06236100010573864
+      type: request
+      message: GET http://localhost:5164/Printer
+    - timeMs: 0.09997800015844405
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: d4f2233c-50c5-4bc2-89fa-f02e8ef33b81
+  timestamp: 1788908493693
+  envName: development
+  network:
+    - timeMs: 0.007948999991640449
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.05839599994942546
+      type: request
+      message: GET http://localhost:5164/Printer
+    - timeMs: 0.0912039999384433
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 5482bbf2-5354-49ca-add4-5145a8aad976
+  timestamp: 1788908492567
+  envName: development
+  network:
+    - timeMs: 0.007925000041723251
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.061049000127241015
+      type: request
+      message: GET http://localhost:5164/Printer
+    - timeMs: 0.098513999953866
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 6aa623f4-34ad-4b16-b71d-af62e56eecf4
+  timestamp: 1788908488912
+  envName: development
+  network:
+    - timeMs: 0.013659999938681722
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08325599995441735
+      type: request
+      message: GET http://localhost:5164/Printer
+    - timeMs: 0.12938500009477139
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 0c50874c-9874-46f1-aef5-5ad253a793d4
+  timestamp: 1788908486537
+  envName: development
+  network:
+    - timeMs: 0.023579999804496765
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.24157299986109138
+      type: request
+      message: GET http://localhost:5164/Printer
+    - timeMs: 0.3185419999063015
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: printers
+    name: Printers
+    method: GET
+    url: http://localhost:5164/Printer
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
+        "Name": "TEST DUP"
+      }
+    bodyType: json
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'

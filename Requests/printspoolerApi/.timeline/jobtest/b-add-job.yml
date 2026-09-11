@@ -1,0 +1,67 @@
+- id: 88db611a-e0fa-4b26-84c2-1a700b343eda
+  timestamp: 1788936989256
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 201
+        actual: 201
+        passed: true
+        message: Assertion passed
+      - expression: body.printerId
+        operator: equals
+        expected: 31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+        actual: 31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.019908998161554337
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.12720299884676933
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 196.65571799874306
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 196.7268699966371
+      type: body
+      message: Body received - 654 bytes
+    - timeMs: 196.73229599744081
+      type: complete
+      message: Completed in 197ms
+  request:
+    id: jobtest/b-add-job
+    name: B add job
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "31b7076b-a10d-4c26-a3d6-c957c9e0c3e7"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:56:28 GMT
+      location: http://localhost:5164/PrintJob?id=71f6062b-8e45-4462-a092-3465d82410c3
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"71f6062b-8e45-4462-a092-3465d82410c3","status":0,"ippJobId":null,"printer":{"id":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","data":{"bytes":"aGVsbG8=","jobId":"71f6062b-8e45-4462-a092-3465d82410c3"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:56:29.0878839Z","completedAt":null,"failureReason":null}
+    timeMs: 196.75884699821472
+    size: 654

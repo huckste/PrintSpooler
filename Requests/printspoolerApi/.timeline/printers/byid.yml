@@ -1,0 +1,223 @@
+- id: d088091e-1768-42d1-9193-ad9d50038a76
+  timestamp: 1788912118398
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+  network:
+    - timeMs: 0.010192000307142735
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06556500028818846
+      type: request
+      message: GET http://localhost:5164/Printer/%7B%7D
+    - timeMs: 1.1230539996176958
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.1370489997789264
+      type: body
+      message: Body received - 241 bytes
+    - timeMs: 1.1383579997345805
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: printers/byid
+    name: ById
+    method: GET
+    url: http://localhost:5164/Printer/{}
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:01:58 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value '{}' is not
+      valid."]},"traceId":"00-2b5ee13a1b9ceaad14a2ef2b29a6ffcf-7235238b7cd4ce3e-00"}
+    timeMs: 1.1448680004104972
+    size: 241
+- id: 684dc72f-882f-4244-bc80-b03703109087
+  timestamp: 1788912073783
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.id
+        operator: equals
+        expected: b1802ca3-06f5-4a35-92f9-f00534756de8
+        actual: b1802ca3-06f5-4a35-92f9-f00534756de8
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.013869999907910824
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.10142799932509661
+      type: request
+      message: GET http://localhost:5164/Printer/b1802ca3-06f5-4a35-92f9-f00534756de8
+    - timeMs: 29.685900999233127
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 29.708518999628723
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 29.709974999539554
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: printers/byid
+    name: ById
+    method: GET
+    url: http://localhost:5164/Printer/b1802ca3-06f5-4a35-92f9-f00534756de8
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 00:01:13 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"b1802ca3-06f5-4a35-92f9-f00534756de8","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null}
+    timeMs: 29.716926000081003
+    size: 235
+- id: 6271e67c-e35e-4c9c-b790-3a481350b0d8
+  timestamp: 1788911801981
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 400
+        passed: false
+        message: Expected values to be equal
+      - expression: body.id
+        operator: equals
+        expected: '{}'
+        passed: false
+        message: Expression "body.id" is missing
+  network:
+    - timeMs: 0.01014500018209219
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07165700010955334
+      type: request
+      message: GET http://localhost:5164/Printer/%7B%7D
+    - timeMs: 1.2789520006626844
+      type: response
+      message: 400 Bad Request - 4 headers
+    - timeMs: 1.295466000214219
+      type: body
+      message: Body received - 241 bytes
+    - timeMs: 1.2967640003189445
+      type: complete
+      message: Completed in 1ms
+  request:
+    id: printers/byid
+    name: ById
+    method: GET
+    url: http://localhost:5164/Printer/{}
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 400
+    statusText: Bad Request
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:56:41 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One
+      or more validation errors occurred.","status":400,"errors":{"id":["The
+      value '{}' is not
+      valid."]},"traceId":"00-150fe895899885f52d324515fd872896-78273a8abfb4378e-00"}
+    timeMs: 1.3035810003057122
+    size: 241
+- id: da947cad-c18a-4b5f-a7d0-56104d59ccb7
+  timestamp: 1788911716578
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.0226239999756217
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.23942700028419495
+      type: request
+      message: GET http://localhost:5164/Printer/98e92491-8ee4-472d-8629-a8b854e184f8
+    - timeMs: 37.926880000159144
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 37.963143000379205
+      type: body
+      message: Body received - 389 bytes
+    - timeMs: 37.96574300061911
+      type: complete
+      message: Completed in 38ms
+  request:
+    id: printers/byid
+    name: ById
+    method: GET
+    url: http://localhost:5164/Printer/98e92491-8ee4-472d-8629-a8b854e184f8
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:55:16 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:54:58.1673108","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"}
+    timeMs: 37.98696000035852
+    size: 389

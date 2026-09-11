@@ -1,0 +1,53 @@
+- id: 8886ebfa-4729-4f4d-9606-26eb09e8719b
+  timestamp: 1788908937457
+  envName: development
+  network:
+    - timeMs: 0.01584600005298853
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1671710000373423
+      type: request
+      message: POST http://localhost:5164/PrintJob
+    - timeMs: 270.2022569999099
+      type: response
+      message: 201 Created - 5 headers
+    - timeMs: 270.2477290001698
+      type: body
+      message: Body received - 808 bytes
+    - timeMs: 270.250415999908
+      type: complete
+      message: Completed in 270ms
+  request:
+    id: job
+    name: Job
+    method: POST
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    body: |-
+      {
+        "submittedBy": "noodle",
+        "fileName": "test.pdf",
+        "rawData": "aGVsbG8=",
+        "contentType": "application/pdf",
+        "printerId": "98e92491-8ee4-472d-8629-a8b854e184f8"
+      }
+    bodyType: json
+    auth:
+      type: none
+  response:
+    status: 201
+    statusText: Created
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:08:56 GMT
+      location: http://localhost:5164/PrintJob?id=3df28315-75aa-4d0e-934e-ea6595e20610
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"3df28315-75aa-4d0e-934e-ea6595e20610","status":0,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:08:57.1043255","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":{"bytes":"aGVsbG8=","jobId":"3df28315-75aa-4d0e-934e-ea6595e20610"},"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-08T23:08:57.2296506Z","completedAt":null,"failureReason":null}
+    timeMs: 270.2859260002151
+    size: 808

@@ -1,0 +1,49 @@
+- id: 713d8372-bda5-423c-9a50-87fa45f24742
+  timestamp: 1788909330845
+  envName: development
+  network:
+    - timeMs: 0.023320999927818775
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2595919999293983
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/3df28315-75aa-4d0e-934e-ea6595e20610/cancel
+    - timeMs: 211.30270100012422
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 211.35584999993443
+      type: body
+      message: Body received - 744 bytes
+    - timeMs: 211.35981300007552
+      type: complete
+      message: Completed in 211ms
+  request:
+    id: jobcancel
+    name: JobCancel
+    method: POST
+    url: http://localhost:5164/PrintJob/3df28315-75aa-4d0e-934e-ea6595e20610/cancel
+    headers: {}
+    params: []
+    pathParams:
+      - name: jobId
+        value: 3df28315-75aa-4d0e-934e-ea6595e20610
+        enabled: true
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Tue, 08 Sep 2026 23:15:29 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"3df28315-75aa-4d0e-934e-ea6595e20610","status":5,"ippJobId":null,"printer":{"id":"98e92491-8ee4-472d-8629-a8b854e184f8","name":"HP
+      ENVY Inspire 7200
+      series","ipAddress":"192.168.50.52","status":4,"failoverPrinterId":null,"lastHeartbeat":"2026-09-08T23:15:27.0677507","host":"hpd0ad08c445fe.local","supportedContentTypes":["application/vnd.hp-PCL","image/jpeg","image/urf","image/pwg-raster","application/PCLm"],"printerUuid":"cbe8f109-94c3-462f-9b0d-648cd5d528b7"},"printerId":"98e92491-8ee4-472d-8629-a8b854e184f8","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-08T23:08:57.2296506","completedAt":null,"failureReason":null}
+    timeMs: 211.3909089998342
+    size: 744

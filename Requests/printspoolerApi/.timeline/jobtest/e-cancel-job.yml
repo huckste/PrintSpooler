@@ -1,0 +1,55 @@
+- id: ca5f9f4a-bcb4-4c2c-9b1f-68f8249a8b26
+  timestamp: 1788936997147
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.006284996867179871
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08039600029587746
+      type: request
+      message: >-
+        POST
+        http://localhost:5164/PrintJob/71f6062b-8e45-4462-a092-3465d82410c3/cancel
+    - timeMs: 194.12218399718404
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 194.17304600030184
+      type: body
+      message: Body received - 590 bytes
+    - timeMs: 194.17637699842453
+      type: complete
+      message: Completed in 194ms
+  request:
+    id: jobtest/e-cancel-job
+    name: E cancel job
+    method: POST
+    url: http://localhost:5164/PrintJob/71f6062b-8e45-4462-a092-3465d82410c3/cancel
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:56:36 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"71f6062b-8e45-4462-a092-3465d82410c3","status":5,"ippJobId":null,"printer":{"id":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:56:29.0878839","completedAt":null,"failureReason":null}
+    timeMs: 194.1879730001092
+    size: 590

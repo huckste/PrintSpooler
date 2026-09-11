@@ -1,0 +1,7 @@
+name: Get By Id
+method: GET
+url: $localhost/Printer/$printerId
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+body_type: none

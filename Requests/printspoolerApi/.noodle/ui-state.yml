@@ -1,0 +1,43 @@
+lastRequest: jobtest/a-create-printer
+expanded_folders:
+  - logs
+  - health
+  - jobs
+  - jobtest
+  - printers
+health:
+  request: assertions
+  response: results
+logs:
+  request: assertions
+  response: network
+jobtest/a-create-printer:
+  request: body
+  response: body
+jobs/submit:
+  request: body
+  response: body
+jobtest/b-add-job:
+  request: body
+  response: headers
+jobtest/c-get-active-jobs:
+  request: assertions
+  response: body
+jobtest/d-get-job-by-id:
+  request: assertions
+  response: body
+printers/get-all:
+  request: captures
+  response: body
+jobs/get-active:
+  request: captures
+  response: body
+jobs/cancel:
+  request: captures
+  response: body
+printers/add:
+  request: body
+  response: body
+printers/delete:
+  request: headers
+  response: results

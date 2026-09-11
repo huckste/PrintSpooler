@@ -1,0 +1,633 @@
+- id: e1b32835-9b43-48de-91d1-40a35f0ec690
+  timestamp: 1789103978909
+  envName: development
+  network:
+    - timeMs: 0.011497999999846797
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1265160000002652
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 119.55629299999964
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 123.24822000000131
+      type: body
+      message: Body received - 660 bytes
+    - timeMs: 123.26690200000121
+      type: complete
+      message: Completed in 123ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Fri, 11 Sep 2026 05:19:38 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"d2095d37-08fc-4b05-889f-174722c6742d","status":6,"ippJobId":null,"printer":{"id":"5607e930-d862-4d9c-b0d7-a1f82c37c67e","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"5607e930-d862-4d9c-b0d7-a1f82c37c67e","data":null,"fileName":"catppuccin-0-black-moon.jpg","contentType":"image/jpeg","submittedBy":"dashboard-user","retryCount":0,"maxRetries":3,"fileSizeBytes":5183414,"submittedAt":"2026-09-10T23:50:44.0170261","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 123.32481300000109
+    size: 660
+- id: 59b6a66e-e672-4085-887b-c4ff661e3f27
+  timestamp: 1789103968392
+  envName: development
+  network:
+    - timeMs: 0.028629999999793654
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 1.1303899999998066
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 2.9843559999999343
+      type: error
+      message: 'requests.send: fetch failed'
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  error:
+    message: 'requests.send: fetch failed'
+- id: 480889a4-0c3a-4086-8059-099f496a4db2
+  timestamp: 1788936568879
+  envName: development
+  network:
+    - timeMs: 0.005449999123811722
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.061065997928380966
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 30.992676001042128
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.022057998925447
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 31.023506000638008
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:49:28 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 31.032382998615503
+    size: 2
+- id: 57fbda49-2132-423e-814c-e4cfa61d098d
+  timestamp: 1788935639733
+  envName: development
+  network:
+    - timeMs: 0.014942999929189682
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1000560000538826
+      type: request
+      message: GET http://localhost:5164/PrintJob
+    - timeMs: 33.158319000154734
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.19904899969697
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 33.20267599821091
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164/PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:33:59 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 33.21430400013924
+    size: 2
+- id: a2cd7fe1-80ca-4453-baff-eaf7d13cf273
+  timestamp: 1788934383859
+  envName: development
+  network:
+    - timeMs: 0.006430000066757202
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06687000021338463
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 30.292421001940966
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.323343999683857
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 30.3249840028584
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:13:03 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 30.33389800041914
+    size: 2
+- id: cb29a1e4-136a-4d01-9cc8-a8774ac036be
+  timestamp: 1788934372526
+  envName: development
+  network:
+    - timeMs: 0.022819001227617264
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.26000500097870827
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 30.422011002898216
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.48166100308299
+      type: body
+      message: Body received - 632 bytes
+    - timeMs: 30.48591500148177
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:12:51 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"8ae58b61-3244-4e83-b4c3-62dbeeebba5a","status":6,"ippJobId":null,"printer":{"id":"c7f694a2-8844-4ec9-907f-fa6a01cd1d95","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"c7f694a2-8844-4ec9-907f-fa6a01cd1d95","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:11:38.0586861","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 30.52988400310278
+    size: 632
+- id: 00a8a462-074c-4a7f-84ea-e7bda69b9f14
+  timestamp: 1788934194020
+  envName: development
+  network:
+    - timeMs: 0.006126999855041504
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06176000088453293
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 31.725012000650167
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.75951999798417
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 31.76120099797845
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:09:53 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '[]'
+    timeMs: 31.77130499854684
+    size: 2
+- id: 9a1a34f3-245c-40a9-a4ff-2ca7a1977187
+  timestamp: 1788934132388
+  envName: development
+  network:
+    - timeMs: 0.029233001172542572
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1780950017273426
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 30.45701799914241
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.529959000647068
+      type: body
+      message: Body received - 655 bytes
+    - timeMs: 30.53720600157976
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:08:51 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":1,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"No
+      job data found for job ID 3e839eff-dedf-4911-a928-9de2830d6ed5"}]
+    timeMs: 30.559835001826286
+    size: 655
+- id: 9ac64aab-03f8-4dd6-96f5-2d9595113f9d
+  timestamp: 1788934130987
+  envName: development
+  network:
+    - timeMs: 0.018736999481916428
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1633869968354702
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 32.71221899986267
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.768889997154474
+      type: body
+      message: Body received - 655 bytes
+    - timeMs: 32.77327199652791
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:08:50 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":1,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"No
+      job data found for job ID 3e839eff-dedf-4911-a928-9de2830d6ed5"}]
+    timeMs: 32.81724299862981
+    size: 655
+- id: 8134c7c2-dae2-482c-b7b2-485f44c12385
+  timestamp: 1788934014028
+  envName: development
+  network:
+    - timeMs: 0.005090001970529556
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0586870014667511
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 30.17348300293088
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 30.216817002743483
+      type: body
+      message: Body received - 655 bytes
+    - timeMs: 30.220984000712633
+      type: complete
+      message: Completed in 30ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:06:53 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":1,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"No
+      job data found for job ID 3e839eff-dedf-4911-a928-9de2830d6ed5"}]
+    timeMs: 30.23266000300646
+    size: 655
+- id: cc5a9a30-ef91-461d-9614-b370216812e7
+  timestamp: 1788934001319
+  envName: development
+  network:
+    - timeMs: 0.009472999721765518
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07107799872756004
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 31.438303999602795
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 31.468940999358892
+      type: body
+      message: Body received - 1286 bytes
+    - timeMs: 31.470502000302076
+      type: complete
+      message: Completed in 31ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:06:40 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"8a0a8e59-71a8-4ea5-bafb-5a730435ee87","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:06:35.0193877","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP
+      "},{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":1,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"No
+      job data found for job ID 3e839eff-dedf-4911-a928-9de2830d6ed5"}]
+    timeMs: 31.479404997080564
+    size: 1286
+- id: 09a7b22c-1a6f-477a-9518-7aa2f3a17082
+  timestamp: 1788933863868
+  envName: development
+  network:
+    - timeMs: 0.009480997920036316
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06477699801325798
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 32.98955800011754
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.03755600005388
+      type: body
+      message: Body received - 632 bytes
+    - timeMs: 33.04159500077367
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:04:23 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 33.05453199893236
+    size: 632
+- id: d082f0df-0afe-45dc-9b18-a11b4150c193
+  timestamp: 1788933862276
+  envName: development
+  network:
+    - timeMs: 0.009415000677108765
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.06571000069379807
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 31.9604400023818
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 32.00017200037837
+      type: body
+      message: Body received - 632 bytes
+    - timeMs: 32.003357000648975
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:04:21 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 32.0139480009675
+    size: 632
+- id: b7dafba5-a82f-40df-9f67-9f82102318e3
+  timestamp: 1788933834728
+  envName: development
+  network:
+    - timeMs: 0.028014998883008957
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1771789975464344
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 33.18357199802995
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.2568219974637
+      type: body
+      message: Body received - 632 bytes
+    - timeMs: 33.263621997088194
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:03:54 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 33.28563999757171
+    size: 632
+- id: e99ced4e-79fd-44fb-95a7-e8929bfd77ce
+  timestamp: 1788933814142
+  envName: development
+  network:
+    - timeMs: 0.0236859992146492
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.25291699916124344
+      type: request
+      message: GET http://localhost:5164//PrintJob
+    - timeMs: 33.095908999443054
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.15910800173879
+      type: body
+      message: Body received - 632 bytes
+    - timeMs: 33.162999000400305
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: jobs/get-active
+    name: Get Active
+    method: GET
+    url: http://localhost:5164//PrintJob
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:03:33 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      [{"id":"3e839eff-dedf-4911-a928-9de2830d6ed5","status":6,"ippJobId":null,"printer":{"id":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"bf4c0d34-b798-4fb7-ad58-5a04c0659044","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T05:57:38.7360434","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}]
+    timeMs: 33.194931000471115
+    size: 632

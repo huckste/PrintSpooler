@@ -1,0 +1,568 @@
+- id: 5b6138fe-ac6c-46e5-99dc-3f5abd8e2f01
+  timestamp: 1788936921932
+  envName: development
+  network:
+    - timeMs: 0.024738002568483353
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2570450007915497
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/951b2010-a012-419c-85b8-585d8837e8ea
+    - timeMs: 102.80482000112534
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 102.84928400069475
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 102.8520350009203
+      type: complete
+      message: Completed in 103ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/951b2010-a012-419c-85b8-585d8837e8ea
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:55:21 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 102.91858000308275
+    size: 2
+- id: ca7fab24-b3ce-49d1-8dab-3489b623a8b5
+  timestamp: 1788936859283
+  envName: development
+  network:
+    - timeMs: 0.01385900005698204
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.1669659987092018
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/4a8a0a80-c709-4b56-9b6c-20eeb0fe67df
+    - timeMs: 115.15421899780631
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 115.2235429994762
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 115.22916200011969
+      type: complete
+      message: Completed in 115ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/4a8a0a80-c709-4b56-9b6c-20eeb0fe67df
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:54:19 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 115.30502799898386
+    size: 2
+- id: 5d1bf422-8f9c-4051-83ce-0d28655ad0ef
+  timestamp: 1788936797135
+  envName: development
+  network:
+    - timeMs: 0.03636699914932251
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.23565999791026115
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/b869cb5e-cc3d-45b3-8bfc-d537d5ef906b
+    - timeMs: 114.10266799852252
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 114.19971499964595
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 114.20829199999571
+      type: complete
+      message: Completed in 114ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/b869cb5e-cc3d-45b3-8bfc-d537d5ef906b
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:53:16 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 114.27861599996686
+    size: 2
+- id: af000257-7066-4ea3-91ee-4b56c5dbbe92
+  timestamp: 1788936752408
+  envName: development
+  network:
+    - timeMs: 0.010976001620292664
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07332700118422508
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/c366c3a4-3629-47aa-9040-3342169a7e45
+    - timeMs: 31.938129000365734
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 31.98071300238371
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 31.986211001873016
+      type: complete
+      message: Completed in 32ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/c366c3a4-3629-47aa-9040-3342169a7e45
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:52:32 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No printer found with ID
+      c366c3a4-3629-47aa-9040-3342169a7e45","traceId":"00-e21b800ae78590ebc700664106936a85-5a91a09583270aaf-00"}
+    timeMs: 31.99974500015378
+    size: 235
+- id: 7c2c0f56-bff4-4698-8688-a056606fba52
+  timestamp: 1788936744858
+  envName: development
+  network:
+    - timeMs: 0.01882699877023697
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.11430500075221062
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/c366c3a4-3629-47aa-9040-3342169a7e45
+    - timeMs: 112.67024100199342
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 112.72044099867344
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 112.72506200149655
+      type: complete
+      message: Completed in 113ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/c366c3a4-3629-47aa-9040-3342169a7e45
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:52:24 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 112.7407729998231
+    size: 2
+- id: 9b348d8c-38aa-4396-987d-0e252fd35917
+  timestamp: 1788936573608
+  envName: development
+  network:
+    - timeMs: 0.006700001657009125
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.07153100147843361
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/cffec806-d304-43ff-ba53-a46a7decad48
+    - timeMs: 100.8873459994793
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 100.9264760017395
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 100.92930699884892
+      type: complete
+      message: Completed in 101ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/cffec806-d304-43ff-ba53-a46a7decad48
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:49:33 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 100.94100600108504
+    size: 2
+- id: d95abcf8-4e60-4f3d-8fd4-8a476191d302
+  timestamp: 1788936434087
+  envName: development
+  network:
+    - timeMs: 0.010637998580932617
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09641800075769424
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/1d88bd2c-dd88-4964-8e3b-4a332abf5c7b
+    - timeMs: 135.2726139985025
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 135.31975099816918
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 135.32263800129294
+      type: complete
+      message: Completed in 135ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/1d88bd2c-dd88-4964-8e3b-4a332abf5c7b
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:47:13 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 135.33494099974632
+    size: 2
+- id: 239a7309-731e-4b7e-a36c-9c76c2bc0d79
+  timestamp: 1788935636678
+  envName: development
+  network:
+    - timeMs: 0.04356500133872032
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.22060900181531906
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/01666c0b-2092-4096-84f3-37a0a0d09914
+    - timeMs: 117.19992399960756
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 117.27692300081253
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 117.28515300154686
+      type: complete
+      message: Completed in 117ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/01666c0b-2092-4096-84f3-37a0a0d09914
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:33:56 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 117.30951000005007
+    size: 2
+- id: c88b0a04-9326-41c1-ae02-d155302f4f2f
+  timestamp: 1788934816959
+  envName: development
+  network:
+    - timeMs: 0.03683600202202797
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2858690023422241
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164/Printer/41299eb3-aaf6-4163-8753-b05c0337b66e
+    - timeMs: 157.5883170031011
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 157.627217002213
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 157.6299570016563
+      type: complete
+      message: Completed in 158ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164/Printer/41299eb3-aaf6-4163-8753-b05c0337b66e
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:20:16 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 157.67820200324059
+    size: 2
+- id: 869e24bf-02e2-48d5-b7fa-4dc94f08adc4
+  timestamp: 1788934511494
+  envName: development
+  network:
+    - timeMs: 0.028022002428770065
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.16096900030970573
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164//Printer/c7f694a2-8844-4ec9-907f-fa6a01cd1d95
+    - timeMs: 119.80597700178623
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 119.88157000020146
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 119.88822800293565
+      type: complete
+      message: Completed in 120ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164//Printer/c7f694a2-8844-4ec9-907f-fa6a01cd1d95
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:15:10 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 119.91024900227785
+    size: 2
+- id: 95113286-6558-4e0d-8f44-5af516aa248c
+  timestamp: 1788934263943
+  envName: development
+  network:
+    - timeMs: 0.016296997666358948
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.17184799909591675
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164//Printer/bf4c0d34-b798-4fb7-ad58-5a04c0659044
+    - timeMs: 29.214707996696234
+      type: response
+      message: 404 Not Found - 4 headers
+    - timeMs: 29.266238998621702
+      type: body
+      message: Body received - 235 bytes
+    - timeMs: 29.26911299675703
+      type: complete
+      message: Completed in 29ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164//Printer/bf4c0d34-b798-4fb7-ad58-5a04c0659044
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 404
+    statusText: Not Found
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:11:03 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.5","title":"Not
+      Found","status":404,"detail":"No printer found with ID
+      bf4c0d34-b798-4fb7-ad58-5a04c0659044","traceId":"00-892338284492116a85711de491fbaf0f-d57f7324597b4c06-00"}
+    timeMs: 29.2921079993248
+    size: 235
+- id: 9ed323cd-6f06-4be8-b64a-16299305920b
+  timestamp: 1788934201586
+  envName: development
+  network:
+    - timeMs: 0.00712200254201889
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.0619410015642643
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164//Printer/bf4c0d34-b798-4fb7-ad58-5a04c0659044
+    - timeMs: 96.97119200229645
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 97.0158380009234
+      type: body
+      message: Body received - 2 bytes
+    - timeMs: 97.02146300300956
+      type: complete
+      message: Completed in 97ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164//Printer/bf4c0d34-b798-4fb7-ad58-5a04c0659044
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:10:00 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: '{}'
+    timeMs: 97.03370600193739
+    size: 2
+- id: f83c8c9b-b4e1-4203-974e-f0751e25fbd0
+  timestamp: 1788933687169
+  envName: development
+  network:
+    - timeMs: 0.012074001133441925
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.09942499920725822
+      type: request
+      message: >-
+        DELETE
+        http://localhost:5164//Printer/bf4c0d34-b798-4fb7-ad58-5a04c0659044
+    - timeMs: 63.80451099947095
+      type: response
+      message: 409 Conflict - 4 headers
+    - timeMs: 63.85257500037551
+      type: body
+      message: Body received - 213 bytes
+    - timeMs: 63.855683002620935
+      type: complete
+      message: Completed in 64ms
+  request:
+    id: printers/delete
+    name: Delete
+    method: DELETE
+    url: http://localhost:5164//Printer/bf4c0d34-b798-4fb7-ad58-5a04c0659044
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 409
+    statusText: Conflict
+    headers:
+      content-type: application/problem+json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:01:26 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"type":"https://tools.ietf.org/html/rfc9110#section-15.5.10","title":"Conflict","status":409,"detail":"Cannot
+      delete TEST DUP: has active
+      jobs","traceId":"00-582c10697687014a23b0b72ba0900ce0-e398f57af3dd42f6-00"}
+    timeMs: 63.86771500110626
+    size: 213

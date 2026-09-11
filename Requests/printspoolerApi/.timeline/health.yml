@@ -1,0 +1,97 @@
+- id: b9e17240-d7e0-4291-8def-7b02a0a72c0a
+  timestamp: 1788909228245
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.023162999656051397
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.2360249999910593
+      type: request
+      message: GET http://localhost:5164/health
+    - timeMs: 32.46738699963316
+      type: response
+      message: 200 OK - 7 headers
+    - timeMs: 32.547374999616295
+      type: body
+      message: Body received - 7 bytes
+    - timeMs: 32.55069899978116
+      type: complete
+      message: Completed in 33ms
+  request:
+    id: health
+    name: Health
+    method: GET
+    url: http://localhost:5164/health
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      cache-control: no-store, no-cache
+      content-type: text/plain
+      date: Tue, 08 Sep 2026 23:13:47 GMT
+      expires: Thu, 01 Jan 1970 00:00:00 GMT
+      pragma: no-cache
+      server: Kestrel
+      transfer-encoding: chunked
+    body: Healthy
+    timeMs: 32.584851999767125
+    size: 7
+- id: 48ebc283-95ef-44de-8263-1190fc35eeef
+  timestamp: 1788909208664
+  envName: development
+  network:
+    - timeMs: 0.017874999903142452
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.13120099995285273
+      type: request
+      message: GET http://localhost:5164/health
+    - timeMs: 28.96855300012976
+      type: response
+      message: 200 OK - 7 headers
+    - timeMs: 29.006314999889582
+      type: body
+      message: Body received - 7 bytes
+    - timeMs: 29.009763000067323
+      type: complete
+      message: Completed in 29ms
+  request:
+    id: health
+    name: Health
+    method: GET
+    url: http://localhost:5164/health
+    headers: {}
+    params: []
+    pathParams: []
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      cache-control: no-store, no-cache
+      content-type: text/plain
+      date: Tue, 08 Sep 2026 23:13:27 GMT
+      expires: Thu, 01 Jan 1970 00:00:00 GMT
+      pragma: no-cache
+      server: Kestrel
+      transfer-encoding: chunked
+    body: Healthy
+    timeMs: 29.025833999738097
+    size: 7

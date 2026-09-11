@@ -1,0 +1,66 @@
+- id: 578df2dc-8297-4910-90a2-f1a8f74fe2ea
+  timestamp: 1788936994775
+  envName: development
+  assertions:
+    evaluated: true
+    results:
+      - expression: status
+        operator: equals
+        expected: 200
+        actual: 200
+        passed: true
+        message: Assertion passed
+      - expression: body.id
+        operator: equals
+        expected: 71f6062b-8e45-4462-a092-3465d82410c3
+        actual: 71f6062b-8e45-4462-a092-3465d82410c3
+        passed: true
+        message: Assertion passed
+      - expression: body.printerId
+        operator: equals
+        expected: 31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+        actual: 31b7076b-a10d-4c26-a3d6-c957c9e0c3e7
+        passed: true
+        message: Assertion passed
+  network:
+    - timeMs: 0.007849998772144318
+      type: proxy
+      message: 'Proxy: direct'
+    - timeMs: 0.08398599922657013
+      type: request
+      message: GET http://localhost:5164/PrintJob/71f6062b-8e45-4462-a092-3465d82410c3
+    - timeMs: 33.52200699970126
+      type: response
+      message: 200 OK - 4 headers
+    - timeMs: 33.56758099794388
+      type: body
+      message: Body received - 630 bytes
+    - timeMs: 33.569584999233484
+      type: complete
+      message: Completed in 34ms
+  request:
+    id: jobtest/d-get-job-by-id
+    name: D get job by id
+    method: GET
+    url: http://localhost:5164/PrintJob/71f6062b-8e45-4462-a092-3465d82410c3
+    headers: {}
+    params: []
+    pathParams: []
+    body: ''
+    bodyType: none
+    auth:
+      type: none
+  response:
+    status: 200
+    statusText: OK
+    headers:
+      content-type: application/json; charset=utf-8
+      date: Wed, 09 Sep 2026 06:56:34 GMT
+      server: Kestrel
+      transfer-encoding: chunked
+    body: >-
+      {"id":"71f6062b-8e45-4462-a092-3465d82410c3","status":6,"ippJobId":null,"printer":{"id":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","name":"TEST
+      DUP","ipAddress":"ipp://HPD0AD08C445FE.local:631/ipp/print","status":2,"failoverPrinterId":null,"lastHeartbeat":null,"host":null,"supportedContentTypes":null,"printerUuid":null},"printerId":"31b7076b-a10d-4c26-a3d6-c957c9e0c3e7","data":null,"fileName":"test.pdf","contentType":"application/pdf","submittedBy":"noodle","retryCount":0,"maxRetries":3,"fileSizeBytes":5,"submittedAt":"2026-09-09T06:56:29.0878839","completedAt":null,"failureReason":"Could
+      not find Host for printer: TEST DUP "}
+    timeMs: 33.58007399737835
+    size: 630

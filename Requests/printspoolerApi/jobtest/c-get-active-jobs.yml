@@ -1,0 +1,19 @@
+name: C get active jobs
+method: GET
+url: $localhost/PrintJob
+timeout: 0
+followRedirects: true
+maxRedirects: 5
+body: ''
+body_type: none
+capture:
+  jobId:
+    value: body[0].id
+    persist: environment
+assert:
+  - expression: body[0].id
+    operator: equals
+    value: $jobId
+  - expression: body[0].printerId
+    operator: equals
+    value: $printerId

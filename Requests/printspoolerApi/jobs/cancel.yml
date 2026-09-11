@@ -1,0 +1,11 @@
+name: Cancel
+method: POST
+url: $localhost/PrintJob/$jobId/cancel
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+body_type: none
+capture:
+  jobId:
+    value: body.id
+    persist: environment

@@ -1,0 +1,11 @@
+name: Get Active
+method: GET
+url: $localhost/PrintJob
+timeout: 30000
+followRedirects: true
+maxRedirects: 5
+body_type: none
+capture:
+  jobId:
+    value: body[0].id
+    persist: environment

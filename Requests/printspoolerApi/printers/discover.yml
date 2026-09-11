@@ -1,0 +1,24 @@
+name: Discover
+method: GET
+url: $localhost/PrinterDiscovery
+timeout: 10000
+followRedirects: true
+maxRedirects: 5
+body: ''
+body_type: none
+capture:
+  printerName:
+    value: body[0].name
+    persist: environment
+  printerIp:
+    value: body[0].ipAddress
+    persist: environment
+  printerHost:
+    value: body[0].host
+    persist: environment
+  printerContentTypes:
+    value: body[0].supportedContentTypes
+    persist: environment
+  printerUuid:
+    value: body[0].printerUuid
+    persist: environment
