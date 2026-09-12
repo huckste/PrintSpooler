@@ -63,13 +63,17 @@ public class PrinterManager(
         printerMonitor.AddJob(job.IppId, job.JobId);
       else
       {
-        logger.LogWarning("Job added to channel for printer without active monitor. Added monitor now");
-
         using var scope = scopeFactory.CreateAsyncScope();
         var printerService = scope.ServiceProvider.GetRequiredService<IPrinterService>();
 
-        await printerService.GetPrinter(job.PrinterId)
+        var result = await printerService.GetPrinter(job.PrinterId)
           .ThenDo(p => AddPrinterMonitor(p, ct));
+
+        if (result.IsError)
+        {
+          logger.LogError($"Active job requires a printer: {result.FirstError.Description}");
+          continue;
+        }
 
         await jobChannel.Writer.WriteAsync(job);
       }
