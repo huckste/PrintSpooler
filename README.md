@@ -4,6 +4,25 @@ A practice project, not a product — no users, no production intent. A resume p
 
 Submit a job from a dashboard → queued → delivered to a real network printer over IPP → status tracked → audit logged.
 
+![Submit and cancel a print job](docs/CancelPrintJob.gif)
+
+<details>
+<summary>More demos — bulk actions, printer discovery, audit logs</summary>
+
+**Bulk retry / cancel from the dashboard**
+
+![Bulk retry and cancel](docs/MultiRetryDemo.gif)
+
+**Discover and register a printer over mDNS**
+
+![Discover and add a printer](docs/AddPrinterDemo.gif)
+
+**Filter, sort, and search the audit log**
+
+![Logs page filtering](docs/LogsPage.gif)
+
+</details>
+
 ## Architecture
 
 Four projects, one dependency direction:
