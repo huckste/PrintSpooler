@@ -41,7 +41,7 @@ public class QueueRow
     SizeBytes = job.FileSizeBytes,
     RetryCount = job.RetryCount,
     SubmittedAt = job.SubmittedAt,
-    ErrorText = job.FailureReason,
+    ErrorText = job.StatusReason,
     JobId = job.Id,
     IppJobId = job.IppJobId
   };
@@ -52,7 +52,7 @@ public class QueueRow
     SizeBytes = job.FileSizeBytes;
     RetryCount = job.RetryCount;
     SubmittedAt = job.SubmittedAt;
-    ErrorText = job.FailureReason;
+    ErrorText = job.StatusReason;
     JobId = job.Id;
     IppJobId = job.IppJobId;
   }

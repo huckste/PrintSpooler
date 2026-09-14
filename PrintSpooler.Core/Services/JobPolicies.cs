@@ -9,7 +9,7 @@ public static class JobPolicies
 
   public static readonly JobStatus[] Terminal = [JobStatus.Completed, JobStatus.Cancelled];
   public static readonly JobStatus[] Pending = [JobStatus.Queued];
-  public static readonly JobStatus[] InFlight = [JobStatus.Submitting, JobStatus.Processing, JobStatus.Cancelling];
+  public static readonly JobStatus[] InFlight = [JobStatus.Submitting, JobStatus.Processing, JobStatus.Stopped, JobStatus.Cancelling];
   public static readonly JobStatus[] Retryable = [JobStatus.Failed];
   public static readonly JobStatus[] Active = [.. Enum.GetValues<JobStatus>().Except(Terminal)];
 

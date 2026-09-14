@@ -12,9 +12,8 @@ public class Job
   public required string ContentType { get; set; }
   public required string SubmittedBy { get; set; }
   public int RetryCount { get; set; } = 0;
-  public int MaxRetries { get; set; } = 3;
   public long FileSizeBytes { get; set; }
   public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
   public DateTime? CompletedAt { get; set; }
-  public string? FailureReason { get; set; }
+  public string? StatusReason { get; set; }
 }

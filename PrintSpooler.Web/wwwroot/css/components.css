@@ -35,6 +35,32 @@
     margin-bottom: 0.75rem;
 }
 
+/* ── Printer Section Header (shared by Dashboard and PrinterCard) ── */
+
+.sp-stat-value-of {
+    font-size: 1rem;
+    color: var(--sp-muted);
+}
+
+.sp-printer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.sp-printer-header .sp-section-title {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.sp-printer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
 /* ── Panel / Card ────────────────────────────────────────── */
 
 /* Reusable base — compose with layout classes below */
@@ -133,19 +159,20 @@
 .sp-tag-offline    { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-unknown    { color: var(--sp-muted);     border-color: var(--sp-muted);     }
 
-/* ── Status Dot ──────────────────────────────────────────── */
-
-.sp-printer-status-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--sp-muted);
+/* Hoverable annotation text (not a status badge) — e.g. a printer's
+   warning/error detail. No border: it isn't a status of its own, just a
+   note attached to one. */
+.sp-printer-warning {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    cursor: help;
 }
 
-.sp-printer-status-dot-online   { background: var(--sp-green); }
-.sp-printer-status-dot-offline  { background: var(--sp-red);   }
-.sp-printer-status-dot-unknown  { background: var(--sp-muted); }
+.sp-printer-warning-warning { color: var(--sp-yellow); }
+.sp-printer-warning-error   { color: var(--sp-red); }
 
 /* ── Progress Bar ────────────────────────────────────────── */
 
@@ -407,7 +434,7 @@
 .sp-table-wrapper.sp-table-wrapper-compact {
     height: auto;
     max-height: 14rem;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 .sp-table {
@@ -560,6 +587,68 @@
 
 .sp-table-detail-layout > .sp-detail-panel {
     grid-area: detail;
+}
+
+/* ── Detail Panel content (shared by JobDetailCard) ── */
+
+.sp-detail-panel {
+    padding: 0.75rem 1rem;
+    min-width: 0;
+}
+
+.sp-detail-panel-head {
+    margin-bottom: 0.5rem;
+}
+
+.sp-detail-panel-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sp-green);
+}
+
+.sp-detail-terminal {
+    font-family: var(--sp-mono);
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--sp-text);
+    min-height: 60px;
+}
+
+.sp-detail-terminal-idle {
+    color: var(--sp-muted);
+    opacity: 0.6;
+    padding-left: 0.6rem;
+}
+
+/* Border-color-only pulse — no transform/scale on the text itself, so
+   glyphs never distort mid-animation like the scaleY roll-in did. */
+.sp-detail-terminal-content {
+    border-left: 2px solid transparent;
+    padding-left: calc(0.6rem - 2px);
+    animation: sp-accent-pulse 1s ease;
+}
+
+.sp-detail-terminal-line {
+    overflow-wrap: break-word;
+}
+
+.sp-detail-terminal-prompt {
+    color: var(--sp-border);
+    margin-right: 0.4em;
+}
+
+.sp-detail-terminal-key {
+    color: var(--sp-green);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sp-detail-terminal-key::after {
+    content: ' => ';
+    color: var(--sp-muted);
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 /* ── File Row (generic file-picker trigger row) ─────────── */

@@ -5,9 +5,15 @@
 <div @key="Key" class="sp-panel sp-printer-card @(cardExpanded ? "sp-printer-card-expanded" : "")">
   <div class="sp-printer-row" @onclick="ToggleCard" @onmouseleave="HandleRowMouseLeave">
     <span
-    class="sp-printer-status-dot sp-printer-status-dot-@(PrinterWebService.IsOnline(Printer.Status) ? "online" : "offline")"></span>
+    class="sp-printer-status-dot sp-printer-status-dot-@(PrinterWebService.DotClass(Printer.Status))"></span>
     <span class="sp-printer-name">@(Printer.Name)
       <span class="sp-printer-model">[ @(Printer.Status) ]</span>
+      @if (!string.IsNullOrEmpty(Printer.StatusReason))
+      {
+        <span class="sp-printer-warning sp-printer-warning-@(PrinterWebService.MessageSeverityClass(Printer.StatusReason))" title="@(Printer.StatusReason)">
+          @(PrinterWebService.MessageSeverityClass(Printer.StatusReason))
+        </span>
+      }
     </span>
     <div class="sp-printer-stats">
       @if (selectedRows.Count > 0)
@@ -140,7 +146,7 @@
   private RowActions? hoveredAction;
 
   private bool ShowSpinner(QueueRow row) =>
-    row.IsBusy || row.Status is JobStatus.Processing or JobStatus.Submitting or JobStatus.Cancelling;
+    row.IsBusy || row.Status is JobStatus.Processing or JobStatus.Submitting or JobStatus.Cancelling or JobStatus.Stopped;
   private string? ShowRowError(QueueRow row) => row.ErrorText;
 
   private void SetHoveredAction(RowActions action)

@@ -34,10 +34,8 @@ builder.Services.AddScoped<IPrinterService, PrinterService>();
 builder.Services.AddSingleton<IJobNotifier, JobNotifier>();
 builder.Services.AddSingleton<IPrinterNotifier, PrinterNotifier>();
 builder.Services.AddScoped<ILogsService, LogsService>();
-builder.Services.AddHostedService<PrintJobWorker>();
 builder.Services.AddHostedService<PrinterManager>();
-builder.Services.AddSingleton(_ => Channel.CreateUnbounded<Guid>());
-builder.Services.AddSingleton(_ => Channel.CreateUnbounded<IppJobRef>());
+builder.Services.AddSingleton(_ => Channel.CreateUnbounded<JobRef>());
 builder.Services.AddSingleton(_ => Channel.CreateUnbounded<PrinterEvent>());
 builder.Services.AddSignalR();
 

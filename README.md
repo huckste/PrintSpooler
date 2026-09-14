@@ -32,10 +32,12 @@ Core doesn't know EF Core exists; Infrastructure doesn't know ASP.NET exists. Sw
 ```
 Dashboard: Send → POST /PrintJob
   → JobService: write Job + JobData + AuditLog
-  → enqueue id into Channel<Guid>
-  → PrintJobWorker (background) consumes
-      ├─ success → hand IppJobRef to PrinterPoller (tracks real IPP state)
-      └─ failure → mark Failed (retry is manual)
+  → enqueue (JobId, PrinterId) into Channel<JobRef>
+  → PrinterManager routes to that printer's PrinterMonitor
+      → PrinterMonitor dispatches from its own per-printer queue
+          ├─ success → track the job, wait for it to reach a real terminal
+          │            state on the device before sending this printer's next
+          └─ failure → mark Failed (retry is manual)
       → IJobNotifier → SignalR broadcast → Dashboard patches its cache
 ```
 
@@ -74,7 +76,9 @@ Web/           Blazor pages (Dashboard, Printers, Logs), ApiClient
 
 Auth, deployment, file transcoding, multi-printer batch UI, tests.
 
-Dispatch is a single serial loop — one job at a time, FIFO per instance. A job
-stays `Queued` until the one ahead of it has been read out of the database and
-pushed to the printer over IPP, both of which scale with file size. Jobs queue
-behind each other by design; that is what a spooler is.
+Dispatch is serial per printer, concurrent across printers. Each printer's
+`PrinterMonitor` owns a private queue and won't hand off its next job until
+the current one reaches a real terminal state on the device — not just
+"accepted" — so a printer with no internal queue of its own can never have
+two jobs in flight at once. A slow job on one printer never blocks another
+printer's queue.

@@ -42,7 +42,7 @@ public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNoti
     return printer;
   }
 
-  public async Task<ErrorOr<Success>> UpdatePrinterStatus(Guid id, PrinterStatus status)
+  public async Task<ErrorOr<Success>> UpdatePrinterStatus(Guid id, PrinterStatus status, string? reason = null, int? upTimeSeconds = null)
   {
     var printer = await GetPrinter(id);
 
@@ -50,6 +50,9 @@ public class PrinterService(AppDbContext dbContext, IPrinterNotifier printerNoti
       return printer.Errors;
 
     printer.Value.Status = status;
+    printer.Value.StatusReason = reason;
+    printer.Value.UpTimeSeconds = upTimeSeconds;
+    printer.Value.LastHeartbeat = DateTime.UtcNow;
 
     await UpdatePrinter(printer.Value);
 

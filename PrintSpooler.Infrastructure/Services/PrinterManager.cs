@@ -12,7 +12,7 @@ namespace PrintSpooler.Infrastructure.Services;
 public class PrinterManager(
     IServiceScopeFactory scopeFactory,
     IPrinterMonitorFactory printerMonitorFactory,
-    Channel<IppJobRef> jobChannel,
+    Channel<JobRef> jobChannel,
     Channel<PrinterEvent> printerChannel,
     ILogger<PrinterManager> logger
     ) : BackgroundService
@@ -60,7 +60,7 @@ public class PrinterManager(
     await foreach (var job in jobChannel.Reader.ReadAllAsync(ct))
     {
       if (_monitors.TryGetValue(job.PrinterId, out var printerMonitor))
-        printerMonitor.AddJob(job.IppId, job.JobId);
+        printerMonitor.Enqueue(job.JobId);
       else
       {
         using var scope = scopeFactory.CreateAsyncScope();

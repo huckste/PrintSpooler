@@ -9,7 +9,7 @@ using PrintSpooler.Infrastructure.Data;
 
 public class JobService(
     AppDbContext dbContext,
-    Channel<Guid> jobChannel,
+    Channel<JobRef> jobChannel,
     IJobNotifier jobNotifier,
     IPrinterDispatcher printerDispatcher
     ) : IJobService
@@ -76,23 +76,11 @@ public class JobService(
     return jobData;
   }
 
-  public async Task<List<Job>> GetInFlightJobs() =>
-    await dbContext
-      .Jobs.Include(j => j.Printer)
-      .Where(j => JobPolicies.InFlight.Contains(j.Status))
-      .ToListAsync();
-
   // No Include: callers of this want status, not the printer.
   public async Task<List<Job>> GetJobs(Guid[] ids, CancellationToken ct = default) =>
     await dbContext.Jobs
       .Where(j => ids.Contains(j.Id))
       .ToListAsync(ct);
-
-  public async Task<List<Job>> GetPendingJobs() =>
-    await dbContext
-      .Jobs.Include(j => j.Printer)
-      .Where(j => JobPolicies.Pending.Contains(j.Status))
-      .ToListAsync();
 
   public async Task<ErrorOr<Job>> CancelJob(Guid id, CancellationToken ct = default)
   {
@@ -116,7 +104,7 @@ public class JobService(
     if (result.IsError)
     {
       var failed = new JobUpdate(id, job.Value.Status).NotifyDashboard();
-      failed.FailureReason = result.Errors.First().Description;
+      failed.StatusReason = result.Errors.First().Description;
 
       var failedUpdate = await UpdateJob(failed, ct);
 
@@ -124,7 +112,6 @@ public class JobService(
     }
 
     // The printer accepted the cancel.
-    // PrinterWatch reports the job cancellation.
     var cancelling = await UpdateJob(new JobUpdate(id, JobStatus.Cancelling)
       .Log(JobAction.CancelRequested, ByWho.User)
       .NotifyDashboard(), ct);
@@ -151,8 +138,7 @@ public class JobService(
     return update.IsError ? update.Errors : job;
   }
 
-  // ExecuteUpdateAsync bypasses the change tracker,
-  // which is fine because the worker's scope ends right after the call.
+  // ExecuteUpdateAsync bypasses the change tracker
   public async Task<ErrorOr<Success>> SetIppJobId(Guid jobId, int ippJobId, CancellationToken ct = default)
   {
     int rowsUpdated = await dbContext.Jobs
@@ -192,7 +178,7 @@ public class JobService(
       .Then(j =>
       {
         j.Status = update.Status;
-        j.FailureReason = update.FailureReason;
+        j.StatusReason = update.StatusReason;
 
         if (update.Retry)
           j.RetryCount++;
@@ -217,7 +203,7 @@ public class JobService(
       await jobNotifier.JobUpdateAsync(job.Value, ct);
 
     if (update.Write)
-      await jobChannel.Writer.WriteAsync(job.Value.Id);
+      await jobChannel.Writer.WriteAsync(new JobRef(job.Value.Id, job.Value.PrinterId));
 
     return Result.Success;
   }

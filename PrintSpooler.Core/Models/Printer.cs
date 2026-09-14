@@ -6,10 +6,9 @@ public class Printer
   public required string Name { get; set; }
   public required string IpAddress { get; set; }
   public PrinterStatus Status { get; set; } = PrinterStatus.Unknown;
-  public Guid? FailoverPrinterId { get; set; }
+  public string? StatusReason { get; set; }
   public DateTime? LastHeartbeat { get; set; }
-
-  // newly added 
+  public int? UpTimeSeconds { get; set; }
   public string? Host { get; set; }
   public List<string>? SupportedContentTypes { get; set; }
   public string? PrinterUuid { get; set; }

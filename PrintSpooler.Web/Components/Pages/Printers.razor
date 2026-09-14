@@ -76,18 +76,22 @@
   <table class="sp-table">
     <colgroup>
       <col />
-      <col style="width: 200px" />
+      <col style="width: 110px" />
+      <col style="width: 160px" />
       <col style="width: 150px" />
       <col style="width: 100px" />
+      <col style="width: 110px" />
       <col style="width: 140px" />
       <col style="width: 60px" />
     </colgroup>
     <thead>
       <tr>
         <th>Name</th>
+        <th>Up Time</th>
         <th>Host</th>
         <th>IP Address</th>
         <th class="sp-table-status">Status</th>
+        <th>Messages</th>
         <th>Last Heartbeat</th>
         <th class="sp-table-action"></th>
       </tr>
@@ -99,12 +103,25 @@
           <td class="sp-table-primary">
             <span class="sp-printer-glyph">⎙</span> @(printer.Name)
           </td>
+          <td class="sp-table-muted-sm">@(printer.UpTimeSeconds is int upTime ? FormatTime.Duration(upTime) : "-")</td>
           <td class="sp-table-muted-sm">@(printer.Host)</td>
           <td class="sp-table-muted-sm">@(printer.IpAddress)</td>
           <td class="sp-table-status">
             <span class="sp-tag sp-tag-@(printer.Status.ToString().ToLower())">
               @(printer.Status)
             </span>
+          </td>
+          <td>
+            @if (!string.IsNullOrEmpty(printer.StatusReason))
+            {
+              <span class="sp-printer-warning sp-printer-warning-@(PrinterWebService.MessageSeverityClass(printer.StatusReason))" title="@(printer.StatusReason)">
+                @(PrinterWebService.MessageSeverityClass(printer.StatusReason))
+              </span>
+            }
+            else
+            {
+              <span class="sp-table-muted">-</span>
+            }
           </td>
           <td class="sp-table-muted">
             @(printer.LastHeartbeat is DateTime lastHeartbeat ? FormatTime.Short(lastHeartbeat) : "-")
@@ -150,6 +167,8 @@
         return;
 
       printer.Status = update.Status;
+      printer.StatusReason = update.StatusReason;
+      printer.UpTimeSeconds = update.UpTimeSeconds;
       printer.LastHeartbeat = update.LastHeartbeat;
       StateHasChanged();
     });

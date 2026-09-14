@@ -41,14 +41,6 @@
               <span class="sp-detail-terminal-key">printer</span>@(Job.Printer.IpAddress)
             </div>
           }
-
-          @if (!string.IsNullOrEmpty(Job.FailureReason))
-          {
-            <div class="sp-detail-terminal-line sp-detail-terminal-error">
-              <span class="sp-detail-terminal-prompt">&gt;</span>
-              <span class="sp-detail-terminal-key">failure</span>@(Job.FailureReason)
-            </div>
-          }
         }
       </div>
     }

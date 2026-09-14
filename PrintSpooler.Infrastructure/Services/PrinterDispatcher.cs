@@ -13,6 +13,13 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 {
   private readonly SharpIppClient _client = client;
 
+  // Bounds a single poll round-trip (status or job-list check) so a printer
+  // that accepts a connection and never answers can't hang its monitor's
+  // loop indefinitely — the host token alone only fires on app shutdown,
+  // which isn't a bound on any one operation. Scoped to polling specifically
+  // (not send/cancel), matching the old per-printer PrinterWatch's PollTimeout.
+  private static readonly TimeSpan PollTimeout = TimeSpan.FromSeconds(10);
+
   public async Task<ErrorOr<IppJobRef>> SendAsync(Job job, byte[]? jobData, CancellationToken ct)
   {
     if (job.Printer is not { } printer)
@@ -47,7 +54,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
     catch (IppResponseException ex)
     {
-      return Error.Failure("PrintJobResponse.Reject", $"IPP error: {ex.Message}");
+      return Error.Failure("PrintJobResponse.Reject", $"IPP error: {ex.ResponseMessage.StatusCode}");
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
@@ -85,7 +92,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
     catch (IppResponseException ex)
     {
-      return Error.Failure("CancelJobResponse.Reject", $"IPP error: {ex.Message}");
+      return Error.Failure("CancelJobResponse.Reject", $"IPP error: {ex.ResponseMessage.StatusCode}");
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
@@ -105,6 +112,9 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     GetJobsResponse? response;
     List<IppJobStatus> ippJobs = [];
 
+    using var pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+    pollCts.CancelAfter(PollTimeout);
+
     try
     {
       var request = new GetJobsRequest
@@ -117,11 +127,15 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
         }
       };
 
-      response = await _client.GetJobsAsync(request, ct);
+      response = await _client.GetJobsAsync(request, pollCts.Token);
     }
     catch (IppResponseException ex)
     {
-      return Error.Failure("GetJobsResponse.Reject", $"IPP error: {ex.Message}");
+      return Error.Failure("GetJobsResponse.Reject", $"IPP error: {ex.ResponseMessage.StatusCode}");
+    }
+    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+    {
+      return Error.Failure("GetJobsResponse.Timeout", $"No response from {host} within {PollTimeout.TotalSeconds}s");
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
@@ -142,7 +156,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
         JobState.Pending => JobStatus.Submitting,
         JobState.PendingHeld => JobStatus.Submitting,
         JobState.Processing => JobStatus.Processing,
-        JobState.ProcessingStopped => JobStatus.Failed,
+        JobState.ProcessingStopped => JobStatus.Stopped,
         JobState.Canceled => JobStatus.Cancelled,
         JobState.Aborted => JobStatus.Failed,
         JobState.Completed => JobStatus.Completed,
@@ -153,19 +167,24 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
       {
         Id = a.JobId,
         State = status,
-        Message = a.JobStateMessage,
+        Message = string.IsNullOrEmpty(a.JobStateMessage)
+          ? string.Join(", ", (a.JobStateReasons ?? []).Where(r => r != JobStateReason.None).Distinct())
+          : a.JobStateMessage,
       });
     }
 
     return ippJobs;
   }
 
-  public async Task<ErrorOr<PrinterStatus>> GetPrinterStatusAsync(Printer printer, CancellationToken ct)
+  public async Task<ErrorOr<PrinterStatusReport>> GetPrinterStatusAsync(Printer printer, CancellationToken ct)
   {
     if (printer.Host is not { } host)
       return Error.NotFound("GetPrinterStatusAsync.Host", $"Could not find host for printer: {printer.Name}");
 
     GetPrinterAttributesResponse? response;
+
+    using var pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+    pollCts.CancelAfter(PollTimeout);
 
     try
     {
@@ -174,31 +193,44 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
         OperationAttributes = new()
         {
           PrinterUri = new Uri($"ipp://{host}:631/ipp/print"),
-          RequestedAttributes = ["printer-state", "printer-state-reasons"],
+          RequestedAttributes = ["printer-state", "printer-state-reasons", "printer-up-time"],
         }
       };
 
-      response = await _client.GetPrinterAttributesAsync(request, ct);
+      response = await _client.GetPrinterAttributesAsync(request, pollCts.Token);
 
     }
     catch (IppResponseException ex)
     {
-      return Error.Failure("GetPrinterAttributesResponse.Reject", $"IPP error: {ex.Message}");
+      return Error.Failure("GetPrinterAttributesResponse.Reject", $"IPP error: {ex.ResponseMessage.StatusCode}");
+    }
+    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+    {
+      return new PrinterStatusReport(PrinterStatus.Offline, $"No response within {PollTimeout.TotalSeconds}s");
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
-      return PrinterStatus.Offline;
+      return new PrinterStatusReport(PrinterStatus.Offline, ex.Message);
     }
 
     if (response?.PrinterAttributes?.PrinterState is not { } state)
       return Error.Failure("PrinterState.Failure", "Printer returned no state");
 
+    var reasons = (response.PrinterAttributes.PrinterStateReasons ?? [])
+      .Where(r => r != PrinterStateReason.None)
+      .Distinct()
+      .ToArray();
+
+    string? reason = reasons.Length > 0 ? string.Join(", ", reasons) : null;
+    var upTime = response.PrinterAttributes.PrinterUpTime;
+
     return state switch
     {
-      PrinterState.Idle => PrinterStatus.Idle,
-      PrinterState.Processing => PrinterStatus.Processing,
-      PrinterState.Stopped => PrinterStatus.Stopped,
+      PrinterState.Idle => new PrinterStatusReport(PrinterStatus.Idle, reason, upTime),
+      PrinterState.Processing => new PrinterStatusReport(PrinterStatus.Processing, reason, upTime),
+      PrinterState.Stopped => new PrinterStatusReport(PrinterStatus.Stopped, reason, upTime),
       _ => Error.Failure("PrinterState.Failure", $"Unknown printer state: {state}"),
     };
   }
+
 }

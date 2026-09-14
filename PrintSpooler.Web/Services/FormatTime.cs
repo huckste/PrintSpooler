@@ -13,6 +13,12 @@ public class FormatTime
         return age.TotalHours < 24 ? Ago(time) : time.ToLocalTime().ToString("MMM d");
     }
 
+    public static string Duration(int totalSeconds)
+    {
+        var span = TimeSpan.FromSeconds(totalSeconds);
+        return span.TotalDays >= 1 ? $"{(int)span.TotalDays}d {span.Hours}h" : $"{span.Hours}h {span.Minutes}m";
+    }
+
     public static string Full(DateTime time) =>
         time.ToLocalTime().ToString("MMM d, yyyy h:mm:ss tt");
 

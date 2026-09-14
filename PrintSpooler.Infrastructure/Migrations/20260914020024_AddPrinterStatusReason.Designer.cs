@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrintSpooler.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using PrintSpooler.Infrastructure.Data;
 namespace PrintSpooler.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260914020024_AddPrinterStatusReason")]
+    partial class AddPrinterStatusReason
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,6 +66,9 @@ namespace PrintSpooler.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FailureReason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -73,6 +79,9 @@ namespace PrintSpooler.Infrastructure.Migrations
                     b.Property<int?>("IppJobId")
                         .HasColumnType("int");
 
+                    b.Property<int>("MaxRetries")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("PrinterId")
                         .HasColumnType("uniqueidentifier");
 
@@ -81,9 +90,6 @@ namespace PrintSpooler.Infrastructure.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusReason")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("SubmittedAt")
@@ -120,6 +126,9 @@ namespace PrintSpooler.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("FailoverPrinterId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Host")
                         .HasColumnType("nvarchar(max)");
 
@@ -146,9 +155,6 @@ namespace PrintSpooler.Infrastructure.Migrations
 
                     b.PrimitiveCollection<string>("SupportedContentTypes")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpTimeSeconds")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

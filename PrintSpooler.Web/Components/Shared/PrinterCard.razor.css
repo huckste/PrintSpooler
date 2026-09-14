@@ -1,27 +1,3 @@
-.sp-stat-value-of {
-    font-size: 1rem;
-    color: var(--sp-muted);
-}
-
-.sp-printer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.sp-printer-header .sp-section-title {
-    flex: 1;
-    margin-bottom: 0;
-}
-
-.sp-printer-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-
 .sp-printer-card {
     animation: sp-card-in 0.3s ease backwards;
     overflow: hidden;
@@ -68,6 +44,10 @@
     animation: sp-pulse 2.4s ease-in-out infinite;
 }
 
+.sp-printer-status-dot-stopped {
+    background: var(--sp-yellow);
+}
+
 .sp-printer-status-dot-offline {
     background: var(--sp-red);
 }
@@ -84,6 +64,10 @@
 .sp-printer-model {
     color: var(--sp-muted);
     font-size: 0.76rem;
+    margin-left: 0.6rem;
+}
+
+.sp-printer-warning {
     margin-left: 0.6rem;
 }
 

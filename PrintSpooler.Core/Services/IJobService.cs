@@ -10,8 +10,6 @@ public interface IJobService
   Task<List<Job>> GetAllActiveJobs();
   Task<ErrorOr<Job>> CancelJob(Guid id, CancellationToken ct = default);
   Task<ErrorOr<Job>> RetryJob(Guid id);
-  Task<List<Job>> GetPendingJobs();
-  Task<List<Job>> GetInFlightJobs();
   Task<List<Job>> GetActiveJobsByPrinter(Guid printerId);
   Task<List<Job>> GetJobs(Guid[] ids, CancellationToken ct = default);
   Task<ErrorOr<JobData>> GetJobData(Guid jobId, CancellationToken ct = default);

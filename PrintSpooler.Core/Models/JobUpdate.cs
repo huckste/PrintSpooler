@@ -8,7 +8,7 @@ public class JobUpdate(Guid id, JobStatus status)
   public bool Notify;
   public bool Write;
   public AuditLog? AuditLog;
-  public string? FailureReason;
+  public string? StatusReason;
 
   public JobUpdate NotifyDashboard()
   {
@@ -31,7 +31,7 @@ public class JobUpdate(Guid id, JobStatus status)
   public JobUpdate Log(JobAction action, ByWho by, string? reason = null)
   {
     AuditLog = AuditLog.For(JobId, action, by, reason);
-    FailureReason = reason;
+    StatusReason = reason;
     return this;
   }
 }
