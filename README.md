@@ -34,19 +34,6 @@ Sending a job from the dashboard is a `POST /PrintJob` that writes the job, its 
 
 Built on .NET 10 and C# 13: ASP.NET Core Web API with DI, health checks, and OpenAPI; EF Core 10 against Azure SQL (migrations, connection string in `user-secrets`); SignalR and Blazor Server for the live dashboard; SharpIppNext for IPP, Zeroconf for mDNS discovery, and ErrorOr for result handling.
 
-
-## Run
-
-```bash
-conn string via dotnet user-secrets (Key:.ConnectionStrings:PrintSpoolerDb),
-then:
-
-dotnet run --project PrintSpooler.Api
-dotnet run --project PrintSpooler.Web   # set ApiBaseAddress to the Api's URL
-```
-
-Print needs a real network printer on the API's LAN. Everything else (UI, queue, logs, SignalR) works without one; the job just lands as `Failed`.
-
 ## Layout
 
 ```
