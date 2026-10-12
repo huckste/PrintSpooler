@@ -12,7 +12,7 @@ logs:
   request: assertions
   response: network
 jobtest/a-create-printer:
-  request: body
+  request: captures
   response: body
 jobs/submit:
   request: body
