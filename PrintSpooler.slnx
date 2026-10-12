@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/PrintSpooler.Core.Tests/PrintSpooler.Core.Tests.csproj" />
+  </Folder>
   <Project Path="PrintSpooler.Api/PrintSpooler.Api.csproj" />
   <Project Path="PrintSpooler.Core/PrintSpooler.Core.csproj" />
   <Project Path="PrintSpooler.Infrastructure/PrintSpooler.Infrastructure.csproj" />

@@ -5,12 +5,14 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.{json, md, yml, yaml, razor, csproj, slnx}]
-indent_style = space 
+indent_style = space
 indent_size = 2
 
 [*.cs]
-indent_style = space 
+indent_style = space
 indent_size = 2
+dotnet_diagnostic.CS8509.severity = error
+dotnet_diagnostic.CS8524.severity = none
 
 [tests/**]
 dotnet_diagnostic.CA1707.severity = none
