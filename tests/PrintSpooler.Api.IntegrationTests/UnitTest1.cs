@@ -1,10 +1,17 @@
 namespace PrintSpooler.Api.IntegrationTests;
 
-public class UnitTest1
+// xUnit Shared Context between Tests
+public class UnitTest1(CustomWebApplicationFactory webFactory)
+  : IClassFixture<CustomWebApplicationFactory>
 {
-    [Fact]
-    public void Test1()
-    {
-        Assert.True(true);
-    }
+  public HttpClient client = webFactory.CreateClient();
+
+  [Fact]
+  public async Task Test1()
+  {
+    var ct = TestContext.Current.CancellationToken;
+
+    var response = await client.GetAsync("/health", ct);
+    Assert.True(response.IsSuccessStatusCode);
+  }
 }

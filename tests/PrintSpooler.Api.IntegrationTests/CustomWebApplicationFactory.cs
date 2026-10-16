@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Testcontainers.MsSql;
-using PrintSpooler.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using PrintSpooler.Infrastructure.Data;
+using Testcontainers.MsSql;
 
 namespace PrintSpooler.Api.IntegrationTests;
 
@@ -12,8 +12,9 @@ namespace PrintSpooler.Api.IntegrationTests;
 public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
   // describes a SQL server docker container. This only builds and does not start it
-  private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")
-  .Build();
+  private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder(
+    "mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04"
+  ).Build();
 
   // runs when the API boots. It overrides the connection string so the API uses the container instead of real db
   protected override void ConfigureWebHost(IWebHostBuilder builder) =>
@@ -24,19 +25,20 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
     // starts the container
     await _msSqlContainer.StartAsync();
 
-    using var scope = Services.CreateScope();
-    using var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var options = new DbContextOptionsBuilder<AppDbContext>()
+      .UseSqlServer(_msSqlContainer.GetConnectionString())
+      .Options;
+
+    await using var dbContext = new AppDbContext(options);
 
     // creates the tables in the empty db
     await dbContext.Database.MigrateAsync();
   }
 
-  // xUnit runs this after the tests. Removes the container, then lets the factory shut the API down
+  // Shuts down the API then removes the db
   public override async ValueTask DisposeAsync()
   {
-    await _msSqlContainer.DisposeAsync();
     await base.DisposeAsync();
+    await _msSqlContainer.DisposeAsync();
   }
-
 }
-
