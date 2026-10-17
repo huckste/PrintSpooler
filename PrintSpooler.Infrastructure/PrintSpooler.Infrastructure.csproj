@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\PrintSpooler.Core\PrintSpooler.Core.csproj" />
@@ -6,10 +6,14 @@
 
   <ItemGroup>
     <PackageReference Include="ErrorOr" Version="2.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
     <PackageReference Include="SharpIppNext" Version="4.2.1" />
+
+    <!-- Pinned: Microsoft.Data.SqlClient (via EF Core SqlServer) pulls a vulnerable
+     9.0.x (GHSA-846f-f764-76mx). Remove once SqlClient depends on a patched version. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
     <PackageReference Include="Zeroconf" Version="3.7.16" />
   </ItemGroup>
 
