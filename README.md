@@ -1,6 +1,6 @@
 # PrintSpooler
 
-A practice project meant to exercise the full .NET stack: API, background workers, Azure SQL, live updates.
+A project meant to exercise the full .NET stack: API, background workers, Azure SQL, live updates.
 
 
 ![PrintSpooler demo](docs/hero.gif)
