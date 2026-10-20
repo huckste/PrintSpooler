@@ -3,12 +3,16 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using PrintSpooler.Infrastructure.Data;
 using Testcontainers.MsSql;
+using Microsoft.AspNetCore.TestHost;
+using PrintSpooler.Infrastructure.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PrintSpooler.Api.IntegrationTests;
 
 // WebApplicationFactory: Boots real API in memory and Program tells it which app to start
 // IAsyncLifetime: lets xUnit call async setup and teardown around the tests
-public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
   // Describes a SQL server docker container
   private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder(
@@ -17,7 +21,18 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
   // Overrides the connection string so the API uses the container DB instead of real DB
   protected override void ConfigureWebHost(IWebHostBuilder builder) =>
-    builder.UseSetting("ConnectionStrings:PrintSpoolerDb", _msSqlContainer.GetConnectionString());
+    builder.UseSetting("ConnectionStrings:PrintSpoolerDb", _msSqlContainer.GetConnectionString())
+        .ConfigureTestServices(services =>
+    {
+      // Recorder wraps the concrete type
+      // Asking for the interface would resolve the recorder itself
+      services.AddSingleton<PrinterMonitorFactory>();
+      services.RemoveAll<IPrinterMonitorFactory>();
+      services.AddSingleton<IPrinterMonitorFactory, RecordingPrinterMonitorFactory>();
+
+    });
+
+  protected virtual Task SeedAsync(AppDbContext dbContext) => Task.CompletedTask;
 
   public async ValueTask InitializeAsync()
   {
@@ -34,6 +49,8 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     // Migrate with standalone context before anything touches `Services`
     await dbContext.Database.MigrateAsync();
+
+    await SeedAsync(dbContext);
   }
 
   public override async ValueTask DisposeAsync()

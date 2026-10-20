@@ -17,8 +17,9 @@ public class PrinterMonitor : IAsyncDisposable
   private readonly ILogger<PrinterMonitor> _logger;
   private readonly List<Task> _loops;
   private readonly ConcurrentDictionary<int, TrackedJob> _trackedJobs = [];
-  public readonly Printer Printer;
   private readonly Channel<Guid> _queue;
+  public readonly Printer Printer;
+  public bool IsDisposed { get; private set; }
 
 
   public PrinterMonitor(
@@ -367,6 +368,7 @@ public class PrinterMonitor : IAsyncDisposable
     finally
     {
       _cts.Dispose();
+      IsDisposed = true;
     }
   }
 }

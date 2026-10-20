@@ -48,11 +48,28 @@ no CUPS). Azure resources are real, not simulated (region pinned to
 
 ## Tests
 
-No test project. A first attempt (xunit + FluentAssertions) was deleted —
-its tests enumerated the policy arrays by hand and just restated the guard
-bodies. Rebuilding is a deliberate learning exercise: **the author writes
-every line, do not write test code for them.** Mode: ask a guiding question,
-let them attempt, correct with reasoning.
+Being rebuilt as a deliberate learning exercise: **the author writes every
+line, do not write test code for them.** Mode: ask a guiding question, let
+them attempt, correct with reasoning. (A first attempt with xunit +
+FluentAssertions was deleted — it enumerated the policy arrays by hand and
+restated the guard bodies.)
+
+- `tests/PrintSpooler.Api.IntegrationTests` — xUnit v3, real app via
+  `WebApplicationFactory`, real SQL Server via Testcontainers (needs Docker;
+  one container per test class fixture, which is most of the ~10s runtime).
+- `tests/PrintSpooler.Core.Tests` — placeholder only.
+
+Non-obvious test seams:
+- `RecordingPrinterMonitorFactory` decorates the real factory (swapped in via
+  `ConfigureTestServices`) so tests can see which monitors `PrinterManager`
+  created — the manager's own collection stays private on purpose.
+- `PrinterMonitor.IsDisposed` exists for tests to observe the remove path.
+- `CustomWebApplicationFactory.SeedAsync` runs after migrate, before the app
+  starts — subclass it to test startup state (see
+  `SeededPrinterWebApplicationFactory`).
+- Proving something *didn't* happen on the printer channel: trigger a later
+  event and wait for it — events are handled in order, so anything earlier is
+  already processed.
 
 Bar for a test worth writing: don't restate the implementation, don't
 hardcode a value that's arbitrary internal policy (write it once, in the

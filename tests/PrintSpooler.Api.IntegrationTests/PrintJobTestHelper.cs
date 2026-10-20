@@ -16,7 +16,7 @@ public static class PrintJobTestHelper
       FileName = $"TestJob_{status}",
       Status = status,
       Id = jobId,
-      Printer = new Printer { Name = "Test_Printer", IpAddress = "000.000.00.00" },
+      Printer = PrinterTestHelper.CreateUniquePrinter(),
 
       // Once a job is Terminal then its ByteData is removed from the DB in Prod
       Data = JobPolicies.IsTerminal(status)
@@ -24,4 +24,21 @@ public static class PrintJobTestHelper
         : new JobData { JobId = jobId, Bytes = "test_data"u8.ToArray() },
     };
   }
+
+  public static Job CreatePrintJobForPrinter(Guid printerId)
+  {
+    Guid jobId = Guid.NewGuid();
+
+    return new Job
+    {
+      Id = jobId,
+      SubmittedBy = "IntegrationTest",
+      FileName = "TestJob",
+      Data = new JobData { JobId = jobId, Bytes = "TestData"u8.ToArray() },
+      ContentType = "TestData",
+      PrinterId = printerId,
+      Status = JobPolicies.DefaultStatus
+    };
+  }
+
 }

@@ -10,7 +10,7 @@ namespace PrintSpooler.Api.IntegrationTests;
 
 // xUnit Shared Context between Tests
 // New class instance for each test
-public class IntegrationTests(CustomWebApplicationFactory webFactory)
+public class PrintJobIntegrationTests(CustomWebApplicationFactory webFactory)
   : IClassFixture<CustomWebApplicationFactory>
 {
   private readonly HttpClient _client = webFactory.CreateClient();
