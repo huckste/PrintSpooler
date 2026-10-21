@@ -61,7 +61,6 @@ them attempt, correct with reasoning.
 - `tests/PrintSpooler.Api.IntegrationTests` — xUnit v3, real app via
   `WebApplicationFactory`, real SQL Server via Testcontainers (needs Docker;
   one container per test class fixture, which is most of the ~10s runtime).
-- `tests/PrintSpooler.Core.Tests` — placeholder only.
 
 Non-obvious test seams:
 - `RecordingPrinterMonitorFactory` decorates the real factory (swapped in via

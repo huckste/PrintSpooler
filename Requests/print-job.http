@@ -1,5 +1,10 @@
-### Create a job (invalid printer - should 400)
-POST http://localhost:5164/PrintJob
+@baseUrl = http://localhost:5164
+# Fill these from your own DB — IDs are per-database
+@printerId = 00000000-0000-0000-0000-000000000000
+@jobId = 00000000-0000-0000-0000-000000000000
+
+### Create a job (unknown printer - should 404)
+POST {{baseUrl}}/PrintJob
 Content-Type: application/json
 
 {
@@ -9,8 +14,9 @@ Content-Type: application/json
   "contentType": "application/pdf",
   "printerId": "00000000-0000-0000-0000-000000000000"
 }
+
 ### Create a job (valid printer)
-POST http://localhost:5164/PrintJob
+POST {{baseUrl}}/PrintJob
 Content-Type: application/json
 
 {
@@ -18,42 +24,38 @@ Content-Type: application/json
   "fileName": "test.pdf",
   "rawData": "aGVsbG8=",
   "contentType": "application/pdf",
-  "printerId": "719368c4-976c-47c2-abff-051d54ebc251"
+  "printerId": "{{printerId}}"
 }
-### Get a job (invalid job - should 400)
-GET http://localhost:5164/PrintJob/00000000-0000-0000-0000-000000000000
+
+### Get a job (unknown job - should 404)
+GET {{baseUrl}}/PrintJob/00000000-0000-0000-0000-000000000000
 
 ### Get a job (valid job)
-GET http://localhost:5164/PrintJob/e0ecda24-2a9f-40a9-a697-a59a549951fb
+GET {{baseUrl}}/PrintJob/{{jobId}}
 
-### Get all active job
-GET http://localhost:5164/PrintJob/
+### Get all active jobs
+GET {{baseUrl}}/PrintJob/
 
 ### HealthChecks
-GET http://localhost:5164/health
+GET {{baseUrl}}/health
 
 ### logs
-GET http://localhost:5164/Logs?actionFilter=Created&performedBy=User&page=2&pageSize=5
+GET {{baseUrl}}/Logs?actionFilter=Created&performedBy=User&page=2&pageSize=5
 
 ### Cancel a job (valid job)
-POST http://localhost:5164/PrintJob/9085a148-7ecf-4b73-8099-b8eaace95324/cancel
+POST {{baseUrl}}/PrintJob/{{jobId}}/cancel
 
-
-### Create a printer
-POST http://localhost:5164/Printer
+### Create a printer (no host - should 400)
+POST {{baseUrl}}/Printer
 Content-Type: application/json
 
 {
-  "Ipaddress": "ipp://HPD0AD08C445FE.local:631/ipp/print",
-  "Name": "TEST DUP"
+  "ipAddress": "192.168.0.10",
+  "name": "TEST NO HOST"
 }
 
-
 ### Get a printer (valid)
-GET http://localhost:5164/Printer/719368c4-976c-47c2-abff-051d54ebc251
+GET {{baseUrl}}/Printer/{{printerId}}
 
-### Get a printer (400)
-GET http://localhost:5164/Printer/00000000-0000-0000-0000-000000000000
-
-
-
+### Get a printer (unknown - should 404)
+GET {{baseUrl}}/Printer/00000000-0000-0000-0000-000000000000

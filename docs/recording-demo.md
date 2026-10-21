@@ -65,11 +65,10 @@ mkdir -p docs && mv ~/demo.gif docs/demo.gif
 
 Two things specific to this project:
 
-**Use a small file, not a multi-megabyte one.** A 4.9MB file takes roughly ten
-seconds to write to Azure SQL — measured, not estimated. In a GIF that is ten
-seconds of a row sitting on "Staged" with a spinner, which is a third of the
-runtime spent on the least interesting thing, and a reviewer reads it as the
-app being slow. A small PDF makes staged → Queued → Submitting → Processing
+**Use a small file, not a multi-megabyte one.** A large upload leaves the row
+sitting on "Staged" with a spinner while it's written to the database — the
+least interesting part of the flow, and a reviewer reads it as the app being
+slow. A small PDF makes staged → Queued → Submitting → Processing
 land in a couple of seconds.
 
 **Show a transition the backend actually earns.** The completion path is the

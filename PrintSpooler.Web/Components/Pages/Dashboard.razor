@@ -99,7 +99,9 @@
   {
     InvokeAsync(async () =>
     {
-      var rows = cache[job.PrinterId];
+      // A printer added after this page loaded has no cache entry yet.
+      if (!cache.TryGetValue(job.PrinterId, out var rows))
+        return;
 
       if (rows.FirstOrDefault(r => r.JobId == job.Id) is not { } row)
         return;
