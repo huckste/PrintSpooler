@@ -345,7 +345,7 @@ public class PrinterMonitor : IAsyncDisposable
   private void HandleErrors(List<Error> errors)
   {
     foreach (var e in errors)
-      _logger.LogError("{Printer}: {Code} - {Desription}", Printer.Name, e.Code, e.Description);
+      _logger.LogError("{Printer}: {Code} - {Description}", Printer.Name, e.Code, e.Description);
   }
 
   public async ValueTask DisposeAsync()

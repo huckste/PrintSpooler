@@ -40,7 +40,7 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
         var baseAddress = client.BaseAddress;
 
         if (baseAddress is null)
-          return Error.Failure("Api.BaseAdress", "Base address cannot be null");
+          return Error.Failure("Api.BaseAddress", "Base address cannot be null");
 
         var parameters = new RouteValueDictionary(queryParams).ToDictionary(
             k => k.Key,
@@ -48,8 +48,6 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
         );
 
         var requestUri = QueryHelpers.AddQueryString(url, parameters);
-        Console.WriteLine(requestUri);
-
         var result = await client.GetFromJsonAsync<TResponse>(requestUri);
 
         return result is null

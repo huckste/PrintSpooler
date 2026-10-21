@@ -167,9 +167,7 @@
   }
 
   private static string ErrorTextFor(ErrorOr.Error error) =>
-    error.Code == "refused"
-      ? $"✗ {error.Description}"
-      : $"✗ Error {error.Code}: {error.Description}";
+    $"✗ Error {error.Code}: {error.Description}";
 
   private async Task OnFilesAdded(List<QueueRow> rows)
   {
