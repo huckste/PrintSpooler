@@ -33,8 +33,16 @@ background worker dispatches over IPP → a per-printer monitor polls job/printe
 state → SignalR pushes updates back to the dashboard.
 
 Real hardware verified end-to-end against an HP ENVY Inspire 7200 (direct IPP,
-no CUPS). Azure resources are real, not simulated (region pinned to
-**centralus** — free-trial subscription blocks SQL provisioning elsewhere).
+no CUPS).
+
+Database: SQL Server in Docker (`docker-compose.yml`, db service only). The
+API runs on the host because every printer call needs mDNS (Zeroconf
+discovery, plus resolving the saved `.local` host for IPP send/poll), and
+multicast doesn't cross Docker's bridge network. Connection string lives in user-secrets
+(`ConnectionStrings:PrintSpoolerDb`, `Server=localhost`, real password — .NET
+never reads `.env`, only compose does). Start: `docker compose up -d --wait &&
+dotnet run --project PrintSpooler.Api`. Startup `Migrate()` is Development-only
+on purpose.
 
 ## Explicitly out of scope (decisions, not gaps)
 
@@ -79,7 +87,7 @@ function (EF query translation, HTTP status mapping, crash recovery).
 ## Working style / how to help this person
 
 - Prefers being taught, not handed finished code — ask guiding questions for
-  new-to-them concepts (ASP.NET/EF/Azure/DI), let them attempt it, correct
+  new-to-them concepts (ASP.NET/EF/DI), let them attempt it, correct
   with explanation. "Can you explain why" is the real success criterion, not
   just "does it compile."
 - Direct/fast answers are fine for pure syntax/tooling issues (typo, missing
@@ -87,7 +95,7 @@ function (EF query translation, HTTP status mapping, crash recovery).
 - Explain *why*, not just *what* (e.g. why Core can't reference EF Core but
   can reference ErrorOr, why Scoped vs Singleton for a given class).
 - Strong already in C#/LINQ/general fundamentals, Neovim, git, Arch Linux,
-  Docker, Sybase ASE SQL. Newer to ASP.NET Core, EF Core, DI, Azure, REST API
+  Docker, Sybase ASE SQL. Newer to ASP.NET Core, EF Core, DI, REST API
   design, multi-project .NET architecture, IPP. Auth and deployment are
   untested territory.
 - Always use caveman mode (compressed, low-filler text) for prose responses,
