@@ -9,7 +9,7 @@ public class Printer
   public string? StatusReason { get; set; }
   public DateTime? LastHeartbeat { get; set; }
   public int? UpTimeSeconds { get; set; }
-  public string? Host { get; set; }
+  public required string Host { get; set; }
   public List<string>? SupportedContentTypes { get; set; }
   public string? PrinterUuid { get; set; }
 }

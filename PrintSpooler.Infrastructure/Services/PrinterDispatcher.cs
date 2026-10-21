@@ -13,11 +13,8 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 {
   private readonly SharpIppClient _client = client;
 
-  // Bounds a single poll round-trip (status or job-list check) so a printer
-  // that accepts a connection and never answers can't hang its monitor's
-  // loop indefinitely — the host token alone only fires on app shutdown,
-  // which isn't a bound on any one operation. Scoped to polling specifically
-  // (not send/cancel), matching the old per-printer PrinterWatch's PollTimeout.
+  // Polls only. ct is the shutdown token and HttpClient's default is 100s
+  // This is what flags a silent printer offline quickly
   private static readonly TimeSpan PollTimeout = TimeSpan.FromSeconds(10);
 
   public async Task<ErrorOr<IppJobRef>> SendAsync(Job job, byte[]? jobData, CancellationToken ct)
@@ -27,9 +24,6 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 
     if (jobData is not { } data)
       return Error.NotFound("SendAsync.JobData", $"Could not find data for job id: {job.Id}");
-
-    if (printer.Host is not { } host)
-      return Error.NotFound("SendAsync.Host", $"Could not find Host for printer: {job.Printer.Name} ");
 
     PrintJobResponse? response;
 
@@ -41,7 +35,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
       {
         OperationAttributes = new()
         {
-          PrinterUri = new Uri($"ipp://{host}:631/ipp/print"),
+          PrinterUri = new Uri($"ipp://{printer.Host}:631/ipp/print"),
           JobName = job.FileName,
           DocumentFormat = job.ContentType,
         },
@@ -58,7 +52,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
-      return Error.Unexpected("PrintJobResponse.Transport", $"Could not reach printer at {host}: {ex.Message}");
+      return Error.Unexpected("PrintJobResponse.Transport", $"Could not reach printer at {printer.Host}: {ex.Message}");
     }
 
     if (response.JobAttributes?.JobId is not { } id)
@@ -72,9 +66,6 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     if (printer is null)
       return Error.NotFound("CancelPrinterJob.Printer", $"Could not find a printer for ipp id: {id}");
 
-    if (printer.Host is not { } host)
-      return Error.NotFound("GetPrinterJobsAsync.Host", $"Could not find host for printer: {printer.Name}");
-
     CancelJobResponse? response;
 
     try
@@ -83,7 +74,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
       {
         OperationAttributes = new()
         {
-          PrinterUri = new Uri($"ipp://{host}:631/ipp/print"),
+          PrinterUri = new Uri($"ipp://{printer.Host}:631/ipp/print"),
           JobId = id
         }
       };
@@ -96,7 +87,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
-      return Error.Unexpected("CancelJobResponse.Transport", $"Could not reach printer at {host}: {ex.Message}");
+      return Error.Unexpected("CancelJobResponse.Transport", $"Could not reach printer at {printer.Host}: {ex.Message}");
     }
 
     return response?.StatusCode == IppStatusCode.SuccessfulOk
@@ -106,9 +97,6 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 
   public async Task<ErrorOr<List<IppJobStatus>>> GetPrinterJobsAsync(Printer printer, int[] ids, CancellationToken ct)
   {
-    if (printer.Host is not { } host)
-      return Error.NotFound("GetPrinterJobsAsync.Host", $"Could not find host for printer: {printer.Name}");
-
     GetJobsResponse? response;
     List<IppJobStatus> ippJobs = [];
 
@@ -121,7 +109,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
       {
         OperationAttributes = new()
         {
-          PrinterUri = new Uri($"ipp://{host}:631/ipp/print"),
+          PrinterUri = new Uri($"ipp://{printer.Host}:631/ipp/print"),
           JobIds = ids,
           RequestedAttributes = ["job-id", "job-uri", "job-state", "job-state-reasons", "job-state-message"]
         }
@@ -135,11 +123,11 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
     }
     catch (OperationCanceledException) when (!ct.IsCancellationRequested)
     {
-      return Error.Failure("GetJobsResponse.Timeout", $"No response from {host} within {PollTimeout.TotalSeconds}s");
+      return Error.Failure("GetJobsResponse.Timeout", $"No response from {printer.Host} within {PollTimeout.TotalSeconds}s");
     }
     catch (Exception ex) when (ex is HttpRequestException or TimeoutException)
     {
-      return Error.Unexpected("GetJobsResponse.Transport", $"Could not reach printer at {host}: {ex.Message}");
+      return Error.Unexpected("GetJobsResponse.Transport", $"Could not reach printer at {printer.Host}: {ex.Message}");
     }
 
     if (response is null)
@@ -178,9 +166,6 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
 
   public async Task<ErrorOr<PrinterStatusReport>> GetPrinterStatusAsync(Printer printer, CancellationToken ct)
   {
-    if (printer.Host is not { } host)
-      return Error.NotFound("GetPrinterStatusAsync.Host", $"Could not find host for printer: {printer.Name}");
-
     GetPrinterAttributesResponse? response;
 
     using var pollCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -192,7 +177,7 @@ public class PrinterDispatcher(SharpIppClient client) : IPrinterDispatcher
       {
         OperationAttributes = new()
         {
-          PrinterUri = new Uri($"ipp://{host}:631/ipp/print"),
+          PrinterUri = new Uri($"ipp://{printer.Host}:631/ipp/print"),
           RequestedAttributes = ["printer-state", "printer-state-reasons", "printer-up-time"],
         }
       };
