@@ -1,6 +1,6 @@
 # PrintSpooler
 
-A project meant to exercise the full .NET stack: API, background workers, Azure SQL, live updates.
+A project meant to exercise the full .NET stack: API, background workers, SQL Server, live updates.
 
 
 ![PrintSpooler demo](docs/hero.gif)
@@ -32,7 +32,7 @@ Sending a job from the dashboard is a `POST /PrintJob` that writes the job, its 
 
 ## Stack
 
-Built on .NET 10 and C# 13: ASP.NET Core Web API with DI, health checks, and OpenAPI; EF Core 10 against Azure SQL (migrations, connection string in `user-secrets`); SignalR and Blazor Server for the live dashboard; SharpIppNext for IPP, Zeroconf for mDNS discovery, and ErrorOr for result handling.
+Built on .NET 10 and C# 13: ASP.NET Core Web API with DI, health checks, and OpenAPI; EF Core 10 against SQL Server in Docker (migrations, connection string in `user-secrets`); SignalR and Blazor Server for the live dashboard; SharpIppNext for IPP, Zeroconf for mDNS discovery, and ErrorOr for result handling.
 
 ## Layout
 
@@ -43,3 +43,23 @@ Api/           controllers, SignalR hub, DTOs, DI
 Web/           Blazor pages (Dashboard, Printers, Logs), ApiClient
 ```
 
+## Running locally
+
+SQL Server runs in Docker; the API and dashboard run on the host. The API stays out of the container because every printer call relies on mDNS (discovery and resolving `.local` printer hosts), and multicast doesn't cross Docker's bridge network.
+
+1. Create `.env` next to `docker-compose.yml`:
+   ```
+   SA_PASSWORD=<a strong password>
+   ```
+2. Point the API at the container (same password as `.env`):
+   ```
+   dotnet user-secrets set "ConnectionStrings:PrintSpoolerDb" "Server=localhost;Database=PrintSpooler;User Id=sa;Password=<password>;TrustServerCertificate=True" --project PrintSpooler.Api
+   ```
+3. Start the database, then the API (migrations apply automatically in Development):
+   ```
+   docker compose up -d --wait && dotnet run --project PrintSpooler.Api
+   ```
+4. In another terminal, start the dashboard and open http://localhost:5045:
+   ```
+   dotnet run --project PrintSpooler.Web
+   ```
