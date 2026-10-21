@@ -2,13 +2,11 @@
 
 ## Goal
 
-Portfolio piece demonstrating C#/ASP.NET Core/Azure to employers (author left
-Hachette Book Group warehouse/print-ops work, self-taught into programming —
-prior tools: PrintFlow, PrintFlow_v2, LabelGen). Product pitch: a
+Portfolio piece demonstrating C#/ASP.NET Core to employers (author is
+self-taught, from warehouse/print-ops work). Product pitch: a
 print-spooler-replacement — REST API + Blazor dashboard that accepts print
 jobs, queues them, delivers to a real printer via IPP, tracks status, logs
-everything. Genericized, not tied to any employer's systems. Built in ~1 week,
-pushed to GitHub via `gh`.
+everything.
 
 Not a product — no users, no production intent. Goal is a project that reads
 well to a company hiring for full-stack C#, and that the author can defend
@@ -50,17 +48,15 @@ on purpose.
 - A fake `IPrinterDispatcher` for demoing without hardware — rejected; faking
   the one part that talks to real hardware defeats the point of the project.
 - Cross-printer dispatch ordering — each printer serializes its own queue independently; printers don't wait on each other.
-- Printer failover — `FailoverPrinterId` was removed rather than left unused; no partial field for a feature that isn't being built.
-- Deployment to Azure App Service — optional stretch only.
+- Printer failover — no partial fields for a feature that isn't being built.
+- Cloud deployment.
 - DB retention/purge for terminal jobs.
 
 ## Tests
 
 Being rebuilt as a deliberate learning exercise: **the author writes every
 line, do not write test code for them.** Mode: ask a guiding question, let
-them attempt, correct with reasoning. (A first attempt with xunit +
-FluentAssertions was deleted — it enumerated the policy arrays by hand and
-restated the guard bodies.)
+them attempt, correct with reasoning.
 
 - `tests/PrintSpooler.Api.IntegrationTests` — xUnit v3, real app via
   `WebApplicationFactory`, real SQL Server via Testcontainers (needs Docker;
@@ -92,12 +88,13 @@ function (EF query translation, HTTP status mapping, crash recovery).
   just "does it compile."
 - Direct/fast answers are fine for pure syntax/tooling issues (typo, missing
   semicolon, CLI flag) — that's not a teaching moment.
-- Explain *why*, not just *what* (e.g. why Core can't reference EF Core but
-  can reference ErrorOr, why Scoped vs Singleton for a given class).
 - Strong already in C#/LINQ/general fundamentals, Neovim, git, Arch Linux,
   Docker, Sybase ASE SQL. Newer to ASP.NET Core, EF Core, DI, REST API
   design, multi-project .NET architecture, IPP. Auth and deployment are
   untested territory.
+- Commit messages: the author writes them, practicing. Don't draft one —
+  check their draft against `git diff --staged` and point out anything it
+  misses, overstates, or describes that didn't change.
 - Always use caveman mode (compressed, low-filler text) for prose responses,
   even mid-Socratic-teaching — code/commits/PRs/security warnings still get
   written out normally.
