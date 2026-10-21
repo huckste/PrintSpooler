@@ -2,6 +2,7 @@ namespace PrintSpooler.Web.Services;
 
 using System.Text.Json;
 using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 
 public class ApiClient(IHttpClientFactory httpClientFactory)
@@ -65,8 +66,8 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
 
         if (!response.IsSuccessStatusCode)
         {
-          var body = await response.Content.ReadAsStringAsync();
-          return Error.Failure($"{(int)response.StatusCode}", body);
+          var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+          return Error.Failure(problem?.Status.ToString() ?? "Unknown Code", problem?.Detail ?? "No details provided");
         }
 
         var result = await response.Content.ReadFromJsonAsync<TResponse>();
@@ -84,7 +85,7 @@ public class ApiClient(IHttpClientFactory httpClientFactory)
         if (response.IsSuccessStatusCode)
           return Result.Success;
 
-        var body = await response.Content.ReadAsStringAsync();
-        return Error.Failure($"{(int)response.StatusCode}", body);
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        return Error.Failure(problem?.Status.ToString() ?? "Unknown Code", problem?.Detail ?? "No details provided");
       });
 }

@@ -28,7 +28,8 @@ public class QueueRow
 
   public bool IsStaged => JobId is null;
 
-  public string StatusLabel => LabelFor(Status);
+  // A staged row with an error was rejected by the API — never became a job.
+  public string StatusLabel => IsStaged && ErrorText is not null ? "Error" : LabelFor(Status);
 
   public static string LabelFor(JobStatus? status) => status?.ToString() ?? "Staged";
 

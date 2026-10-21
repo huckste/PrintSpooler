@@ -155,6 +155,7 @@
 .sp-tag-failed     { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-cancelled  { color: var(--sp-muted);     border-color: var(--sp-muted);     }
 .sp-tag-staged     { color: var(--sp-muted);     border-color: var(--sp-muted);     }
+.sp-tag-error      { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-online     { color: var(--sp-green);     border-color: var(--sp-green);     }
 .sp-tag-offline    { color: var(--sp-red);       border-color: var(--sp-red);       }
 .sp-tag-unknown    { color: var(--sp-muted);     border-color: var(--sp-muted);     }

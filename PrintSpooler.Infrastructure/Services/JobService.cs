@@ -22,6 +22,12 @@ public class JobService(
     if (printerRes is not { } printer)
       return Error.NotFound("Printer.NotFound", $"No printer found with ID {data.PrinterId}");
 
+    if (printer.SupportedContentTypes is { } supportedTypes)
+    {
+      if (!supportedTypes.Any(type => type.Equals(data.ContentType, StringComparison.OrdinalIgnoreCase) || type.Equals("application/octet-stream", StringComparison.OrdinalIgnoreCase)))
+        return Error.Validation("Printer.UnsupportedType", $"Printer {printer.Name} is unable to print {data.ContentType} file types");
+    }
+
     var job = new Job
     {
       Id = Guid.NewGuid(),
